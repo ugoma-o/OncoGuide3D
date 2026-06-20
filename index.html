@@ -2405,8 +2405,8 @@
             <div class="empty-viewer" id="emptyViewer">
               <div class="empty-viewer-inner">
                 <div class="big-icon" id="emptyIcon"><img src="icons/neurologic.png" alt="" class="empty-system-icon" /></div>
-                <h3 id="emptyTitle">Choose a cancer site</h3>
-                <p id="emptyText">The selected 3D anatomy model will load here once its embed URL has been configured in the site code.</p>
+                <h3 id="emptyTitle">Cancer model</h3>
+                <p id="emptyText" hidden></p>
               </div>
             </div>
             <iframe class="model-frame" id="modelFrame" title="Embedded 3D anatomy model" allow="fullscreen; xr-spatial-tracking; accelerometer; gyroscope; autoplay; encrypted-media; clipboard-read; clipboard-write" allowfullscreen loading="eager" referrerpolicy="strict-origin-when-cross-origin" scrolling="no" hidden></iframe>
@@ -3150,8 +3150,11 @@
       const frame = $("modelFrame");
       const empty = $("emptyViewer");
       $("emptyIcon").innerHTML = `<img src="${system.icon}" alt="" class="empty-system-icon" />`;
-      $("emptyTitle").textContent = `${site.name} model not linked yet`;
-      $("emptyText").textContent = "The selected 3D anatomy model will load here once its embed URL has been configured in the site code.";
+      $("emptyTitle").textContent = `${site.name} model`;
+      if ($("emptyText")) {
+        $("emptyText").textContent = "";
+        $("emptyText").hidden = true;
+      }
 
       if (url) {
         empty.style.display = "none";
