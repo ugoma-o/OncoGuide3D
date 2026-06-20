@@ -2406,8 +2406,7 @@
               <div class="empty-viewer-inner">
                 <div class="big-icon" id="emptyIcon"><img src="icons/neurologic.png" alt="" class="empty-system-icon" /></div>
                 <h3 id="emptyTitle">Choose a cancer site</h3>
-                <p id="emptyText">After you add a published BioDigital iframe URL, the 3D model will load here. Until then, this panel acts as a clear placeholder for your clinical demonstration.</p>
-                <button class="btn primary" id="emptyManageBtn" type="button">Add BioDigital model URL</button>
+                <p id="emptyText">The selected 3D anatomy model will load here once its embed URL has been configured in the site code.</p>
               </div>
             </div>
             <iframe class="model-frame" id="modelFrame" title="Embedded 3D anatomy model" allow="fullscreen; xr-spatial-tracking; accelerometer; gyroscope; autoplay; encrypted-media; clipboard-read; clipboard-write" allowfullscreen loading="eager" referrerpolicy="strict-origin-when-cross-origin" scrolling="no" hidden></iframe>
@@ -2739,7 +2738,7 @@
 
           <section class="team-connect-card side-card" aria-label="Connect">
             <p>OncoGuide 3D is being built to elevate radiation oncology education, strengthen health literacy, and continue improving how clinicians explain treatment. Feedback, collaboration, clinical insight, and implementation ideas are welcome.</p>
-            <a class="btn primary" href="mailto:" aria-label="Connect with the OncoGuide 3D team">Connect</a>
+            <a class="btn primary" href="mailto:" aria-label="Connect with the OncoGuide 3D team">Connect with us</a>
           </section>
         </section>
       </section>
@@ -2754,28 +2753,10 @@
     <footer class="footer">
       <div class="footer-inner">
         <span>© 2026 OncoGuide3D. All rights reserved.</span>
-        <button class="btn small footer-manage-btn" id="embedManagerBtn" type="button">Manage model links</button>
       </div>
     </footer>
   </div>
 
-  <div class="modal-backdrop" id="embedModal" role="dialog" aria-modal="true" aria-labelledby="embedModalTitle">
-    <div class="modal-card">
-      <div class="modal-head">
-        <div>
-          <h2 id="embedModalTitle">Manage BioDigital model links</h2>
-          <p>Paste the iframe src or standalone published viewer URL for each disease site. This is saved only in this browser through localStorage.</p>
-        </div>
-        <button class="btn small" id="closeModalBtn" type="button">Close</button>
-      </div>
-      <div class="notice" style="margin-bottom:14px;">Tip: In BioDigital, publish the model, choose responsive embed if available, copy the iframe code, then paste only the <b>src</b> URL here. If authentication fails, check that your BioDigital developer key is authorized for your GitHub Pages domain.</div>
-      <div class="embed-list" id="embedList"></div>
-      <div style="display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; margin-top:16px;">
-        <button class="btn" id="clearLinksBtn" type="button">Clear saved links</button>
-        <button class="btn primary" id="saveLinksBtn" type="button">Save links</button>
-      </div>
-    </div>
-  </div>
 
   <script>
     const systems = [
@@ -3170,7 +3151,7 @@
       const empty = $("emptyViewer");
       $("emptyIcon").innerHTML = `<img src="${system.icon}" alt="" class="empty-system-icon" />`;
       $("emptyTitle").textContent = `${site.name} model not linked yet`;
-      $("emptyText").textContent = "Paste a published BioDigital iframe src for this disease site to display the interactive 3D model here.";
+      $("emptyText").textContent = "The selected 3D anatomy model will load here once its embed URL has been configured in the site code.";
 
       if (url) {
         empty.style.display = "none";
@@ -3594,7 +3575,6 @@
       const key = embedKey(state.systemId, state.siteId);
       const url = sanitizeUrl(state.embedLinks[key]);
       if (url) window.open(url, "_blank", "noopener,noreferrer");
-      else openEmbedModal();
     }
 
 
@@ -4202,11 +4182,11 @@
     document.querySelectorAll("[data-page-tab]").forEach(tab => {
       tab.addEventListener("click", () => goToPage(tab.dataset.pageTab));
     });
-    $("embedManagerBtn").addEventListener("click", openEmbedModal);
-    $("emptyManageBtn").addEventListener("click", openEmbedModal);
-    $("closeModalBtn").addEventListener("click", closeEmbedModal);
-    $("saveLinksBtn").addEventListener("click", saveEmbedLinks);
-    $("clearLinksBtn").addEventListener("click", clearEmbedLinks);
+    if ($("embedManagerBtn")) $("embedManagerBtn").addEventListener("click", openEmbedModal);
+    if ($("emptyManageBtn")) $("emptyManageBtn").addEventListener("click", openEmbedModal);
+    if ($("closeModalBtn")) $("closeModalBtn").addEventListener("click", closeEmbedModal);
+    if ($("saveLinksBtn")) $("saveLinksBtn").addEventListener("click", saveEmbedLinks);
+    if ($("clearLinksBtn")) $("clearLinksBtn").addEventListener("click", clearEmbedLinks);
     $("openModelBtn").addEventListener("click", openCurrentModel);
     if ($("noteTemplateSelect")) $("noteTemplateSelect").addEventListener("change", e => { if (e.target.value) insertClinicianNoteTemplate(); });
     window.addEventListener("resize", () => {
@@ -4217,7 +4197,7 @@
     window.addEventListener("hashchange", () => {
       if (loadStateFromRouteHash()) updateAll();
     });
-    $("embedModal").addEventListener("click", e => { if (e.target.id === "embedModal") closeEmbedModal(); });
+    if ($("embedModal")) $("embedModal").addEventListener("click", e => { if (e.target.id === "embedModal") closeEmbedModal(); });
     document.addEventListener("keydown", e => { if (e.key === "Escape") closeEmbedModal(); });
 
 
