@@ -2755,7 +2755,10 @@
         <span>© 2026 OncoGuide3D. All rights reserved.</span>
       </div>
     </footer>
-  </div>  <script>
+  </div>
+
+
+  <script>
     const systems = [
       {
         id: "cns", icon: "icons/neurologic.png", name: "Neurologic", subtitle: "Brain, spine, skull base", defaultDose: [60, 30],
@@ -2943,29 +2946,8 @@
     srOnlyStyle.innerHTML = `.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}`;
     document.head.appendChild(srOnlyStyle);
 
-    /*
-      BioDigital model configuration
-
-      Use one published BioDigital viewer/widget URL per disease site.
-      If your BioDigital model contains multiple chapters, scenes, or saved views,
-      keep those chapters inside the same published BioDigital URL rather than
-      creating separate app-level buttons.
-
-      Do not use Studio edit links such as:
-        https://human.biodigital.com/studio/edit?id=...
-      Studio edit links usually require login and are not appropriate for public embedding.
-
-      Recommended pattern:
-        "system:site": "https://human.biodigital.com/viewer?id=YOUR_PUBLISHED_MODEL_ID&ui-info=false&ui-menu=false&dk=YOUR_DEVELOPER_KEY"
-
-      You may also set BIODIGITAL_DEVELOPER_KEY below and then use model IDs instead of full URLs.
-      Keep developer secrets out of this static HTML file.
-    */
-    const BIODIGITAL_DEVELOPER_KEY = "";
-
     const defaultEmbedLinks = {
-      // Example placeholder. Replace with your published BioDigital viewer/widget URL or model ID.
-      // "gu:prostate": "https://human.biodigital.com/view?id=7FfI&lang=en&ref=share"
+      "gu:prostate": "https://human.biodigital.com/view?id=7FfI&lang=en&ref=share"
     };
 
     const savedEmbedLinks = JSON.parse(localStorage.getItem("oncoguide3dEmbedLinks") || localStorage.getItem("oncoviewEmbedLinks") || "{}");
@@ -2981,90 +2963,6 @@
     const activeSystem = () => systems.find(s => s.id === state.systemId) || systems[0];
     const activeSite = () => activeSystem().sites.find(site => site.id === state.siteId) || activeSystem().sites[0];
     const embedKey = (systemId, siteId) => `${systemId}:${siteId}`;
-
-    function appendQueryParam(url, key, value) {
-      if (!value || String(url).includes(`${key}=`)) return url;
-      return `${url}${url.includes("?") ? "&" : "?"}${key}=${encodeURIComponent(value)}`;
-    }
-    function buildBioDigitalViewerUrl(source) {
-      const raw = String(source || "").trim();
-      if (!raw) return "";
-
-      const iframeMatch = raw.match(/src=["']([^"']+)["']/i);
-      let url = iframeMatch ? iframeMatch[1] : raw;
-
-      if (!/^https:\/\//i.test(url)) {
-        url = `https://human.biodigital.com/viewer/?id=${encodeURIComponent(url)}`;
-      }
-
-      try {
-        const parsed = new URL(url);
-
-        // BioDigital Studio edit links are private/editing URLs and commonly trigger login.
-        if (/human\.biodigital\.com$/i.test(parsed.hostname) && /^\/(studio|creator)\/edit/i.test(parsed.pathname)) {
-          return "";
-        }
-
-        // Normalize share links like /view?id=7FfI to the embeddable viewer path.
-        if (/human\.biodigital\.com$/i.test(parsed.hostname) && parsed.pathname === "/view") {
-          parsed.pathname = "/viewer/";
-        }
-
-        // Preserve BioDigital parameters while adding a few stable viewer defaults if absent.
-        const params = parsed.searchParams;
-        const viewerDefaults = {
-          "ui-info": "true",
-          "ui-menu": "true",
-          "ui-nav": "true",
-          "ui-tools": "true",
-          "ui-search": "true",
-          "ui-chapter-list": "true",
-          "ui-fullscreen": "true",
-          "ui-loader": "circle",
-          "disable-scroll": "false"
-        };
-
-        Object.entries(viewerDefaults).forEach(([key, value]) => {
-          if (!params.has(key)) params.set(key, value);
-        });
-
-        if (BIODIGITAL_DEVELOPER_KEY && !params.has("dk") && !params.has("uaid")) {
-          params.set("dk", BIODIGITAL_DEVELOPER_KEY);
-        }
-
-        return sanitizeUrl(parsed.toString());
-      } catch {
-        return sanitizeUrl(url);
-      }
-    }
-
-      url = `https://human.biodigital.com/viewer?id=${encodeURIComponent(url)}&ui-info=false&ui-menu=false`;
-      if (BIODIGITAL_DEVELOPER_KEY) url = appendQueryParam(url, "dk", BIODIGITAL_DEVELOPER_KEY);
-      return sanitizeUrl(url);
-    }
-    function resolveModelUrl(systemId = state.systemId, siteId = state.siteId) {
-      const key = embedKey(systemId, siteId);
-      return buildBioDigitalViewerUrl(state.embedLinks[key] || "");
-    } else if (window.HumanAPI && typeof window.HumanAPI.Human === "function") {
-          activeHumanApi = new window.HumanAPI.Human("modelFrame");
-        } else {
-          return;
-        }
-
-        if (activeHumanApi && typeof activeHumanApi.on === "function") {
-          activeHumanApi.on("ready", () => {
-            try {
-              if (typeof activeHumanApi.send === "function") activeHumanApi.send("timeline.pause");
-            } catch (error) {
-              console.debug("BioDigital API ready, timeline control unavailable.", error);
-            }
-          });
-        }
-      } catch (error) {
-        activeHumanApi = null;
-        console.warn("BioDigital Human API could not initialize for this viewer session.", error);
-      }
-    }
 
     function setDoseForActiveSite() {
       const site = activeSite();
@@ -3243,15 +3141,16 @@
       if (!/^https:\/\//i.test(url)) return "";
       return url;
     }
+
     function updateViewer() {
       const system = activeSystem();
       const site = activeSite();
-      const url = resolveModelUrl(system.id, site.id);
+      const key = embedKey(system.id, site.id);
+      const url = sanitizeUrl(state.embedLinks[key]);
       const frame = $("modelFrame");
       const empty = $("emptyViewer");
-
-      if ($("emptyIcon")) $("emptyIcon").innerHTML = `<img src="${system.icon}" alt="" class="empty-system-icon" />`;
-      if ($("emptyTitle")) $("emptyTitle").textContent = `${site.name} model`;
+      $("emptyIcon").innerHTML = `<img src="${system.icon}" alt="" class="empty-system-icon" />`;
+      $("emptyTitle").textContent = `${site.name} model`;
       if ($("emptyText")) {
         $("emptyText").textContent = "";
         $("emptyText").hidden = true;
@@ -3259,7 +3158,8 @@
 
       if (url) {
         empty.style.display = "none";
-        if (frame.src !== url) frame.src = url;
+
+        frame.src = url;
         frame.hidden = false;
       } else {
         frame.hidden = true;
@@ -3673,8 +3573,10 @@
       renderEmbedEditors();
       updateAll();
     }
+
     function openCurrentModel() {
-      const url = resolveModelUrl(state.systemId, state.siteId);
+      const key = embedKey(state.systemId, state.siteId);
+      const url = sanitizeUrl(state.embedLinks[key]);
       if (url) window.open(url, "_blank", "noopener,noreferrer");
     }
 
