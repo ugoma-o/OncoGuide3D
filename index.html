@@ -2755,11 +2755,7 @@
         <span>© 2026 OncoGuide3D. All rights reserved.</span>
       </div>
     </footer>
-  </div>
-
-
-  <script src="https://developer.biodigital.com/builds/api/human-api-3.0.0.min.js"></script>
-  <script>
+  </div>  <script>
     const systems = [
       {
         id: "cns", icon: "icons/neurologic.png", name: "Neurologic", subtitle: "Brain, spine, skull base", defaultDose: [60, 30],
@@ -2990,7 +2986,6 @@
       if (!value || String(url).includes(`${key}=`)) return url;
       return `${url}${url.includes("?") ? "&" : "?"}${key}=${encodeURIComponent(value)}`;
     }
-
     function buildBioDigitalViewerUrl(source) {
       const raw = String(source || "").trim();
       if (!raw) return "";
@@ -2998,10 +2993,50 @@
       const iframeMatch = raw.match(/src=["']([^"']+)["']/i);
       let url = iframeMatch ? iframeMatch[1] : raw;
 
-      if (/^https:\/\//i.test(url)) {
-        if (/human\.biodigital\.com\/(studio|creator)\/edit/i.test(url)) return "";
+      if (!/^https:\/\//i.test(url)) {
+        url = `https://human.biodigital.com/viewer/?id=${encodeURIComponent(url)}`;
+      }
+
+      try {
+        const parsed = new URL(url);
+
+        // BioDigital Studio edit links are private/editing URLs and commonly trigger login.
+        if (/human\.biodigital\.com$/i.test(parsed.hostname) && /^\/(studio|creator)\/edit/i.test(parsed.pathname)) {
+          return "";
+        }
+
+        // Normalize share links like /view?id=7FfI to the embeddable viewer path.
+        if (/human\.biodigital\.com$/i.test(parsed.hostname) && parsed.pathname === "/view") {
+          parsed.pathname = "/viewer/";
+        }
+
+        // Preserve BioDigital parameters while adding a few stable viewer defaults if absent.
+        const params = parsed.searchParams;
+        const viewerDefaults = {
+          "ui-info": "true",
+          "ui-menu": "true",
+          "ui-nav": "true",
+          "ui-tools": "true",
+          "ui-search": "true",
+          "ui-chapter-list": "true",
+          "ui-fullscreen": "true",
+          "ui-loader": "circle",
+          "disable-scroll": "false"
+        };
+
+        Object.entries(viewerDefaults).forEach(([key, value]) => {
+          if (!params.has(key)) params.set(key, value);
+        });
+
+        if (BIODIGITAL_DEVELOPER_KEY && !params.has("dk") && !params.has("uaid")) {
+          params.set("dk", BIODIGITAL_DEVELOPER_KEY);
+        }
+
+        return sanitizeUrl(parsed.toString());
+      } catch {
         return sanitizeUrl(url);
       }
+    }
 
       url = `https://human.biodigital.com/viewer?id=${encodeURIComponent(url)}&ui-info=false&ui-menu=false`;
       if (BIODIGITAL_DEVELOPER_KEY) url = appendQueryParam(url, "dk", BIODIGITAL_DEVELOPER_KEY);
@@ -3010,21 +3045,9 @@
     function resolveModelUrl(systemId = state.systemId, siteId = state.siteId) {
       const key = embedKey(systemId, siteId);
       return buildBioDigitalViewerUrl(state.embedLinks[key] || "");
-    }
-
-    let activeHumanApi = null;
-
-    function initializeBioDigitalApi() {
-      const frame = $("modelFrame");
-      if (!frame || frame.hidden) return;
-
-      try {
-        if (typeof HumanAPI === "function") {
-          activeHumanApi = new HumanAPI("modelFrame");
-        } else if (window.HumanAPI && typeof window.HumanAPI.Human === "function") {
+    } else if (window.HumanAPI && typeof window.HumanAPI.Human === "function") {
           activeHumanApi = new window.HumanAPI.Human("modelFrame");
         } else {
-          activeHumanApi = null;
           return;
         }
 
@@ -3236,16 +3259,11 @@
 
       if (url) {
         empty.style.display = "none";
-        if (frame.src !== url) {
-          frame.src = url;
-          activeHumanApi = null;
-        }
+        if (frame.src !== url) frame.src = url;
         frame.hidden = false;
-        frame.onload = initializeBioDigitalApi;
       } else {
         frame.hidden = true;
         frame.removeAttribute("src");
-        activeHumanApi = null;
         empty.style.display = "grid";
       }
     }
