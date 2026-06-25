@@ -2405,9 +2405,8 @@
             <div class="empty-viewer" id="emptyViewer">
               <div class="empty-viewer-inner">
                 <div class="big-icon" id="emptyIcon"><img src="icons/neurologic.png" alt="" class="empty-system-icon" /></div>
-                <h3 id="emptyTitle">Choose a cancer site</h3>
-                <p id="emptyText">After you add a published BioDigital iframe URL, the 3D model will load here. Until then, this panel acts as a clear placeholder for your clinical demonstration.</p>
-                <button class="btn primary" id="emptyManageBtn" type="button">Add BioDigital model URL</button>
+                <h3 id="emptyTitle">Cancer model</h3>
+                <p id="emptyText" hidden></p>
               </div>
             </div>
             <iframe class="model-frame" id="modelFrame" title="Embedded 3D anatomy model" allow="fullscreen; xr-spatial-tracking; accelerometer; gyroscope; autoplay; encrypted-media; clipboard-read; clipboard-write" allowfullscreen loading="eager" referrerpolicy="strict-origin-when-cross-origin" scrolling="no" hidden></iframe>
@@ -2754,29 +2753,12 @@
     <footer class="footer">
       <div class="footer-inner">
         <span>© 2026 OncoGuide3D. All rights reserved.</span>
-        <button class="btn small footer-manage-btn" id="embedManagerBtn" type="button">Manage model links</button>
       </div>
     </footer>
   </div>
 
-  <div class="modal-backdrop" id="embedModal" role="dialog" aria-modal="true" aria-labelledby="embedModalTitle">
-    <div class="modal-card">
-      <div class="modal-head">
-        <div>
-          <h2 id="embedModalTitle">Manage BioDigital model links</h2>
-          <p>Paste the iframe src or standalone published viewer URL for each disease site. This is saved only in this browser through localStorage.</p>
-        </div>
-        <button class="btn small" id="closeModalBtn" type="button">Close</button>
-      </div>
-      <div class="notice" style="margin-bottom:14px;">Tip: In BioDigital, publish the model, choose responsive embed if available, copy the iframe code, then paste only the <b>src</b> URL here. If authentication fails, check that your BioDigital developer key is authorized for your GitHub Pages domain.</div>
-      <div class="embed-list" id="embedList"></div>
-      <div style="display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; margin-top:16px;">
-        <button class="btn" id="clearLinksBtn" type="button">Clear saved links</button>
-        <button class="btn primary" id="saveLinksBtn" type="button">Save links</button>
-      </div>
-    </div>
-  </div>
 
+  <script src="https://developer.biodigital.com/builds/api/human-api-3.0.0.min.js"></script>
   <script>
     const systems = [
       {
@@ -2965,8 +2947,29 @@
     srOnlyStyle.innerHTML = `.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}`;
     document.head.appendChild(srOnlyStyle);
 
+    /*
+      BioDigital model configuration
+
+      Use one published BioDigital viewer/widget URL per disease site.
+      If your BioDigital model contains multiple chapters, scenes, or saved views,
+      keep those chapters inside the same published BioDigital URL rather than
+      creating separate app-level buttons.
+
+      Do not use Studio edit links such as:
+        https://human.biodigital.com/studio/edit?id=...
+      Studio edit links usually require login and are not appropriate for public embedding.
+
+      Recommended pattern:
+        "system:site": "https://human.biodigital.com/viewer?id=YOUR_PUBLISHED_MODEL_ID&ui-info=false&ui-menu=false&dk=YOUR_DEVELOPER_KEY"
+
+      You may also set BIODIGITAL_DEVELOPER_KEY below and then use model IDs instead of full URLs.
+      Keep developer secrets out of this static HTML file.
+    */
+    const BIODIGITAL_DEVELOPER_KEY = "";
+
     const defaultEmbedLinks = {
-      "gu:prostate": "https://human.biodigital.com/studio/edit?id=7FfI"
+      // Example placeholder. Replace with your published BioDigital viewer/widget URL or model ID.
+      // "gu:prostate": "YOUR_PROSTATE_MODEL_ID_OR_PUBLISHED_VIEWER_URL"
     };
 
     const savedEmbedLinks = JSON.parse(localStorage.getItem("oncoguide3dEmbedLinks") || localStorage.getItem("oncoviewEmbedLinks") || "{}");
@@ -2982,6 +2985,63 @@
     const activeSystem = () => systems.find(s => s.id === state.systemId) || systems[0];
     const activeSite = () => activeSystem().sites.find(site => site.id === state.siteId) || activeSystem().sites[0];
     const embedKey = (systemId, siteId) => `${systemId}:${siteId}`;
+
+    function appendQueryParam(url, key, value) {
+      if (!value || String(url).includes(`${key}=`)) return url;
+      return `${url}${url.includes("?") ? "&" : "?"}${key}=${encodeURIComponent(value)}`;
+    }
+
+    function buildBioDigitalViewerUrl(source) {
+      const raw = String(source || "").trim();
+      if (!raw) return "";
+
+      const iframeMatch = raw.match(/src=["']([^"']+)["']/i);
+      let url = iframeMatch ? iframeMatch[1] : raw;
+
+      if (/^https:\/\//i.test(url)) {
+        if (/human\.biodigital\.com\/(studio|creator)\/edit/i.test(url)) return "";
+        return sanitizeUrl(url);
+      }
+
+      url = `https://human.biodigital.com/viewer?id=${encodeURIComponent(url)}&ui-info=false&ui-menu=false`;
+      if (BIODIGITAL_DEVELOPER_KEY) url = appendQueryParam(url, "dk", BIODIGITAL_DEVELOPER_KEY);
+      return sanitizeUrl(url);
+    }
+    function resolveModelUrl(systemId = state.systemId, siteId = state.siteId) {
+      const key = embedKey(systemId, siteId);
+      return buildBioDigitalViewerUrl(state.embedLinks[key] || "");
+    }
+
+    let activeHumanApi = null;
+
+    function initializeBioDigitalApi() {
+      const frame = $("modelFrame");
+      if (!frame || frame.hidden) return;
+
+      try {
+        if (typeof HumanAPI === "function") {
+          activeHumanApi = new HumanAPI("modelFrame");
+        } else if (window.HumanAPI && typeof window.HumanAPI.Human === "function") {
+          activeHumanApi = new window.HumanAPI.Human("modelFrame");
+        } else {
+          activeHumanApi = null;
+          return;
+        }
+
+        if (activeHumanApi && typeof activeHumanApi.on === "function") {
+          activeHumanApi.on("ready", () => {
+            try {
+              if (typeof activeHumanApi.send === "function") activeHumanApi.send("timeline.pause");
+            } catch (error) {
+              console.debug("BioDigital API ready, timeline control unavailable.", error);
+            }
+          });
+        }
+      } catch (error) {
+        activeHumanApi = null;
+        console.warn("BioDigital Human API could not initialize for this viewer session.", error);
+      }
+    }
 
     function setDoseForActiveSite() {
       const site = activeSite();
@@ -3160,26 +3220,32 @@
       if (!/^https:\/\//i.test(url)) return "";
       return url;
     }
-
     function updateViewer() {
       const system = activeSystem();
       const site = activeSite();
-      const key = embedKey(system.id, site.id);
-      const url = sanitizeUrl(state.embedLinks[key]);
+      const url = resolveModelUrl(system.id, site.id);
       const frame = $("modelFrame");
       const empty = $("emptyViewer");
-      $("emptyIcon").innerHTML = `<img src="${system.icon}" alt="" class="empty-system-icon" />`;
-      $("emptyTitle").textContent = `${site.name} model not linked yet`;
-      $("emptyText").textContent = "Paste a published BioDigital iframe src for this disease site to display the interactive 3D model here.";
+
+      if ($("emptyIcon")) $("emptyIcon").innerHTML = `<img src="${system.icon}" alt="" class="empty-system-icon" />`;
+      if ($("emptyTitle")) $("emptyTitle").textContent = `${site.name} model`;
+      if ($("emptyText")) {
+        $("emptyText").textContent = "";
+        $("emptyText").hidden = true;
+      }
 
       if (url) {
         empty.style.display = "none";
-
-        frame.src = url;
+        if (frame.src !== url) {
+          frame.src = url;
+          activeHumanApi = null;
+        }
         frame.hidden = false;
+        frame.onload = initializeBioDigitalApi;
       } else {
         frame.hidden = true;
         frame.removeAttribute("src");
+        activeHumanApi = null;
         empty.style.display = "grid";
       }
     }
@@ -3589,12 +3655,9 @@
       renderEmbedEditors();
       updateAll();
     }
-
     function openCurrentModel() {
-      const key = embedKey(state.systemId, state.siteId);
-      const url = sanitizeUrl(state.embedLinks[key]);
+      const url = resolveModelUrl(state.systemId, state.siteId);
       if (url) window.open(url, "_blank", "noopener,noreferrer");
-      else openEmbedModal();
     }
 
 
@@ -4202,11 +4265,11 @@
     document.querySelectorAll("[data-page-tab]").forEach(tab => {
       tab.addEventListener("click", () => goToPage(tab.dataset.pageTab));
     });
-    $("embedManagerBtn").addEventListener("click", openEmbedModal);
-    $("emptyManageBtn").addEventListener("click", openEmbedModal);
-    $("closeModalBtn").addEventListener("click", closeEmbedModal);
-    $("saveLinksBtn").addEventListener("click", saveEmbedLinks);
-    $("clearLinksBtn").addEventListener("click", clearEmbedLinks);
+    if ($("embedManagerBtn")) if ($("embedManagerBtn")) $("embedManagerBtn").addEventListener("click", openEmbedModal);
+    if ($("emptyManageBtn")) if ($("emptyManageBtn")) $("emptyManageBtn").addEventListener("click", openEmbedModal);
+    if ($("closeModalBtn")) if ($("closeModalBtn")) $("closeModalBtn").addEventListener("click", closeEmbedModal);
+    if ($("saveLinksBtn")) if ($("saveLinksBtn")) $("saveLinksBtn").addEventListener("click", saveEmbedLinks);
+    if ($("clearLinksBtn")) if ($("clearLinksBtn")) $("clearLinksBtn").addEventListener("click", clearEmbedLinks);
     $("openModelBtn").addEventListener("click", openCurrentModel);
     if ($("noteTemplateSelect")) $("noteTemplateSelect").addEventListener("change", e => { if (e.target.value) insertClinicianNoteTemplate(); });
     window.addEventListener("resize", () => {
@@ -4217,7 +4280,7 @@
     window.addEventListener("hashchange", () => {
       if (loadStateFromRouteHash()) updateAll();
     });
-    $("embedModal").addEventListener("click", e => { if (e.target.id === "embedModal") closeEmbedModal(); });
+    if ($("embedModal")) if ($("embedModal")) $("embedModal").addEventListener("click", e => { if (e.target.id === "embedModal") closeEmbedModal(); });
     document.addEventListener("keydown", e => { if (e.key === "Escape") closeEmbedModal(); });
 
 
