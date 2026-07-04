@@ -2947,7 +2947,11 @@
     document.head.appendChild(srOnlyStyle);
 
     const defaultEmbedLinks = {
-      "gu:prostate": "https://human.biodigital.com/view?id=7FfI&lang=en"
+      "gu:prostate": "https://human.biodigital.com/view?id=7FfI&lang=en",
+      "breast:whole-breast": "https://human.biodigital.com/view?id=production%2FfemaleAdult%2Fbreast_cancer_v02&lang=en&ref=share",
+      "breast:pbi": "https://human.biodigital.com/view?id=production%2FfemaleAdult%2Fbreast_cancer_v02&lang=en&ref=share",
+      "breast:chest-wall": "https://human.biodigital.com/view?id=production%2FfemaleAdult%2Fbreast_cancer_v02&lang=en&ref=share",
+      "breast:regional-nodes": "https://human.biodigital.com/view?id=production%2FfemaleAdult%2Fbreast_cancer_v02&lang=en&ref=share"
     };
 
     const savedEmbedLinks = JSON.parse(localStorage.getItem("oncoguide3dEmbedLinks") || localStorage.getItem("oncoviewEmbedLinks") || "{}");
@@ -2956,7 +2960,7 @@
       page: "home",
       systemId: systems[0].id,
       siteId: systems[0].sites[0].id,
-      embedLinks: { ...defaultEmbedLinks, ...savedEmbedLinks }
+      embedLinks: { ...savedEmbedLinks, ...defaultEmbedLinks }
     };
 
     const $ = (id) => document.getElementById(id);
@@ -4185,11 +4189,11 @@
     document.querySelectorAll("[data-page-tab]").forEach(tab => {
       tab.addEventListener("click", () => goToPage(tab.dataset.pageTab));
     });
-    if ($("embedManagerBtn")) if ($("embedManagerBtn")) $("embedManagerBtn").addEventListener("click", openEmbedModal);
-    if ($("emptyManageBtn")) if ($("emptyManageBtn")) $("emptyManageBtn").addEventListener("click", openEmbedModal);
-    if ($("closeModalBtn")) if ($("closeModalBtn")) $("closeModalBtn").addEventListener("click", closeEmbedModal);
-    if ($("saveLinksBtn")) if ($("saveLinksBtn")) $("saveLinksBtn").addEventListener("click", saveEmbedLinks);
-    if ($("clearLinksBtn")) if ($("clearLinksBtn")) $("clearLinksBtn").addEventListener("click", clearEmbedLinks);
+    if ($("embedManagerBtn")) $("embedManagerBtn").addEventListener("click", openEmbedModal);
+    if ($("emptyManageBtn")) $("emptyManageBtn").addEventListener("click", openEmbedModal);
+    if ($("closeModalBtn")) $("closeModalBtn").addEventListener("click", closeEmbedModal);
+    if ($("saveLinksBtn")) $("saveLinksBtn").addEventListener("click", saveEmbedLinks);
+    if ($("clearLinksBtn")) $("clearLinksBtn").addEventListener("click", clearEmbedLinks);
     $("openModelBtn").addEventListener("click", openCurrentModel);
     if ($("noteTemplateSelect")) $("noteTemplateSelect").addEventListener("change", e => { if (e.target.value) insertClinicianNoteTemplate(); });
     window.addEventListener("resize", () => {
@@ -4200,7 +4204,7 @@
     window.addEventListener("hashchange", () => {
       if (loadStateFromRouteHash()) updateAll();
     });
-    if ($("embedModal")) if ($("embedModal")) $("embedModal").addEventListener("click", e => { if (e.target.id === "embedModal") closeEmbedModal(); });
+    if ($("embedModal")) $("embedModal").addEventListener("click", e => { if (e.target.id === "embedModal") closeEmbedModal(); });
     document.addEventListener("keydown", e => { if (e.key === "Escape") closeEmbedModal(); });
 
 
