@@ -1145,6 +1145,8 @@
 
     .clinician-notes-wide textarea {
       min-height: 140px;
+      resize: none;
+      overflow-y: auto;
     }
 
     .note-template-row {
@@ -3309,7 +3311,7 @@
       document.querySelectorAll("[data-page-tab]").forEach(tab => {
         tab.classList.toggle("active", tab.dataset.pageTab === state.page);
       });
-      requestAnimationFrame(syncTreatmentCourseHeight);
+      requestAnimationFrame(syncWorkspaceColumnHeights);
       requestAnimationFrame(updateOrganScrollButtons);
     }
 
@@ -4799,6 +4801,33 @@
       courseCard.style.height = `${Math.max(220, targetHeight)}px`;
     }
 
+    function syncClinicianNotesHeight() {
+      const workspace = document.querySelector(".workspace");
+      const mainColumn = workspace?.querySelector(":scope > .main-column");
+      const sideColumn = workspace?.querySelector(":scope > .side-column");
+      const notes = $("clinicianNotes");
+      const isStacked = window.matchMedia("(max-width: 980px)").matches;
+
+      if (!workspace || !mainColumn || !sideColumn || !notes || isStacked) {
+        if (notes) notes.style.height = "";
+        return;
+      }
+
+      const minimumHeight = 140;
+      const currentHeight = notes.offsetHeight || minimumHeight;
+      const heightDifference = mainColumn.offsetHeight - sideColumn.offsetHeight;
+      const targetHeight = Math.max(minimumHeight, Math.round(currentHeight + heightDifference));
+
+      if (Math.abs(currentHeight - targetHeight) > 1) {
+        notes.style.height = `${targetHeight}px`;
+      }
+    }
+
+    function syncWorkspaceColumnHeights() {
+      syncTreatmentCourseHeight();
+      requestAnimationFrame(syncClinicianNotesHeight);
+    }
+
 
 
     function trendFmt(value) {
@@ -5367,7 +5396,7 @@
     if ($("noteTemplateSelect")) $("noteTemplateSelect").addEventListener("change", e => { if (e.target.value) insertClinicianNoteTemplate(); });
     window.addEventListener("resize", () => {
       updateViewer();
-      requestAnimationFrame(syncTreatmentCourseHeight);
+      requestAnimationFrame(syncWorkspaceColumnHeights);
       requestAnimationFrame(updateOrganScrollButtons);
     });
     window.addEventListener("hashchange", () => {
@@ -5406,6 +5435,16 @@
     if ($("trendSessionKey")) $("trendSessionKey").addEventListener("input", e => {
       currentTrendSessionKey = normalizeTrendSessionKey(e.target.value);
     });
+
+    const workspaceMainColumn = document.querySelector(".workspace > .main-column");
+    if (workspaceMainColumn && "ResizeObserver" in window) {
+      let notesHeightFrame = 0;
+      const workspaceHeightObserver = new ResizeObserver(() => {
+        cancelAnimationFrame(notesHeightFrame);
+        notesHeightFrame = requestAnimationFrame(syncWorkspaceColumnHeights);
+      });
+      workspaceHeightObserver.observe(workspaceMainColumn);
+    }
 
     populateClinicianNoteTemplates();
     if (!loadStateFromRouteHash()) {
