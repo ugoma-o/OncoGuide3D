@@ -314,7 +314,8 @@
 
     .about-references-card > p {
       color: var(--muted);
-      max-width: 92ch;
+      width: 100%;
+      max-width: none;
       margin-bottom: 16px;
     }
 
@@ -807,7 +808,7 @@
 
     .course-flow {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr) 28px minmax(0, 1fr);
+      grid-template-columns: 1fr;
       gap: 8px;
       align-items: stretch;
       margin-top: 0;
@@ -861,24 +862,25 @@
     }
 
     .course-connector {
-      width: 100%;
-      height: 2px;
+      width: 2px;
+      height: 24px;
       background: var(--line);
       border-radius: 999px;
-      align-self: center;
+      justify-self: start;
+      margin-left: 27px;
       position: relative;
     }
 
     .course-connector::after {
       content: "";
       position: absolute;
-      right: -1px;
-      top: 50%;
+      left: 50%;
+      bottom: -1px;
       width: 8px;
       height: 8px;
-      border-top: 2px solid var(--line);
       border-right: 2px solid var(--line);
-      transform: translateY(-50%) rotate(45deg);
+      border-bottom: 2px solid var(--line);
+      transform: translateX(-50%) rotate(45deg);
       border-radius: 1px;
     }
 
@@ -1189,13 +1191,53 @@
       .note-template-row {
         grid-template-columns: 1fr;
       }
+
+      .dose-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "total"
+          "fractions"
+          "frequency"
+          "technique"
+          "summary";
+      }
+
+      .dose-summary-field input {
+        min-height: 76px;
+      }
     }
 
     .dose-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas:
+        "total fractions"
+        "frequency summary"
+        "technique summary";
       gap: 12px;
       margin: 12px 0;
+      align-items: stretch;
+    }
+
+    .dose-total-field { grid-area: total; }
+    .dose-fractions-field { grid-area: fractions; }
+    .dose-frequency-field { grid-area: frequency; }
+    .dose-technique-field { grid-area: technique; }
+    .dose-summary-field {
+      grid-area: summary;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dose-summary-field input {
+      flex: 1;
+      min-height: 94px;
+      font-size: clamp(1.15rem, 1.8vw, 1.55rem) !important;
+      line-height: 1.15;
+      text-align: center;
+      padding: 18px 14px;
+      border-width: 2px;
+      background: linear-gradient(135deg, rgba(224, 242, 243, 0.92), rgba(239, 235, 255, 0.90)) !important;
     }
 
     .side-column .side-card:first-child {
@@ -1203,11 +1245,6 @@
     }
 
 
-
-    .field input#treatmentWeeks {
-      font-size: 0.88rem;
-      letter-spacing: -0.01em;
-    }
 
     .field input[readonly] {
       background: rgba(241, 245, 247, 0.78);
@@ -1933,13 +1970,16 @@
       .workspace > .side-column { order: 3; }
       .workspace > .side-column > .clinician-notes-wide { order: 4; margin-top: 0; }
       .course-flow { grid-template-columns: 1fr; }
-      .course-connector { width: 2px; height: 14px; justify-self: start; margin-left: 17px; }
+      .course-connector {
+        width: 2px;
+        height: 20px;
+        justify-self: start;
+        margin-left: 27px;
+      }
       .course-connector::after {
-        right: auto;
         left: 50%;
-        top: auto;
         bottom: -1px;
-        transform: translateX(-50%) rotate(135deg);
+        transform: translateX(-50%) rotate(45deg);
       }
       .treatment-course-card { height: auto !important; min-height: 0; }
     }
@@ -2760,23 +2800,23 @@
               </div>
 
               <div class="dose-grid">
-                <div class="field">
+                <div class="field dose-total-field">
                   <label for="totalDose">Total dose, Gy</label>
                   <input id="totalDose" type="number" min="0" step="0.1" value="50" />
                 </div>
-                <div class="field">
+                <div class="field dose-fractions-field">
                   <label for="fractions">Fractions</label>
                   <input id="fractions" type="number" min="1" step="1" value="25" />
                 </div>
-                <div class="field">
+                <div class="field dose-frequency-field">
                   <label for="treatmentsPerWeek">Treatments/week</label>
                   <input id="treatmentsPerWeek" type="number" min="0.5" max="14" step="0.5" value="5" />
                 </div>
-                <div class="field">
+                <div class="field dose-summary-field">
                   <label for="treatmentWeeks">Course length / dose per fraction</label>
                   <input id="treatmentWeeks" type="text" value="" readonly aria-live="polite" />
                 </div>
-                <div class="field">
+                <div class="field dose-technique-field">
                   <label for="technique">Technique</label>
                   <select id="technique">
                     <option>IMRT/VMAT</option>
