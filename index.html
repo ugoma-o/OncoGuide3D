@@ -2833,21 +2833,21 @@
         ]
       },
       {
-        id: "gu", icon: "icons/genitourinary.png", name: "Genitourinary", subtitle: "Prostate, bladder, kidney, testis", defaultDose: [70, 28],
-        purpose: "GU radiation treats prostate, bladder, penile, testicular, kidney, adrenal, or metastatic targets while reducing dose to bowel, bladder, rectum, urethra, kidneys, and sexual organs when feasible.",
-        expectation: "Pelvic treatment often depends on reproducible bladder and rectal filling. Prostate treatment may use fiducials, MRI fusion, or rectal spacer in selected cases.",
-        support: ["Bladder filling and bowel routine coaching", "Alpha blocker discussion for urinary symptoms", "Hydration guidance", "Sexual health and fertility counseling when relevant"],
-        position: "Usually supine. Prostate or pelvic cases may use leg immobilization and daily image guidance.",
+        id: "gu", icon: "icons/genitourinary.png", name: "Genitourinary", subtitle: "Prostate, bladder, kidney/adrenal, testis", defaultDose: [70, 28],
+        purpose: "GU radiation is used for localized, postoperative, salvage, nodal, or oligometastatic prostate cancer; bladder-preserving chemoradiation for selected muscle-invasive bladder cancers; selected seminoma nodal treatment; and SBRT or palliative treatment for selected kidney, adrenal, or metastatic targets. Planning prioritizes target coverage while limiting dose to rectum, bladder, urethra, bowel, kidneys, femoral heads, penile bulb, sexual organs, and marrow when relevant.",
+        expectation: "Simulation emphasizes reproducible anatomy. Prostate and pelvic plans often require consistent bladder filling and rectal emptying, with MRI or PET fusion, fiducials, daily image guidance, and sometimes a rectal spacer. Bladder-preservation workflows are coordinated with TURBT, concurrent chemotherapy, and cystoscopic response assessment. Kidney/adrenal SBRT requires respiratory motion management and careful bowel, stomach, duodenum, spinal cord, and renal-dose review.",
+        support: ["Bladder filling and bowel routine coaching", "Baseline urinary, bowel, sexual, and fertility assessment", "Alpha blocker discussion for prostate-related obstructive symptoms", "Hydration guidance and bowel/antidiarrheal support when appropriate", "ADT, chemotherapy, sperm banking, and fertility counseling when relevant"],
+        position: "Most GU external beam treatments are supine. Prostate and pelvic cases may use knee/foot immobilization, daily image guidance, and bladder/rectal preparation. Kidney or adrenal SBRT may use arms-up positioning, body immobilization, abdominal compression, breath hold, respiratory gating, or 4D-CT depending on motion and institutional workflow.",
         sites: [
-          { id: "prostate", name: "Prostate cancer", hint: "Definitive, post-op, or SBRT", tags: ["prostate", "IGRT"], dose: [70, 28] },
-          { id: "bladder", name: "Bladder cancer", hint: "Trimodality therapy", tags: ["chemoRT", "pelvis"], dose: [64, 32] },
-          { id: "testis", name: "Testicular seminoma", hint: "Para-aortic field", tags: ["PA nodes", "fertility"], dose: [20, 10] },
-          { id: "kidney", name: "Kidney/adrenal lesion", hint: "SBRT selected cases", tags: ["SBRT", "motion"], dose: [40, 5] }
+          { id: "prostate", name: "Prostate cancer", hint: "Definitive, postoperative/salvage, nodal, SBRT, or brachytherapy discussion", tags: ["IGRT", "ADT", "SBRT"], dose: [70, 28] },
+          { id: "bladder", name: "Bladder cancer", hint: "Bladder preservation after maximal TURBT with concurrent chemoradiation", tags: ["TMT", "chemoRT", "cystoscopy"], dose: [64, 32] },
+          { id: "testis", name: "Testicular seminoma", hint: "Selected seminoma nodal RT; routine stage I adjuvant RT is generally avoided", tags: ["PA nodes", "fertility", "late effects"], dose: [30, 15] },
+          { id: "kidney", name: "Kidney/adrenal lesion", hint: "SBRT for selected primary RCC, adrenal lesion, oligometastasis, or palliation", tags: ["SBRT", "motion", "renal dose"], dose: [40, 5] }
         ],
         timeline: [
-          ["Week 1", "Treatment is painless. Bladder and rectal preparation are reinforced."],
-          ["Weeks 2 to 6", "Urinary frequency, urgency, weaker stream, nocturia, loose stools, rectal urgency, and fatigue may occur."],
-          ["Months later", "Late urinary, bowel, erectile, fertility, or hormonal effects are reviewed based on site and treatment plan."]
+          ["Week 1", "Treatment is painless. Baseline urinary, bowel, sexual, renal, and fertility considerations are reviewed, and bladder/rectal or motion-management instructions are reinforced."],
+          ["Weeks 2 to 6", "Pelvic RT can cause frequency, urgency, nocturia, weaker stream, dysuria, loose stools, rectal urgency, and fatigue. Kidney/adrenal SBRT more often requires monitoring for nausea, flank discomfort, fatigue, and nearby bowel irritation."],
+          ["Months to years", "Late issues are site-specific and may include erectile dysfunction, urethral stricture, hematuria, rectal bleeding, bowel change, infertility, renal function change, or second-malignancy risk in selected historical or young-patient contexts."]
         ]
       },
       {
@@ -3271,10 +3271,10 @@
         { phase: "Late", time: "Months to years", title: "Organ-specific follow-up", summary: "Late bowel, bladder, sexual, fertility, hepatic, renal, or gastric effects depend on target and dose.", examples: ["Report bleeding, obstruction symptoms, persistent diarrhea, or worsening pain."] }
       ],
       gu: [
-        { phase: "Early", time: "Week 1", title: "Bladder and bowel routine", summary: "Patients do not see or feel the beam; urinary and bowel preparation are reinforced for reproducible pelvic setup.", examples: ["A full bladder and empty rectum may reduce normal tissue exposure when prescribed."] },
-        { phase: "Peak acute", time: "Weeks 2 to 6", title: "Urinary, bowel, and fatigue symptoms", summary: "Frequency, urgency, nocturia, dysuria, loose stools, rectal urgency, and fatigue can build.", examples: ["Alpha blockers, hydration, and bowel medicines are individualized."] },
-        { phase: "Recovery", time: "2 to 12 weeks after RT", title: "Symptoms trend down", summary: "Most acute urinary and bowel symptoms improve in the weeks after treatment ends.", examples: ["Persistent burning, fever, retention, or bleeding needs evaluation."] },
-        { phase: "Late", time: "Months to years", title: "Urinary, bowel, and sexual monitoring", summary: "Late effects can include erectile dysfunction, urinary narrowing, incontinence, rectal bleeding, or hematuria.", examples: ["Risk varies by dose, anatomy, technique, surgery history, and baseline function."] }
+        { phase: "Early", time: "Week 1", title: "Preparation and baseline function", summary: "Patients do not see or feel the beam. Baseline urinary, bowel, sexual, renal, and fertility considerations are documented, and site-specific preparation is reinforced.", examples: ["Prostate and pelvic cases may need a reproducible bladder and rectum.", "Kidney/adrenal SBRT may need breath hold, gating, abdominal compression, or 4D-CT motion assessment."] },
+        { phase: "Peak acute", time: "Weeks 2 to 6", title: "Urinary, bowel, and fatigue symptoms", summary: "Pelvic RT can cause frequency, urgency, nocturia, dysuria, weaker stream, loose stools, rectal urgency, and fatigue. Abdominal SBRT more often raises nausea, flank discomfort, or bowel-irritation counseling.", examples: ["Alpha blockers, hydration, bowel medicines, and antiemetics are individualized.", "Retention, fever, heavy bleeding, or severe pain requires evaluation."] },
+        { phase: "Recovery", time: "2 to 12 weeks after RT", title: "Acute symptoms trend down", summary: "Most acute urinary, bowel, and fatigue symptoms improve after treatment, although recovery speed varies by site, systemic therapy, surgery history, and baseline function.", examples: ["Bladder-preservation patients need planned urologic/cystoscopic surveillance.", "Kidney/adrenal SBRT follow-up focuses on imaging response and renal/adrenal or GI tolerance when relevant."] },
+        { phase: "Late", time: "Months to years", title: "Site-specific survivorship", summary: "Late effects can include erectile dysfunction, urethral stricture, hematuria, rectal bleeding, bowel change, infertility, renal function change, or rare second malignancy concerns.", examples: ["Risk varies by dose, anatomy, age, technique, systemic therapy, surgery history, and baseline function."] }
       ],
       gyn: [
         { phase: "Early", time: "Week 1", title: "Pelvic routine begins", summary: "Patients do not see or feel the beam; bladder, bowel, skin, and discharge symptoms are documented before inflammation peaks.", examples: ["Brachytherapy may add procedure-specific preparation and recovery."] },
@@ -3309,6 +3309,24 @@
     };
 
     const timelineOverrides = {
+      "gu:bladder": [
+        { phase: "Preparation", time: "Before and week 1", title: "TURBT, chemoRT, and bladder baseline", summary: "Bladder-preservation counseling emphasizes maximal TURBT when feasible, concurrent chemotherapy, reproducible pelvic setup, and planned cystoscopic reassessment.", examples: ["Document baseline dysuria, hematuria, frequency, urgency, continence, renal function, and bowel pattern."] },
+        { phase: "Peak acute", time: "During chemoRT", title: "Cystitis, bowel irritation, and fatigue", summary: "Frequency, urgency, dysuria, hematuria, pelvic discomfort, loose stools, and fatigue can build during treatment.", examples: ["Escalate for urinary retention, fever, clots, heavy bleeding, dehydration, or uncontrolled pain."] },
+        { phase: "Recovery", time: "Weeks to months after RT", title: "Inflammation settles and response is checked", summary: "Acute urinary and bowel irritation usually improves gradually, while urologic follow-up assesses bladder response and recurrence risk.", examples: ["Cystoscopy, imaging, and urine evaluation follow the treating team's surveillance plan."] },
+        { phase: "Late", time: "Months to years", title: "Bladder and pelvic late effects", summary: "Late risks may include hematuria, reduced bladder capacity, irritative urinary symptoms, bowel change, sexual effects, and rare fistula or obstruction depending on anatomy and treatment.", examples: ["Persistent bleeding, obstruction, recurrent infections, or severe pelvic pain should be evaluated."] }
+      ],
+      "gu:testis": [
+        { phase: "Preparation", time: "Before RT", title: "Selected seminoma nodal treatment", summary: "Radiation is now mainly a selected option for seminoma nodal disease rather than routine adjuvant therapy for stage I seminoma.", examples: ["Discuss surveillance, chemotherapy, radiation, fertility preservation, and long-term second-malignancy considerations."] },
+        { phase: "Acute", time: "During RT", title: "Para-aortic or dog-leg field symptoms", summary: "Nausea, fatigue, dyspepsia, loose stools, and mild skin change can occur depending on field design.", examples: ["Renal, bowel, stomach, and remaining-testis scatter dose are considered in planning."] },
+        { phase: "Recovery", time: "Weeks after RT", title: "GI symptoms improve", summary: "Most acute nausea, bowel irritation, and fatigue improve after treatment.", examples: ["Follow tumor markers and imaging according to stage and histology."] },
+        { phase: "Late", time: "Years", title: "Young-patient survivorship", summary: "Long-term follow-up emphasizes fertility, hypogonadism, renal/GI tolerance, cardiovascular risk when relevant, and second-malignancy counseling.", examples: ["Risk-benefit discussion is especially important because many patients are young and highly curable."] }
+      ],
+      "gu:kidney": [
+        { phase: "Preparation", time: "Simulation and planning", title: "Motion and nearby bowel matter", summary: "Kidney/adrenal SBRT requires precise target localization, motion assessment, and strict review of dose to remaining kidney, bowel, stomach, duodenum, liver, spinal cord, and adrenal tissue when relevant.", examples: ["4D-CT, breath hold, respiratory gating, abdominal compression, or arms-up immobilization may be used."] },
+        { phase: "Acute", time: "During and shortly after SBRT", title: "Usually focal symptoms", summary: "Fatigue, nausea, transient flank discomfort, appetite change, or nearby bowel irritation can occur depending on location.", examples: ["Report persistent vomiting, severe abdominal pain, fever, or bleeding."] },
+        { phase: "Recovery", time: "Weeks to months", title: "Imaging-based response", summary: "Symptoms are often limited, and response is followed radiographically over time rather than by immediate disappearance of the treated lesion.", examples: ["Renal function and systemic therapy timing may influence follow-up."] },
+        { phase: "Late", time: "Months to years", title: "Renal, bowel, and adrenal tolerance", summary: "Late risks depend on treated volume and nearby organs, including renal function change, bowel ulceration or bleeding, and adrenal insufficiency risk in select bilateral or solitary-adrenal contexts.", examples: ["Risk is individualized by anatomy, prior surgery, baseline kidney function, and cumulative dose."] }
+      ],
       "gu:prostate:IMRT/VMAT": [
         { phase: "Acute", time: "Weeks 1 to 4", title: "Mild urinary/bowel start", summary: "Temporary inflammation begins in the bladder, urethra, rectum, and bowel lining.", examples: ["Frequency, weaker stream, looser stools or gas.", "Fatigue may begin around week 2 or 3."] },
         { phase: "Subacute", time: "Week 5 to 4 weeks after RT", title: "Peak irritation", summary: "Temporary urinary, rectal, and fatigue symptoms often peak as pelvic dose accumulates.", examples: ["Urgency, dysuria, nocturia, bowel urgency, rectal pressure.", "Fatigue peaks; perineal skin can become tender if in-field."] },
@@ -3755,7 +3773,7 @@
       thoracic: ["Fatigue", "Cough", "Shortness of breath", "Swallowing discomfort", "Skin irritation", "Appetite/weight change"],
       breast: ["Fatigue", "Skin irritation", "Breast/chest wall tenderness", "Swelling", "Hair loss in treated area"],
       gi: ["Fatigue", "Loose stools/diarrhea", "Anorectal pain", "Cramping", "Urinary changes", "Nausea/bloating"],
-      gu: ["Urinary frequency/urgency", "Nocturia", "Straining/weak stream", "Loose stools/diarrhea", "Rectal urgency", "Fatigue"],
+      gu: ["Urinary frequency/urgency", "Dysuria/burning", "Nocturia", "Straining/weak stream", "Loose stools/diarrhea", "Rectal urgency", "Fatigue", "Hematuria/blood in urine"],
       gyn: ["Urinary discomfort/urgency", "Loose stools/diarrhea", "Fatigue", "Skin irritation", "Pelvic cramping", "Vaginal dryness/stenosis"],
       hn: ["Sore throat/pain with swallowing", "Mouth sores", "Dry mouth", "Taste change", "Thick mucus/secretions", "Skin irritation", "Fatigue", "Weight/appetite change"],
       heme: ["Fatigue", "Skin irritation", "Nausea", "Sore throat/pain with swallowing", "Diarrhea/bloating", "Local discomfort"],
