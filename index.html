@@ -299,6 +299,68 @@
       margin-bottom: 10px;
     }
 
+
+    .about-references-card {
+      margin-top: 18px;
+      padding: clamp(20px, 3vw, 30px);
+    }
+
+    .about-references-card h2 {
+      font-size: clamp(1.55rem, 2.6vw, 2.35rem);
+      line-height: 1.05;
+      letter-spacing: -0.045em;
+      margin-bottom: 10px;
+    }
+
+    .about-references-card > p {
+      color: var(--muted);
+      max-width: 92ch;
+      margin-bottom: 16px;
+    }
+
+    .reference-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .reference-card {
+      background: rgba(255, 255, 255, 0.74);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      display: grid;
+      gap: 7px;
+      align-content: start;
+    }
+
+    .reference-card strong {
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+
+    .reference-card p {
+      color: var(--muted);
+      font-size: 0.90rem;
+      margin: 0;
+    }
+
+    .reference-card a {
+      font-size: 0.86rem;
+      font-weight: 850;
+      text-decoration: none;
+      width: fit-content;
+    }
+
+    .reference-note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+
     .home-clinical-note {
       margin-top: 18px;
       width: 100%;
@@ -2377,6 +2439,53 @@
       </section>
         <section class="notice home-clinical-note" aria-label="Clinical use note">
           <b>Clinical use note:</b> OncoGuide 3D is for education, shared decision support, and clinical demonstration workflows. It does not replace physician judgment, consent documentation, contouring, treatment planning, quality assurance, or institution-specific patient instructions.
+        </section>
+        <section class="about-references-card side-card" aria-label="Content sources and references">
+          <h2>Content sources and references</h2>
+          <p>OncoGuide 3D content is synthesized for clinical education from public patient-education materials, disease-site treatment summaries, radiation oncology guidelines, clinician review, and institution-specific practice patterns. It is intended to support clinician-led discussion, not to function as a standalone guideline or treatment-planning system.</p>
+
+          <div class="reference-grid">
+            <article class="reference-card">
+              <strong>Radiation therapy education</strong>
+              <p>General explanations of what radiation therapy is, what patients may experience before, during, and after treatment, and common treatment concepts.</p>
+              <a href="https://www.rtanswers.org/patient-education" target="_blank" rel="noopener noreferrer">ASTRO RTAnswers patient education</a>
+              <a href="https://www.cancer.gov/about-cancer/treatment/types/radiation-therapy" target="_blank" rel="noopener noreferrer">NCI Radiation Therapy for Cancer</a>
+            </article>
+
+            <article class="reference-card">
+              <strong>Disease-site frameworks</strong>
+              <p>Diagnosis, staging, treatment paradigms, and site-specific management concepts are cross-checked against public cancer treatment summaries and clinician review.</p>
+              <a href="https://www.cancer.gov/publications/pdq/information-summaries/adult-treatment" target="_blank" rel="noopener noreferrer">NCI PDQ adult treatment summaries</a>
+              <a href="https://www.cancer.gov/publications/pdq/information-summaries/pediatric-treatment" target="_blank" rel="noopener noreferrer">NCI PDQ pediatric treatment summaries</a>
+            </article>
+
+            <article class="reference-card">
+              <strong>Radiation oncology guidelines</strong>
+              <p>When disease-site details are added or refined, content should be checked against relevant ASTRO and multidisciplinary clinical practice guidelines.</p>
+              <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines" target="_blank" rel="noopener noreferrer">ASTRO clinical practice guidelines</a>
+            </article>
+
+            <article class="reference-card">
+              <strong>3D anatomy and model visualization</strong>
+              <p>Interactive anatomy and disease models are displayed through linked BioDigital Human model URLs when available for the selected disease site.</p>
+              <a href="https://www.biodigital.com/product/the-biodigital-human" target="_blank" rel="noopener noreferrer">BioDigital Human platform</a>
+              <a href="https://support.biodigital.com/hc/en-us/articles/33541326533399-What-is-the-BioDigital-library" target="_blank" rel="noopener noreferrer">BioDigital model library</a>
+            </article>
+
+            <article class="reference-card">
+              <strong>Clinical calibration</strong>
+              <p>Dose, fractionation, organ-at-risk counseling, setup instructions, supportive care, and toxicity expectations should be adapted to physician judgment, institutional protocols, treatment plan review, and patient-specific factors.</p>
+            </article>
+
+            <article class="reference-card">
+              <strong>Texts and local teaching files</strong>
+              <p>Clinician-facing review texts, departmental teaching files, tumor-board practices, and locally approved patient handouts can be used to refine future site-specific modules when their use is permitted.</p>
+            </article>
+          </div>
+
+          <div class="reference-note">
+            <b>Important:</b> References listed here identify the types of sources used to build and review the educational framework. OncoGuide 3D does not reproduce complete guideline text and should be updated as guidelines, institutional standards, and treatment techniques evolve.
+          </div>
         </section>
       </section>
 
