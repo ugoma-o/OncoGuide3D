@@ -1120,6 +1120,18 @@
       background: rgba(239, 248, 249, 0.86);
     }
 
+
+    .breast-regimen-source {
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.4;
+    }
+
+    .breast-regimen-source a {
+      font-weight: 850;
+      text-decoration: none;
+    }
+
     .prostate-regimen-disclaimer {
       margin: 0;
       color: var(--muted);
@@ -2551,9 +2563,12 @@
 
             <article class="reference-card">
               <strong>Radiation oncology guidelines</strong>
-              <p>When disease-site details are added or refined, content should be checked against relevant ASTRO and multidisciplinary clinical practice guidelines. The prostate dose module uses educational categories and common examples from public ASTRO/AUA guidance, not an automated treatment recommendation.</p>
+              <p>Disease-site regimen modules use educational categories and common examples from current society guidelines. They support clinician review and do not generate an automated treatment recommendation.</p>
               <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines" target="_blank" rel="noopener noreferrer">ASTRO clinical practice guidelines</a>
               <a href="https://www.auanet.org/guidelines-and-quality/guidelines/prostate-cancer-hypofractionated-radiotherapy-guideline" target="_blank" rel="noopener noreferrer">AUA/ASTRO/ASCO prostate hypofractionation guideline</a>
+              <a href="https://www.astro.org/provider-resources/guidelines/whole-breast-irradiation-gl" target="_blank" rel="noopener noreferrer">ASTRO whole-breast irradiation guideline</a>
+              <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/pbi-guideline-replacement" target="_blank" rel="noopener noreferrer">ASTRO partial-breast irradiation guideline</a>
+              <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/postmastectomy-radiation-therapy" target="_blank" rel="noopener noreferrer">ASTRO/ASCO/SSO postmastectomy guideline</a>
             </article>
 
             <article class="reference-card">
@@ -2701,6 +2716,43 @@
                 <p class="prostate-regimen-disclaimer">Educational decision support only. Confirm the treatment setting, target volumes, normal-tissue constraints, systemic therapy, current guidelines, and institutional protocol before clinical use.</p>
               </div>
 
+              <div class="prostate-regimen-panel breast-regimen-panel" id="breastRegimenPanel" hidden>
+                <div class="prostate-regimen-head">
+                  <div>
+                    <strong>Breast regimen guidance</strong>
+                    <p>Choose the clinical setting and a society-guideline-based educational regimen, or enter a custom prescription below.</p>
+                  </div>
+                  <span class="tag">Breast only</span>
+                </div>
+
+                <div class="prostate-regimen-grid">
+                  <div class="field">
+                    <label for="breastTreatmentSetting">Treatment setting</label>
+                    <select id="breastTreatmentSetting"></select>
+                  </div>
+
+                  <div class="field">
+                    <label for="breastFractionationCategory">Fractionation category</label>
+                    <select id="breastFractionationCategory">
+                      <option value="conventional">Conventional, 1.8 to 2.0 Gy/fraction</option>
+                      <option value="moderate">Moderately hypofractionated, greater than 2 to less than 5 Gy/fraction</option>
+                      <option value="ultra">Ultrahypofractionated, at least 5 Gy/fraction</option>
+                      <option value="brachy">Brachytherapy schedule</option>
+                      <option value="custom">Custom or other</option>
+                    </select>
+                  </div>
+
+                  <div class="field prostate-preset-field">
+                    <label for="breastRegimenPreset">Common regimen preset</label>
+                    <select id="breastRegimenPreset"></select>
+                  </div>
+                </div>
+
+                <div class="prostate-regimen-status info" id="breastRegimenStatus" aria-live="polite"></div>
+                <div class="breast-regimen-source" id="breastRegimenSource"></div>
+                <p class="prostate-regimen-disclaimer">Educational decision support only. Selection depends on pathology, stage, surgery, nodal risk, reconstruction, boost indication, normal-tissue exposure, systemic therapy, patient preference, current guidelines, and institutional protocol.</p>
+              </div>
+
               <div class="dose-grid">
                 <div class="field">
                   <label for="totalDose">Total dose, Gy</label>
@@ -2712,7 +2764,7 @@
                 </div>
                 <div class="field">
                   <label for="treatmentsPerWeek">Treatments/week</label>
-                  <input id="treatmentsPerWeek" type="number" min="1" max="7" step="1" value="5" />
+                  <input id="treatmentsPerWeek" type="number" min="0.5" max="14" step="0.5" value="5" />
                 </div>
                 <div class="field">
                   <label for="treatmentWeeks">Number of weeks</label>
@@ -4033,6 +4085,520 @@
       updateTrendsPage();
     }
 
+
+    const breastRegimenConfigs = {
+      "whole-breast": {
+        settings: [
+          { id: "wbi", label: "Whole breast after breast-conserving surgery" },
+          { id: "wbi-boost", label: "Whole breast plus sequential tumor-bed boost" },
+          { id: "other", label: "Custom or other" }
+        ],
+        sourceLabel: "ASTRO whole-breast guideline and ASTRO breast education",
+        sourceUrl: "https://www.astro.org/provider-resources/guidelines/whole-breast-irradiation-gl",
+        presets: [
+          {
+            id: "wbi-40-15",
+            settings: ["wbi", "wbi-boost"],
+            category: "moderate",
+            label: "40 Gy in 15 fractions",
+            totalDose: 40,
+            fractions: 15,
+            treatmentsPerWeek: 5,
+            technique: "3D conformal radiation",
+            tone: "ok",
+            summary: "Preferred ASTRO whole-breast hypofractionation example."
+          },
+          {
+            id: "wbi-42.5-16",
+            settings: ["wbi", "wbi-boost"],
+            category: "moderate",
+            label: "42.5 Gy in 16 fractions",
+            totalDose: 42.5,
+            fractions: 16,
+            treatmentsPerWeek: 5,
+            technique: "3D conformal radiation",
+            tone: "ok",
+            summary: "Preferred ASTRO whole-breast hypofractionation example."
+          },
+          {
+            id: "wbi-26-5",
+            settings: ["wbi", "wbi-boost"],
+            category: "ultra",
+            label: "26 Gy in 5 fractions",
+            totalDose: 26,
+            fractions: 5,
+            treatmentsPerWeek: 5,
+            technique: "3D conformal radiation",
+            tone: "info",
+            summary: "Current ultrahypofractionated whole-breast example."
+          },
+          {
+            id: "wbi-50-25",
+            settings: ["wbi", "wbi-boost"],
+            category: "conventional",
+            label: "50 Gy in 25 fractions",
+            totalDose: 50,
+            fractions: 25,
+            treatmentsPerWeek: 5,
+            technique: "3D conformal radiation",
+            tone: "info",
+            summary: "Conventional whole-breast example; hypofractionation is generally preferred when appropriate."
+          }
+        ]
+      },
+      "pbi": {
+        settings: [
+          { id: "external", label: "External beam partial-breast irradiation" },
+          { id: "hdr", label: "HDR brachytherapy partial-breast irradiation" },
+          { id: "other", label: "Custom or other" }
+        ],
+        sourceLabel: "2024 ASTRO partial-breast irradiation guideline",
+        sourceUrl: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/pbi-guideline-replacement",
+        presets: [
+          {
+            id: "pbi-30-5",
+            settings: ["external"],
+            category: "ultra",
+            label: "30 Gy in 5 nonconsecutive daily fractions within 2 weeks",
+            totalDose: 30,
+            fractions: 5,
+            treatmentsPerWeek: 2.5,
+            technique: "3D conformal radiation",
+            tone: "ok",
+            summary: "ASTRO-recommended external beam PBI schedule."
+          },
+          {
+            id: "pbi-40.05-15",
+            settings: ["external"],
+            category: "moderate",
+            label: "40.05 Gy in 15 once-daily fractions",
+            totalDose: 40.05,
+            fractions: 15,
+            treatmentsPerWeek: 5,
+            technique: "3D conformal radiation",
+            tone: "ok",
+            summary: "ASTRO-recommended external beam PBI schedule."
+          },
+          {
+            id: "pbi-hdr-30.1-7",
+            settings: ["hdr"],
+            category: "brachy",
+            label: "30.1 Gy in 7 HDR fractions",
+            totalDose: 30.1,
+            fractions: 7,
+            treatmentsPerWeek: 7,
+            technique: "Brachytherapy",
+            tone: "ok",
+            summary: "ASTRO-recommended HDR PBI example."
+          },
+          {
+            id: "pbi-hdr-32-8",
+            settings: ["hdr"],
+            category: "brachy",
+            label: "32 Gy in 8 HDR fractions",
+            totalDose: 32,
+            fractions: 8,
+            treatmentsPerWeek: 8,
+            technique: "Brachytherapy",
+            tone: "ok",
+            summary: "ASTRO-recommended HDR PBI example."
+          },
+          {
+            id: "pbi-hdr-34-10",
+            settings: ["hdr"],
+            category: "brachy",
+            label: "34 Gy in 10 HDR fractions, typically twice daily",
+            totalDose: 34,
+            fractions: 10,
+            treatmentsPerWeek: 10,
+            technique: "Brachytherapy",
+            tone: "ok",
+            summary: "ASTRO-recommended HDR PBI example."
+          }
+        ]
+      },
+      "chest-wall": {
+        settings: [
+          { id: "pmrt-no-recon", label: "PMRT without reconstruction" },
+          { id: "pmrt-recon", label: "PMRT with breast reconstruction" },
+          { id: "chest-wall-only", label: "Chest wall only in a selected case" },
+          { id: "other", label: "Custom or other" }
+        ],
+        sourceLabel: "2025 ASTRO/ASCO/SSO postmastectomy radiation guideline",
+        sourceUrl: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/postmastectomy-radiation-therapy",
+        presets: [
+          {
+            id: "pmrt-40-15",
+            settings: ["pmrt-no-recon", "pmrt-recon", "chest-wall-only"],
+            category: "moderate",
+            label: "40 Gy in 15 fractions",
+            totalDose: 40,
+            fractions: 15,
+            treatmentsPerWeek: 5,
+            technique: "3D conformal radiation",
+            tone: "ok",
+            summary: "Moderately hypofractionated PMRT example."
+          },
+          {
+            id: "pmrt-42.56-16",
+            settings: ["pmrt-no-recon", "pmrt-recon", "chest-wall-only"],
+            category: "moderate",
+            label: "42.56 Gy in 16 fractions",
+            totalDose: 42.56,
+            fractions: 16,
+            treatmentsPerWeek: 5,
+            technique: "3D conformal radiation",
+            tone: "ok",
+            summary: "Moderately hypofractionated PMRT example."
+          },
+          {
+            id: "pmrt-50-25",
+            settings: ["pmrt-no-recon", "pmrt-recon", "chest-wall-only"],
+            category: "conventional",
+            label: "50 Gy in 25 fractions",
+            totalDose: 50,
+            fractions: 25,
+            treatmentsPerWeek: 5,
+            technique: "3D conformal radiation",
+            tone: "info",
+            summary: "Conventional PMRT example."
+          },
+          {
+            id: "pmrt-50.4-28",
+            settings: ["pmrt-no-recon", "pmrt-recon", "chest-wall-only"],
+            category: "conventional",
+            label: "50.4 Gy in 28 fractions",
+            totalDose: 50.4,
+            fractions: 28,
+            treatmentsPerWeek: 5,
+            technique: "3D conformal radiation",
+            tone: "info",
+            summary: "Conventional PMRT example."
+          }
+        ]
+      },
+      "regional-nodes": {
+        settings: [
+          { id: "wbi-rni", label: "Whole breast plus regional nodal irradiation" },
+          { id: "pmrt-rni", label: "Chest wall/reconstructed breast plus regional nodes" },
+          { id: "nodes-custom", label: "Regional nodes or custom multi-volume plan" },
+          { id: "other", label: "Custom or other" }
+        ],
+        sourceLabel: "2025 ASTRO/ASCO/SSO postmastectomy radiation guideline",
+        sourceUrl: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/postmastectomy-radiation-therapy",
+        presets: [
+          {
+            id: "rni-40-15",
+            settings: ["wbi-rni", "pmrt-rni", "nodes-custom"],
+            category: "moderate",
+            label: "40 Gy in 15 fractions",
+            totalDose: 40,
+            fractions: 15,
+            treatmentsPerWeek: 5,
+            technique: "3D conformal radiation",
+            tone: "ok",
+            summary: "Moderately hypofractionated breast/chest wall plus nodal example."
+          },
+          {
+            id: "rni-42.56-16",
+            settings: ["wbi-rni", "pmrt-rni", "nodes-custom"],
+            category: "moderate",
+            label: "42.56 Gy in 16 fractions",
+            totalDose: 42.56,
+            fractions: 16,
+            treatmentsPerWeek: 5,
+            technique: "3D conformal radiation",
+            tone: "ok",
+            summary: "Moderately hypofractionated breast/chest wall plus nodal example."
+          },
+          {
+            id: "rni-50-25",
+            settings: ["wbi-rni", "pmrt-rni", "nodes-custom"],
+            category: "conventional",
+            label: "50 Gy in 25 fractions",
+            totalDose: 50,
+            fractions: 25,
+            treatmentsPerWeek: 5,
+            technique: "3D conformal radiation",
+            tone: "info",
+            summary: "Conventional breast/chest wall plus nodal example."
+          },
+          {
+            id: "rni-50.4-28",
+            settings: ["wbi-rni", "pmrt-rni", "nodes-custom"],
+            category: "conventional",
+            label: "50.4 Gy in 28 fractions",
+            totalDose: 50.4,
+            fractions: 28,
+            treatmentsPerWeek: 5,
+            technique: "3D conformal radiation",
+            tone: "info",
+            summary: "Conventional breast/chest wall plus nodal example."
+          }
+        ]
+      }
+    };
+
+    let breastRegimenSiteId = "";
+
+    function isActiveBreastSite() {
+      return state.systemId === "breast" && Boolean(breastRegimenConfigs[state.siteId]);
+    }
+
+    function activeBreastRegimenConfig() {
+      return breastRegimenConfigs[state.siteId] || null;
+    }
+
+    function classifyBreastFractionation(totalDose, fractions, technique) {
+      if (!(totalDose > 0 && fractions > 0)) {
+        return { id: "custom", label: "Custom or other", dosePerFraction: NaN };
+      }
+
+      const dosePerFraction = totalDose / fractions;
+      if (technique === "Brachytherapy") {
+        return { id: "brachy", label: "Brachytherapy schedule", dosePerFraction };
+      }
+      if (dosePerFraction >= 1.75 && dosePerFraction <= 2.05) {
+        return { id: "conventional", label: "Conventional fractionation", dosePerFraction };
+      }
+      if (dosePerFraction > 2.05 && dosePerFraction < 5) {
+        return { id: "moderate", label: "Moderately hypofractionated", dosePerFraction };
+      }
+      if (dosePerFraction >= 5) {
+        return { id: "ultra", label: "Ultrahypofractionated", dosePerFraction };
+      }
+      return { id: "custom", label: "Custom or other", dosePerFraction };
+    }
+
+    function populateBreastSettingOptions({ reset = false } = {}) {
+      const select = $("breastTreatmentSetting");
+      const config = activeBreastRegimenConfig();
+      if (!select || !config) return;
+
+      const previous = reset ? "" : select.value;
+      select.innerHTML = config.settings.map(setting =>
+        `<option value="${setting.id}">${setting.label}</option>`
+      ).join("");
+
+      if (config.settings.some(setting => setting.id === previous)) {
+        select.value = previous;
+      }
+    }
+
+    function currentBreastPreset(totalDose, fractions, technique) {
+      const config = activeBreastRegimenConfig();
+      if (!config) return null;
+      return config.presets.find(preset => {
+        const doseMatch = nearlyEqual(preset.totalDose, totalDose);
+        const fractionMatch = nearlyEqual(preset.fractions, fractions, 0.01);
+        const techniqueMatch = preset.technique === "Brachytherapy"
+          ? technique === "Brachytherapy"
+          : technique !== "Brachytherapy";
+        return doseMatch && fractionMatch && techniqueMatch;
+      }) || null;
+    }
+
+    function populateBreastPresetOptions({ preserveSelection = true } = {}) {
+      const select = $("breastRegimenPreset");
+      const settingSelect = $("breastTreatmentSetting");
+      const categorySelect = $("breastFractionationCategory");
+      const config = activeBreastRegimenConfig();
+      if (!select || !settingSelect || !categorySelect || !config) return;
+
+      const previousValue = preserveSelection ? select.value : "";
+      const setting = settingSelect.value;
+      const category = categorySelect.value;
+      const matching = config.presets.filter(preset =>
+        preset.settings.includes(setting) && preset.category === category
+      );
+
+      if (!matching.length) {
+        select.innerHTML = `<option value="">No built-in preset for this setting/category</option>`;
+        select.disabled = true;
+        return;
+      }
+
+      select.disabled = false;
+      select.innerHTML = `<option value="">Choose a common regimen...</option>` + matching.map(preset =>
+        `<option value="${preset.id}">${preset.label}</option>`
+      ).join("");
+
+      if (matching.some(preset => preset.id === previousValue)) {
+        select.value = previousValue;
+      }
+    }
+
+    function getBreastRegimenAssessment(totalDose, fractions, technique) {
+      const config = activeBreastRegimenConfig();
+      const setting = $("breastTreatmentSetting")?.value || "";
+      const classification = classifyBreastFractionation(totalDose, fractions, technique);
+      const preset = currentBreastPreset(totalDose, fractions, technique);
+      const dosePerFraction = classification.dosePerFraction;
+
+      if (!config || !(totalDose > 0 && fractions > 0)) {
+        return {
+          tone: "info",
+          title: "Enter a complete prescription",
+          message: "The fractionation category and regimen check will update automatically."
+        };
+      }
+
+      let tone = preset?.tone || "info";
+      let title = preset?.summary || classification.label;
+      let message = preset
+        ? `${preset.label} matches a built-in educational preset for this breast treatment setting.`
+        : `Entered dose: ${totalDose} Gy in ${fractions} fractions (${dosePerFraction.toFixed(2).replace(/\.00$/, "")} Gy/fraction).`;
+
+      if (state.siteId === "whole-breast") {
+        if (!preset && classification.id === "moderate") {
+          title = "Custom moderately hypofractionated whole-breast regimen";
+          message = "This is moderately hypofractionated but does not exactly match the built-in 40 Gy/15 or 42.5 Gy/16 ASTRO-preferred examples.";
+        } else if (!preset && classification.id === "conventional") {
+          tone = "info";
+          title = "Conventional whole-breast regimen";
+          message = "Conventional fractionation remains an option, but ASTRO generally prefers hypofractionated whole-breast treatment when appropriate.";
+        } else if (!preset && classification.id === "ultra") {
+          tone = "info";
+          title = "Custom ultrahypofractionated whole-breast regimen";
+          message = "This is in the ultrahypofractionated range but does not exactly match the built-in 26 Gy/5 example.";
+        }
+
+        if (setting === "wbi-boost") {
+          message += " The displayed dose represents the whole-breast phase only; any tumor-bed boost should be evaluated and prescribed as a separate phase.";
+        }
+      }
+
+      if (state.siteId === "pbi") {
+        if (setting === "external" && technique === "Brachytherapy") {
+          tone = "warning";
+          title = "Technique and treatment setting do not match";
+          message = "External beam PBI is selected, but the technique is set to brachytherapy.";
+        } else if (setting === "hdr" && technique !== "Brachytherapy") {
+          tone = "warning";
+          title = "Technique and treatment setting do not match";
+          message = "HDR brachytherapy PBI is selected, but the technique is not set to brachytherapy.";
+        }
+
+        if (
+          setting === "external" &&
+          fractions === 10 &&
+          nearlyEqual(totalDose, 38.5) &&
+          technique !== "Brachytherapy"
+        ) {
+          tone = "warning";
+          title = "Twice-daily external beam PBI regimen not recommended";
+          message = "ASTRO does not recommend 38.5 Gy in 10 twice-daily external beam fractions because of poorer cosmetic outcomes.";
+        } else if (!preset && setting === "external") {
+          title = "Custom external beam PBI regimen";
+          message += " ASTRO recommends once-daily external beam schedules over twice-daily external beam treatment.";
+        } else if (!preset && setting === "hdr") {
+          title = "Custom HDR PBI regimen";
+          message += " Confirm applicator type, fraction spacing, target coverage, skin/rib dose, and institutional brachytherapy protocol.";
+        }
+      }
+
+      if (state.siteId === "chest-wall") {
+        if (setting === "pmrt-no-recon" && classification.id === "conventional") {
+          tone = "warning";
+          title = "Conventional PMRT is generally not preferred without reconstruction";
+          message = "The 2025 ASTRO/ASCO/SSO guideline recommends moderate hypofractionation for PMRT without reconstruction; conventional fractionation may be used in rare circumstances.";
+        } else if (setting === "pmrt-recon" && classification.id === "conventional") {
+          tone = "info";
+          title = "Conventional PMRT with reconstruction";
+          message = "For patients with reconstruction, the guideline recommends moderate hypofractionation as preferred or conventional fractionation.";
+        }
+
+        message += " Consider DIBH when it lowers heart or lung dose. Routine bolus is not recommended for all cT1-3 cases; bolus is used selectively when skin coverage is clinically needed.";
+      }
+
+      if (state.siteId === "regional-nodes") {
+        if (classification.id === "moderate") {
+          tone = preset ? "ok" : "info";
+          title = preset?.summary || "Moderately hypofractionated nodal regimen";
+        }
+        message += " Confirm whether the breast or chest wall, axillary levels, supraclavicular nodes, and internal mammary nodes are included. Multi-volume boosts require separate prescription review.";
+      }
+
+      if (["SBRT/SABR", "SRS", "Brachytherapy"].includes(technique) && state.siteId !== "pbi") {
+        tone = "warning";
+        message += " The selected technique is unusual for this breast external beam setting and should be reviewed.";
+      }
+
+      return { tone, title, message };
+    }
+
+    function updateBreastRegimenPanel({ syncCategory = true } = {}) {
+      const panel = $("breastRegimenPanel");
+      if (!panel) return;
+
+      const active = isActiveBreastSite();
+      panel.hidden = !active;
+      if (!active) return;
+
+      const siteChanged = breastRegimenSiteId !== state.siteId;
+      if (siteChanged) {
+        breastRegimenSiteId = state.siteId;
+        populateBreastSettingOptions({ reset: true });
+      }
+
+      const totalDose = parseFloat($("totalDose")?.value || "");
+      const fractions = parseFloat($("fractions")?.value || "");
+      const technique = $("technique")?.value || "";
+      const settingSelect = $("breastTreatmentSetting");
+      const categorySelect = $("breastFractionationCategory");
+      const presetSelect = $("breastRegimenPreset");
+      const status = $("breastRegimenStatus");
+      const source = $("breastRegimenSource");
+      const config = activeBreastRegimenConfig();
+
+      if (!settingSelect || !categorySelect || !presetSelect || !status || !source || !config) return;
+
+      const classification = classifyBreastFractionation(totalDose, fractions, technique);
+      if (syncCategory) categorySelect.value = classification.id;
+
+      populateBreastPresetOptions();
+
+      const matchedPreset = currentBreastPreset(totalDose, fractions, technique);
+      if (
+        matchedPreset &&
+        matchedPreset.settings.includes(settingSelect.value) &&
+        matchedPreset.category === categorySelect.value
+      ) {
+        presetSelect.value = matchedPreset.id;
+      } else if (presetSelect.value && !config.presets.some(preset =>
+        preset.id === presetSelect.value &&
+        preset.settings.includes(settingSelect.value) &&
+        preset.category === categorySelect.value
+      )) {
+        presetSelect.value = "";
+      }
+
+      const assessment = getBreastRegimenAssessment(totalDose, fractions, technique);
+      status.className = `prostate-regimen-status ${assessment.tone}`;
+      status.innerHTML = `<strong>${assessment.title}</strong>${assessment.message}`;
+      source.innerHTML = `<b>Guideline basis:</b> <a href="${config.sourceUrl}" target="_blank" rel="noopener noreferrer">${config.sourceLabel}</a>.`;
+    }
+
+    function applyBreastRegimenPreset() {
+      const select = $("breastRegimenPreset");
+      const config = activeBreastRegimenConfig();
+      if (!select || !select.value || !config) return;
+
+      const preset = config.presets.find(item => item.id === select.value);
+      if (!preset) return;
+
+      $("totalDose").value = preset.totalDose;
+      $("fractions").value = preset.fractions;
+      $("treatmentsPerWeek").value = preset.treatmentsPerWeek;
+      $("technique").value = preset.technique;
+
+      updateDose();
+      setupSlideIndex = 0;
+      updateSetupCard();
+      updateTimeline();
+      updateTrendsPage();
+    }
+
     function updateTreatmentWeeksDisplay() {
       const field = $("treatmentWeeks");
       if (!field) return;
@@ -4059,6 +4625,7 @@
       const valid = total > 0 && fractions > 0 && perWeek > 0;
 
       updateProstateRegimenPanel({ syncCategory: true });
+      updateBreastRegimenPanel({ syncCategory: true });
 
       if (!valid) {
         $("doseResult").innerHTML = `
@@ -4083,6 +4650,9 @@
       if (isActiveProstateSite()) {
         const prostateClass = classifyProstateFractionation(total, fractions);
         descriptors.push(prostateClass.label);
+      } else if (isActiveBreastSite()) {
+        const breastClass = classifyBreastFractionation(total, fractions, technique);
+        descriptors.push(breastClass.label);
       } else {
         if (fractions <= 5) descriptors.push("short course");
         if (dosePerFraction >= 5) descriptors.push("high dose per visit");
@@ -4723,6 +5293,7 @@
       updateViewer();
       updateDose();
       updateProstateRegimenPanel({ syncCategory: true });
+      updateBreastRegimenPanel({ syncCategory: true });
       updateSetupCard();
       updateTrendsPage();
       renderPage();
@@ -4775,6 +5346,15 @@
       updateProstateRegimenPanel({ syncCategory: false });
     });
     if ($("prostateRegimenPreset")) $("prostateRegimenPreset").addEventListener("change", applyProstateRegimenPreset);
+    if ($("breastTreatmentSetting")) $("breastTreatmentSetting").addEventListener("change", () => {
+      populateBreastPresetOptions({ preserveSelection: false });
+      updateBreastRegimenPanel({ syncCategory: false });
+    });
+    if ($("breastFractionationCategory")) $("breastFractionationCategory").addEventListener("change", () => {
+      populateBreastPresetOptions({ preserveSelection: false });
+      updateBreastRegimenPanel({ syncCategory: false });
+    });
+    if ($("breastRegimenPreset")) $("breastRegimenPreset").addEventListener("change", applyBreastRegimenPreset);
     if ($("noteTemplateSelect")) $("noteTemplateSelect").addEventListener("change", e => { if (e.target.value) insertClinicianNoteTemplate(); });
     window.addEventListener("resize", () => {
       updateViewer();
