@@ -1203,6 +1203,12 @@
     }
 
 
+
+    .field input#treatmentWeeks {
+      font-size: 0.88rem;
+      letter-spacing: -0.01em;
+    }
+
     .field input[readonly] {
       background: rgba(241, 245, 247, 0.78);
       color: var(--primary-dark);
@@ -2767,7 +2773,7 @@
                   <input id="treatmentsPerWeek" type="number" min="0.5" max="14" step="0.5" value="5" />
                 </div>
                 <div class="field">
-                  <label for="treatmentWeeks">Number of weeks</label>
+                  <label for="treatmentWeeks">Course length / dose per fraction</label>
                   <input id="treatmentWeeks" type="text" value="" readonly aria-live="polite" />
                 </div>
                 <div class="field">
@@ -2782,7 +2788,6 @@
                   </select>
                 </div>
               </div>
-              <div class="dose-result" id="doseResult"></div>
               <div class="tag-row" id="doseTags"></div>
             </div>
           </section>
@@ -2791,33 +2796,6 @@
         </div>
 
         <aside class="side-column" aria-label="Treatment explanation and symptom timeline">
-          <section class="side-card education-card" aria-label="Radiation treatment explanation">
-            <div class="panel-heading">
-              <div>
-                <h3>Treatment explanation</h3>
-                <p>Patient-facing overview for the selected disease site</p>
-              </div>
-            </div>
-            <div class="detail-grid">
-              <div class="info-box">
-                <h4>What radiation is doing</h4>
-                <p id="radiationPurpose">Radiation uses targeted high-energy beams to treat tumor cells while limiting dose to nearby normal tissues whenever possible.</p>
-              </div>
-              <div class="info-box">
-                <h4>What the patient should expect</h4>
-                <p id="expectationText">Treatment usually begins with consultation, simulation, immobilization, planning, quality assurance, then daily or near-daily treatment visits depending on the regimen.</p>
-              </div>
-              <div class="info-box">
-                <h4>Common supportive care</h4>
-                <ul id="supportiveCare"></ul>
-              </div>
-              <div class="info-box">
-                <h4>Positioning preview</h4>
-                <p id="positioningText">Future module: show patient setup position, immobilization devices, breath-hold or bladder/rectal prep when relevant.</p>
-              </div>
-            </div>
-          </section>
-
           <section class="side-card treatment-course-card" aria-label="Treatment course">
             <div class="panel-heading">
               <div>
@@ -2847,6 +2825,33 @@
                   <strong>Follow-up</strong>
                 </div>
                 <p id="courseFollowText">Recovery, side effects, and surveillance are reviewed.</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="side-card education-card" aria-label="Radiation treatment explanation">
+            <div class="panel-heading">
+              <div>
+                <h3>Treatment explanation</h3>
+                <p>Patient-facing overview for the selected disease site</p>
+              </div>
+            </div>
+            <div class="detail-grid">
+              <div class="info-box">
+                <h4>What radiation is doing</h4>
+                <p id="radiationPurpose">Radiation uses targeted high-energy beams to treat tumor cells while limiting dose to nearby normal tissues whenever possible.</p>
+              </div>
+              <div class="info-box">
+                <h4>What the patient should expect</h4>
+                <p id="expectationText">Treatment usually begins with consultation, simulation, immobilization, planning, quality assurance, then daily or near-daily treatment visits depending on the regimen.</p>
+              </div>
+              <div class="info-box">
+                <h4>Common supportive care</h4>
+                <ul id="supportiveCare"></ul>
+              </div>
+              <div class="info-box">
+                <h4>Positioning preview</h4>
+                <p id="positioningText">Future module: show patient setup position, immobilization devices, breath-hold or bladder/rectal prep when relevant.</p>
               </div>
             </div>
           </section>
@@ -4603,17 +4608,25 @@
       const field = $("treatmentWeeks");
       if (!field) return;
 
+      const totalDose = parseFloat($("totalDose")?.value || "");
       const fractions = parseFloat($("fractions")?.value || "");
       const perWeek = parseFloat($("treatmentsPerWeek")?.value || "");
 
-      if (!(fractions > 0 && perWeek > 0)) {
+      if (!(totalDose > 0 && fractions > 0 && perWeek > 0)) {
         field.value = "";
+        field.title = "";
         return;
       }
 
       const weeks = fractions / perWeek;
-      const fmt = (value) => Number.isInteger(value) ? String(value) : value.toFixed(1).replace(/\.0$/, "");
-      field.value = `${fmt(weeks)} week${weeks === 1 ? "" : "s"}`;
+      const dosePerFraction = totalDose / fractions;
+      const fmt = (value, digits = 1) =>
+        Number.isInteger(value)
+          ? String(value)
+          : value.toFixed(digits).replace(/0+$/, "").replace(/\.$/, "");
+
+      field.value = `${fmt(weeks)} wk • ${fmt(dosePerFraction, 2)} Gy/fx`;
+      field.title = `${fmt(weeks)} week${weeks === 1 ? "" : "s"} • ${fmt(dosePerFraction, 2)} Gy per fraction`;
     }
 
     function updateDose() {
@@ -4628,10 +4641,6 @@
       updateBreastRegimenPanel({ syncCategory: true });
 
       if (!valid) {
-        $("doseResult").innerHTML = `
-          <strong class="dose-placeholder-title">Dose</strong>
-          <span class="dose-invalid-message">Enter a valid dose and number of treatments.</span>
-        `;
         $("doseTags").innerHTML = "";
         updateTreatmentCourse();
         requestAnimationFrame(syncTreatmentCourseHeight);
@@ -4641,11 +4650,6 @@
       const dosePerFraction = total / fractions;
       const weeks = fractions / perWeek;
       const fmt = (value) => Number.isInteger(value) ? String(value) : value.toFixed(1).replace(/\.0$/, "");
-      $("doseResult").innerHTML = `
-        <strong>${dosePerFraction.toFixed(2).replace(/\.00$/, "")} Gy/fraction</strong>
-        <span>${fmt(total)} Gy total over ${fmt(fractions)} treatment${fractions === 1 ? "" : "s"}, which is approximately ${fmt(weeks)} week${weeks === 1 ? "" : "s"} at ${fmt(perWeek)} treatment${perWeek === 1 ? "" : "s"}/week using ${technique}.</span>
-      `;
-
       const descriptors = [];
       if (isActiveProstateSite()) {
         const prostateClass = classifyProstateFractionation(total, fractions);
