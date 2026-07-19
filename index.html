@@ -861,15 +861,6 @@
       line-height: 1.35;
     }
 
-    .course-connector {
-      width: 2px;
-      height: 24px;
-      background: var(--line);
-      border-radius: 999px;
-      justify-self: start;
-      margin-left: 27px;
-      position: relative;
-    }
 
     .course-summary {
       border-radius: 18px;
@@ -1957,12 +1948,6 @@
       .workspace > .side-column { order: 3; }
       .workspace > .side-column > .clinician-notes-wide { order: 4; margin-top: 0; }
       .course-flow { grid-template-columns: 1fr; }
-      .course-connector {
-        width: 2px;
-        height: 20px;
-        justify-self: start;
-        margin-left: 27px;
-      }
       .treatment-course-card { height: auto !important; min-height: 0; }
     }
 
@@ -2832,16 +2817,14 @@
                 </div>
                 <p id="courseSimText">Planning maps the target, nearby organs, and setup position.</p>
               </div>
-              <div class="course-connector" aria-hidden="true"></div>
-              <div class="course-step">
+<div class="course-step">
                 <div class="course-step-head">
                   <div class="course-step-marker" aria-hidden="true">2</div>
                   <strong>Treatment sessions</strong>
                 </div>
                 <p id="courseTreatmentText">Treatment delivery follows the finalized plan and technique.</p>
               </div>
-              <div class="course-connector" aria-hidden="true"></div>
-              <div class="course-step">
+<div class="course-step">
                 <div class="course-step-head">
                   <div class="course-step-marker" aria-hidden="true">3</div>
                   <strong>Follow-up</strong>
@@ -2868,12 +2851,12 @@
                 <p id="expectationText">Treatment usually begins with consultation, simulation, immobilization, planning, quality assurance, then daily or near-daily treatment visits depending on the regimen.</p>
               </div>
               <div class="info-box">
-                <h4>Common supportive care</h4>
-                <ul id="supportiveCare"></ul>
-              </div>
-              <div class="info-box">
                 <h4>Positioning preview</h4>
                 <p id="positioningText">Future module: show patient setup position, immobilization devices, breath-hold or bladder/rectal prep when relevant.</p>
+              </div>
+              <div class="info-box">
+                <h4>Common supportive care</h4>
+                <ul id="supportiveCare"></ul>
               </div>
             </div>
           </section>
