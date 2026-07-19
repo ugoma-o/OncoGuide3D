@@ -1107,6 +1107,289 @@
       line-height: 1.4;
     }
 
+    .breast-boost-panel {
+      display: grid;
+      gap: 12px;
+      padding: 13px;
+      border: 1px solid rgba(119, 100, 216, 0.22);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.64);
+    }
+
+    .breast-boost-panel[hidden],
+    .breast-boost-fields[hidden] {
+      display: none;
+    }
+
+    .breast-boost-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .breast-boost-heading strong {
+      display: block;
+      color: var(--ink);
+      font-size: 0.94rem;
+    }
+
+    .breast-boost-heading p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .boost-mode-switch {
+      display: inline-grid;
+      grid-template-columns: repeat(2, minmax(92px, 1fr));
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(231, 240, 243, 0.84);
+      flex: 0 0 auto;
+    }
+
+    .boost-mode-option {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .boost-mode-option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .boost-mode-option span {
+      display: block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 850;
+      transition: background 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .boost-mode-option input:checked + span {
+      background: #fff;
+      color: var(--primary-dark);
+      box-shadow: 0 4px 12px rgba(34, 55, 66, 0.12);
+    }
+
+    .boost-mode-option input:focus-visible + span {
+      box-shadow: var(--focus);
+    }
+
+    .breast-boost-fields {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .breast-boost-summary {
+      min-height: 20px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .breast-boost-summary b {
+      color: var(--ink);
+    }
+
+    .breast-radiobio-panel {
+      display: grid;
+      gap: 11px;
+      padding: 13px;
+      border: 1px solid rgba(47, 127, 136, 0.22);
+      border-radius: 16px;
+      background: rgba(239, 248, 249, 0.72);
+    }
+
+    .breast-radiobio-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .breast-radiobio-heading strong {
+      display: block;
+      color: var(--ink);
+      font-size: 0.94rem;
+    }
+
+    .breast-radiobio-heading p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .alpha-beta-control {
+      display: grid;
+      grid-template-columns: auto 62px auto;
+      align-items: center;
+      gap: 7px;
+      flex: 0 0 auto;
+    }
+
+    .alpha-beta-control label {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 850;
+    }
+
+    .alpha-beta-control input {
+      width: 62px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--ink);
+      padding: 8px 9px;
+      text-align: center;
+      font-weight: 850;
+    }
+
+    .alpha-beta-band {
+      min-width: 92px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      text-align: center;
+      font-size: 0.76rem;
+      font-weight: 900;
+      border: 1px solid transparent;
+    }
+
+    .alpha-beta-band.very-low {
+      background: rgba(119, 100, 216, 0.12);
+      color: #5745a8;
+      border-color: rgba(119, 100, 216, 0.20);
+    }
+
+    .alpha-beta-band.low {
+      background: rgba(47, 127, 136, 0.12);
+      color: var(--primary-dark);
+      border-color: rgba(47, 127, 136, 0.20);
+    }
+
+    .alpha-beta-band.intermediate {
+      background: rgba(191, 129, 32, 0.12);
+      color: #76500e;
+      border-color: rgba(191, 129, 32, 0.22);
+    }
+
+    .alpha-beta-band.high {
+      background: rgba(168, 64, 64, 0.11);
+      color: #863838;
+      border-color: rgba(168, 64, 64, 0.20);
+    }
+
+    .alpha-beta-scale {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .alpha-beta-scale span {
+      display: grid;
+      gap: 1px;
+      padding: 7px 8px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.62);
+      color: var(--muted);
+      font-size: 0.70rem;
+      text-align: center;
+    }
+
+    .alpha-beta-scale b {
+      color: var(--ink);
+      font-size: 0.73rem;
+    }
+
+    .breast-radiobio-results {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .radiobio-result-card {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.76);
+    }
+
+    .radiobio-result-card strong {
+      color: var(--ink);
+      font-size: 0.82rem;
+    }
+
+    .radiobio-result-values {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .radiobio-result-values span {
+      display: grid;
+      gap: 1px;
+      padding: 7px;
+      border-radius: 10px;
+      background: rgba(231, 240, 243, 0.72);
+      color: var(--muted);
+      font-size: 0.69rem;
+    }
+
+    .radiobio-result-values b {
+      color: var(--primary-dark);
+      font-size: 0.94rem;
+      overflow-wrap: anywhere;
+    }
+
+    .breast-radiobio-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.70rem;
+      line-height: 1.35;
+    }
+
+    @media (max-width: 620px) {
+      .breast-radiobio-heading {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .alpha-beta-control {
+        grid-template-columns: auto 64px minmax(92px, 1fr);
+      }
+
+      .alpha-beta-scale,
+      .breast-radiobio-results {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 620px) {
+      .breast-boost-heading {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .boost-mode-switch {
+        width: 100%;
+      }
+
+      .breast-boost-fields {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .breast-regimen-source a {
       font-weight: 850;
       text-decoration: none;
@@ -1182,8 +1465,12 @@
           "summary";
       }
 
-      .dose-summary-field input {
-        min-height: 76px;
+      .course-summary-display {
+        min-height: 116px;
+      }
+
+      .course-summary-weeks {
+        font-size: 1.85rem;
       }
     }
 
@@ -1209,15 +1496,59 @@
       flex-direction: column;
     }
 
-    .dose-summary-field input {
+    .course-summary-display {
       flex: 1;
-      min-height: 94px;
-      font-size: clamp(1.15rem, 1.8vw, 1.55rem) !important;
-      line-height: 1.15;
+      min-height: 138px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 15px 14px;
+      border: 2px solid var(--line);
+      border-radius: 14px;
       text-align: center;
-      padding: 18px 14px;
-      border-width: 2px;
-      background: linear-gradient(135deg, rgba(224, 242, 243, 0.92), rgba(239, 235, 255, 0.90)) !important;
+      background: linear-gradient(135deg, rgba(224, 242, 243, 0.92), rgba(239, 235, 255, 0.90));
+      color: var(--primary-dark);
+    }
+
+    .course-summary-weeks {
+      font-size: clamp(2rem, 3.1vw, 2.75rem);
+      line-height: 1;
+      font-weight: 950;
+      letter-spacing: -0.055em;
+      color: var(--primary-dark);
+    }
+
+    .course-summary-dose {
+      margin-top: 4px;
+      font-size: clamp(1.02rem, 1.55vw, 1.28rem);
+      line-height: 1.15;
+      font-weight: 900;
+      color: var(--ink);
+    }
+
+    .course-summary-fractions {
+      margin-top: 3px;
+      font-size: 0.82rem;
+      line-height: 1.25;
+      font-weight: 800;
+      color: var(--muted);
+    }
+
+    .course-summary-boost {
+      width: 100%;
+      margin-top: 7px;
+      padding-top: 7px;
+      border-top: 1px solid var(--line);
+      font-size: 0.76rem;
+      line-height: 1.35;
+      font-weight: 750;
+      color: var(--primary-dark);
+    }
+
+    .course-summary-boost[hidden] {
+      display: none;
     }
 
     .side-column .side-card:first-child {
@@ -1226,7 +1557,8 @@
 
 
 
-    .field input[readonly] {
+    .field input[readonly],
+    .field textarea[readonly] {
       background: rgba(241, 245, 247, 0.78);
       color: var(--primary-dark);
       font-weight: 850;
@@ -1234,6 +1566,14 @@
     }
 
     .field label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.84rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .field .field-label {
       display: block;
       color: var(--muted);
       font-size: 0.84rem;
@@ -2763,6 +3103,76 @@
                   </div>
                 </div>
 
+                <div class="breast-boost-panel" id="breastBoostPanel" hidden>
+                  <div class="breast-boost-heading">
+                    <div>
+                      <strong>Tumor-bed boost</strong>
+                      <p>Select how the boost is delivered. Values remain editable for institution-specific prescriptions.</p>
+                    </div>
+                    <div class="boost-mode-switch" role="radiogroup" aria-label="Boost delivery method">
+                      <label class="boost-mode-option">
+                        <input type="radio" name="breastBoostMode" value="sequential" checked />
+                        <span>Sequential</span>
+                      </label>
+                      <label class="boost-mode-option">
+                        <input type="radio" name="breastBoostMode" value="sib" />
+                        <span>SIB</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="breast-boost-fields" id="sequentialBoostFields">
+                    <div class="field">
+                      <label for="breastBoostDose">Additional boost dose, Gy</label>
+                      <input id="breastBoostDose" type="number" min="0.1" step="0.1" value="10" />
+                    </div>
+                    <div class="field">
+                      <label for="breastBoostFractions">Additional boost fractions</label>
+                      <input id="breastBoostFractions" type="number" min="1" step="1" value="4" />
+                    </div>
+                  </div>
+
+                  <div class="breast-boost-fields" id="sibBoostFields" hidden>
+                    <div class="field">
+                      <label for="breastSibTotalDose">Tumor-bed SIB total dose, Gy</label>
+                      <input id="breastSibTotalDose" type="number" min="0.1" step="0.1" value="48" />
+                    </div>
+                    <div class="field">
+                      <label for="breastSibFractions">SIB fractions</label>
+                      <input id="breastSibFractions" type="text" readonly value="" />
+                    </div>
+                  </div>
+
+                  <div class="breast-boost-summary" id="breastBoostSummary" aria-live="polite"></div>
+
+                  <div class="breast-radiobio-panel" aria-label="BED and EQD2 calculator">
+                    <div class="breast-radiobio-heading">
+                      <div>
+                        <strong>BED and EQD2 estimate</strong>
+                        <p>Linear-quadratic estimate using the selected α/β ratio.</p>
+                      </div>
+                      <div class="alpha-beta-control">
+                        <label for="breastAlphaBeta">α/β, Gy</label>
+                        <input id="breastAlphaBeta" type="number" min="1" max="10" step="1" inputmode="numeric" value="4" />
+                        <span class="alpha-beta-band low" id="breastAlphaBetaBand">Low</span>
+                      </div>
+                    </div>
+
+                    <div class="alpha-beta-scale" aria-label="Relative alpha beta category scale">
+                      <span><b>Very low</b> 1–2</span>
+                      <span><b>Low</b> 3–4</span>
+                      <span><b>Intermediate</b> 5–7</span>
+                      <span><b>High</b> 8–10</span>
+                    </div>
+
+                    <div class="breast-radiobio-results" id="breastRadiobioResults" aria-live="polite"></div>
+
+                    <p class="breast-radiobio-note">
+                      BED and EQD2 are model-based comparisons, not delivered-dose measurements. The relative α/β bands are interface labels only and are not universal tissue classifications.
+                    </p>
+                  </div>
+                </div>
+
                 <div class="prostate-regimen-status info" id="breastRegimenStatus" aria-live="polite"></div>
                 <div class="breast-regimen-source" id="breastRegimenSource"></div>
                 <p class="prostate-regimen-disclaimer">Educational decision support only. Selection depends on pathology, stage, surgery, nodal risk, reconstruction, boost indication, normal-tissue exposure, systemic therapy, patient preference, current guidelines, and institutional protocol.</p>
@@ -2782,8 +3192,19 @@
                   <input id="treatmentsPerWeek" type="number" min="0.5" max="14" step="0.5" value="5" />
                 </div>
                 <div class="field dose-summary-field">
-                  <label for="treatmentWeeks">Course length / dose per fraction</label>
-                  <input id="treatmentWeeks" type="text" value="" readonly aria-live="polite" />
+                  <span class="field-label" id="courseSummaryLabel">Course length / fractionation</span>
+                  <div
+                    class="course-summary-display"
+                    id="treatmentWeeks"
+                    role="status"
+                    aria-live="polite"
+                    aria-labelledby="courseSummaryLabel"
+                  >
+                    <div class="course-summary-weeks" id="courseSummaryWeeks"></div>
+                    <div class="course-summary-dose" id="courseSummaryDose"></div>
+                    <div class="course-summary-fractions" id="courseSummaryFractions"></div>
+                    <div class="course-summary-boost" id="courseSummaryBoost" hidden></div>
+                  </div>
                 </div>
                 <div class="field dose-technique-field">
                   <label for="technique">Technique</label>
@@ -3809,9 +4230,18 @@
       const isBrachytherapy = technique === 'Brachytherapy';
 
       if (valid) {
-        $('courseTreatmentText').textContent = isBrachytherapy
-          ? `Radiation is delivered with applicators or sources placed near the target.`
-          : `Each session uses the completed treatment plan to accurately position and deliver radiation to the target area.`;
+        const boostPlan = getBreastBoostPlan();
+
+        if (boostPlan.active && boostPlan.mode === "sequential" && boostPlan.valid) {
+          $('courseTreatmentText').textContent = `The course includes ${boostPlan.baseFractions} whole-breast treatments followed by ${boostPlan.boostFractions} tumor-bed boost treatments, for ${boostPlan.totalFractions} total visits.`;
+        } else if (boostPlan.active && boostPlan.mode === "sib" && boostPlan.valid) {
+          $('courseTreatmentText').textContent = `Each of the ${boostPlan.baseFractions} sessions delivers the whole-breast dose and a higher integrated tumor-bed dose during the same visit.`;
+        } else {
+          $('courseTreatmentText').textContent = isBrachytherapy
+            ? `Radiation is delivered with applicators or sources placed near the target.`
+            : `Each session uses the completed treatment plan to accurately position and deliver radiation to the target area.`;
+        }
+
         if ($('courseSummary')) $('courseSummary').innerHTML = `<b>Course overview:</b> Planning, treatment delivery, and follow-up are tailored to ${site.name.toLowerCase()} using ${technique}.`;
       } else {
         $('courseTreatmentText').textContent = `Treatment delivery follows the finalized plan and technique.`;
@@ -4102,7 +4532,7 @@
       "whole-breast": {
         settings: [
           { id: "wbi", label: "Whole breast after breast-conserving surgery" },
-          { id: "wbi-boost", label: "Whole breast plus sequential tumor-bed boost" },
+          { id: "wbi-boost", label: "Whole breast plus tumor-bed boost" },
           { id: "other", label: "Custom or other" }
         ],
         sourceLabel: "ASTRO whole-breast guideline and ASTRO breast education",
@@ -4476,7 +4906,16 @@
         }
 
         if (setting === "wbi-boost") {
-          message += " The displayed dose represents the whole-breast phase only; any tumor-bed boost should be evaluated and prescribed as a separate phase.";
+          const boostPlan = getBreastBoostPlan();
+
+          if (!boostPlan.valid) {
+            tone = "warning";
+            message += " Complete the selected boost prescription to calculate the full course.";
+          } else if (boostPlan.mode === "sequential") {
+            message += ` Sequential boost adds ${boostPlan.boostDose} Gy in ${boostPlan.boostFractions} fractions after whole-breast treatment, for ${boostPlan.totalFractions} total visits. The tumor-bed physical dose is ${boostPlan.tumorBedTotalDose} Gy.`;
+          } else {
+            message += ` The SIB is delivered during the same ${boostPlan.baseFractions} fractions: ${boostPlan.baseDose} Gy to the whole breast and ${boostPlan.sibTotalDose} Gy to the tumor bed. Confirm the integrated dose levels and constraints against the selected institutional protocol.`;
+          }
         }
       }
 
@@ -4568,6 +5007,7 @@
       const classification = classifyBreastFractionation(totalDose, fractions, technique);
       if (syncCategory) categorySelect.value = classification.id;
 
+      updateBreastBoostControls();
       populateBreastPresetOptions();
 
       const matchedPreset = currentBreastPreset(totalDose, fractions, technique);
@@ -4611,29 +5051,361 @@
       updateTrendsPage();
     }
 
+
+    function isBreastBoostSelected() {
+      return (
+        state.systemId === "breast" &&
+        state.siteId === "whole-breast" &&
+        $("breastTreatmentSetting")?.value === "wbi-boost"
+      );
+    }
+
+    function getBreastBoostMode() {
+      return document.querySelector('input[name="breastBoostMode"]:checked')?.value || "sequential";
+    }
+
+    function getBreastBoostPlan() {
+      const active = isBreastBoostSelected();
+      const mode = getBreastBoostMode();
+      const baseDose = parseFloat($("totalDose")?.value || "");
+      const baseFractions = parseFloat($("fractions")?.value || "");
+
+      if (!active) {
+        return { active: false, mode, valid: false, baseDose, baseFractions };
+      }
+
+      if (mode === "sequential") {
+        const boostDose = parseFloat($("breastBoostDose")?.value || "");
+        const boostFractions = parseFloat($("breastBoostFractions")?.value || "");
+        const valid = (
+          baseDose > 0 &&
+          baseFractions > 0 &&
+          boostDose > 0 &&
+          boostFractions > 0
+        );
+
+        return {
+          active: true,
+          mode,
+          valid,
+          baseDose,
+          baseFractions,
+          boostDose,
+          boostFractions,
+          totalFractions: valid ? baseFractions + boostFractions : baseFractions,
+          tumorBedTotalDose: valid ? baseDose + boostDose : NaN
+        };
+      }
+
+      const sibTotalDose = parseFloat($("breastSibTotalDose")?.value || "");
+      const valid = baseDose > 0 && baseFractions > 0 && sibTotalDose > 0;
+
+      return {
+        active: true,
+        mode,
+        valid,
+        baseDose,
+        baseFractions,
+        sibTotalDose,
+        totalFractions: baseFractions,
+        sibDosePerFraction: valid ? sibTotalDose / baseFractions : NaN
+      };
+    }
+
+
+    function normalizeAlphaBetaInput() {
+      const input = $("breastAlphaBeta");
+      if (!input) return 4;
+
+      const parsed = Number.parseInt(input.value, 10);
+      const value = Number.isFinite(parsed)
+        ? Math.min(10, Math.max(1, Math.round(parsed)))
+        : 4;
+
+      input.value = value;
+      return value;
+    }
+
+    function alphaBetaBand(value) {
+      if (value <= 2) return { label: "Very low", className: "very-low" };
+      if (value <= 4) return { label: "Low", className: "low" };
+      if (value <= 7) return { label: "Intermediate", className: "intermediate" };
+      return { label: "High", className: "high" };
+    }
+
+    function calculateBed(totalDose, fractions, alphaBeta) {
+      if (!(totalDose > 0 && fractions > 0 && alphaBeta > 0)) return NaN;
+      const dosePerFraction = totalDose / fractions;
+      return totalDose * (1 + dosePerFraction / alphaBeta);
+    }
+
+    function calculateEqd2FromBed(bed, alphaBeta) {
+      if (!(bed > 0 && alphaBeta > 0)) return NaN;
+      return bed / (1 + 2 / alphaBeta);
+    }
+
+    function updateBreastRadiobiology(plan) {
+      const results = $("breastRadiobioResults");
+      const bandElement = $("breastAlphaBetaBand");
+      if (!results || !bandElement) return;
+
+      const alphaBeta = normalizeAlphaBetaInput();
+      const band = alphaBetaBand(alphaBeta);
+      bandElement.textContent = band.label;
+      bandElement.className = `alpha-beta-band ${band.className}`;
+
+      const fmt = (value, digits = 1) =>
+        Number.isFinite(value)
+          ? value.toFixed(digits).replace(/\.0$/, "")
+          : "—";
+
+      if (!plan.active || !plan.valid) {
+        results.innerHTML = `
+          <div class="radiobio-result-card">
+            <strong>Complete the boost prescription</strong>
+            <div class="radiobio-result-values">
+              <span>BED<b>—</b></span>
+              <span>EQD2<b>—</b></span>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const wholeBreastBed = calculateBed(
+        plan.baseDose,
+        plan.baseFractions,
+        alphaBeta
+      );
+      const wholeBreastEqd2 = calculateEqd2FromBed(
+        wholeBreastBed,
+        alphaBeta
+      );
+
+      if (plan.mode === "sequential") {
+        const boostBed = calculateBed(
+          plan.boostDose,
+          plan.boostFractions,
+          alphaBeta
+        );
+        const boostEqd2 = calculateEqd2FromBed(boostBed, alphaBeta);
+        const tumorBedBed = wholeBreastBed + boostBed;
+        const tumorBedEqd2 = calculateEqd2FromBed(
+          tumorBedBed,
+          alphaBeta
+        );
+
+        results.innerHTML = `
+          <div class="radiobio-result-card">
+            <strong>Whole breast</strong>
+            <div class="radiobio-result-values">
+              <span>BED, Gy (α/β=${alphaBeta})<b>${fmt(wholeBreastBed)}</b></span>
+              <span>EQD2, Gy<b>${fmt(wholeBreastEqd2)}</b></span>
+            </div>
+          </div>
+          <div class="radiobio-result-card">
+            <strong>Boost component only</strong>
+            <div class="radiobio-result-values">
+              <span>BED, Gy (α/β=${alphaBeta})<b>${fmt(boostBed)}</b></span>
+              <span>EQD2, Gy<b>${fmt(boostEqd2)}</b></span>
+            </div>
+          </div>
+          <div class="radiobio-result-card">
+            <strong>Tumor bed, cumulative</strong>
+            <div class="radiobio-result-values">
+              <span>BED, Gy (α/β=${alphaBeta})<b>${fmt(tumorBedBed)}</b></span>
+              <span>EQD2, Gy<b>${fmt(tumorBedEqd2)}</b></span>
+            </div>
+          </div>
+          <div class="radiobio-result-card">
+            <strong>Physical dose</strong>
+            <div class="radiobio-result-values">
+              <span>Whole breast<b>${fmt(plan.baseDose)} Gy</b></span>
+              <span>Tumor bed<b>${fmt(plan.tumorBedTotalDose)} Gy</b></span>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const tumorBedBed = calculateBed(
+        plan.sibTotalDose,
+        plan.baseFractions,
+        alphaBeta
+      );
+      const tumorBedEqd2 = calculateEqd2FromBed(
+        tumorBedBed,
+        alphaBeta
+      );
+
+      results.innerHTML = `
+        <div class="radiobio-result-card">
+          <strong>Whole breast</strong>
+          <div class="radiobio-result-values">
+            <span>BED, Gy (α/β=${alphaBeta})<b>${fmt(wholeBreastBed)}</b></span>
+            <span>EQD2, Gy<b>${fmt(wholeBreastEqd2)}</b></span>
+          </div>
+        </div>
+        <div class="radiobio-result-card">
+          <strong>Tumor-bed SIB</strong>
+          <div class="radiobio-result-values">
+            <span>BED, Gy (α/β=${alphaBeta})<b>${fmt(tumorBedBed)}</b></span>
+            <span>EQD2, Gy<b>${fmt(tumorBedEqd2)}</b></span>
+          </div>
+        </div>
+        <div class="radiobio-result-card">
+          <strong>Physical dose</strong>
+          <div class="radiobio-result-values">
+            <span>Whole breast<b>${fmt(plan.baseDose)} Gy</b></span>
+            <span>Tumor bed<b>${fmt(plan.sibTotalDose)} Gy</b></span>
+          </div>
+        </div>
+        <div class="radiobio-result-card">
+          <strong>Fraction structure</strong>
+          <div class="radiobio-result-values">
+            <span>Total visits<b>${fmt(plan.baseFractions, 0)} fx</b></span>
+            <span>SIB per fraction<b>${fmt(plan.sibDosePerFraction, 2)} Gy</b></span>
+          </div>
+        </div>
+      `;
+    }
+
+    function updateBreastBoostControls() {
+      const panel = $("breastBoostPanel");
+      const sequentialFields = $("sequentialBoostFields");
+      const sibFields = $("sibBoostFields");
+      const sibFractions = $("breastSibFractions");
+      const summary = $("breastBoostSummary");
+      if (!panel || !sequentialFields || !sibFields || !sibFractions || !summary) return;
+
+      const active = isBreastBoostSelected();
+      panel.hidden = !active;
+      if (!active) {
+        summary.innerHTML = "";
+        updateBreastRadiobiology({ active: false, valid: false });
+        return;
+      }
+
+      const plan = getBreastBoostPlan();
+      sequentialFields.hidden = plan.mode !== "sequential";
+      sibFields.hidden = plan.mode !== "sib";
+      sibFractions.value = plan.baseFractions > 0
+        ? `${plan.baseFractions} fx, same as whole breast`
+        : "";
+
+      const fmt = (value, digits = 2) =>
+        Number.isFinite(value)
+          ? (Number.isInteger(value)
+              ? String(value)
+              : value.toFixed(digits).replace(/0+$/, "").replace(/\.$/, ""))
+          : "";
+
+      if (!plan.valid) {
+        summary.innerHTML = `<b>Complete the boost prescription</b> to update total fractions, course duration, target-specific dose, BED, and EQD2.`;
+        updateBreastRadiobiology(plan);
+        return;
+      }
+
+      if (plan.mode === "sequential") {
+        summary.innerHTML = `<b>Sequential boost:</b> ${fmt(plan.baseDose)} Gy/${fmt(plan.baseFractions)} fx to the whole breast, followed by ${fmt(plan.boostDose)} Gy/${fmt(plan.boostFractions)} fx to the tumor bed. Total visits: ${fmt(plan.totalFractions)}. Tumor-bed physical dose: ${fmt(plan.tumorBedTotalDose)} Gy.`;
+      } else {
+        summary.innerHTML = `<b>SIB:</b> ${fmt(plan.baseDose)} Gy to the whole breast and ${fmt(plan.sibTotalDose)} Gy to the tumor bed over the same ${fmt(plan.baseFractions)} fractions.`;
+      }
+
+      updateBreastRadiobiology(plan);
+    }
+
     function updateTreatmentWeeksDisplay() {
       const field = $("treatmentWeeks");
-      if (!field) return;
+      const weeksElement = $("courseSummaryWeeks");
+      const doseElement = $("courseSummaryDose");
+      const fractionsElement = $("courseSummaryFractions");
+      const boostElement = $("courseSummaryBoost");
+
+      if (!field || !weeksElement || !doseElement || !fractionsElement || !boostElement) return;
 
       const totalDose = parseFloat($("totalDose")?.value || "");
       const fractions = parseFloat($("fractions")?.value || "");
       const perWeek = parseFloat($("treatmentsPerWeek")?.value || "");
 
-      if (!(totalDose > 0 && fractions > 0 && perWeek > 0)) {
-        field.value = "";
+      const clearSummary = () => {
+        weeksElement.textContent = "";
+        doseElement.textContent = "";
+        fractionsElement.textContent = "";
+        boostElement.textContent = "";
+        boostElement.hidden = true;
         field.title = "";
+      };
+
+      if (!(totalDose > 0 && fractions > 0 && perWeek > 0)) {
+        clearSummary();
+        return;
+      }
+
+      const dosePerFraction = totalDose / fractions;
+      const fmt = (value, digits = 1) =>
+        Number.isFinite(value)
+          ? (Number.isInteger(value)
+              ? String(value)
+              : value.toFixed(digits).replace(/0+$/, "").replace(/\.$/, ""))
+          : "";
+
+      const formatWeeks = (weeks) =>
+        `${fmt(weeks)} week${weeks === 1 ? "" : "s"}`;
+
+      const boostPlan = getBreastBoostPlan();
+
+      if (boostPlan.active && boostPlan.mode === "sequential" && boostPlan.valid) {
+        const weeks = boostPlan.totalFractions / perWeek;
+
+        weeksElement.textContent = formatWeeks(weeks);
+        doseElement.textContent = `${fmt(dosePerFraction, 2)} Gy/fx whole breast`;
+        fractionsElement.textContent = `${fmt(boostPlan.totalFractions)} fractions total`;
+        boostElement.textContent =
+          `${fmt(totalDose, 2)} Gy/${fmt(fractions)} fx whole breast + ` +
+          `${fmt(boostPlan.boostDose, 2)} Gy/${fmt(boostPlan.boostFractions)} fx sequential boost ` +
+          `• Tumor bed ${fmt(boostPlan.tumorBedTotalDose, 2)} Gy`;
+        boostElement.hidden = false;
+
+        field.title =
+          `${formatWeeks(weeks)}. ${fmt(boostPlan.totalFractions)} total fractions: ` +
+          `${fmt(fractions)} whole-breast fractions followed by ` +
+          `${fmt(boostPlan.boostFractions)} sequential boost fractions.`;
         return;
       }
 
       const weeks = fractions / perWeek;
-      const dosePerFraction = totalDose / fractions;
-      const fmt = (value, digits = 1) =>
-        Number.isInteger(value)
-          ? String(value)
-          : value.toFixed(digits).replace(/0+$/, "").replace(/\.$/, "");
 
-      field.value = `${fmt(weeks)} wk • ${fmt(dosePerFraction, 2)} Gy/fx`;
-      field.title = `${fmt(weeks)} week${weeks === 1 ? "" : "s"} • ${fmt(dosePerFraction, 2)} Gy per fraction`;
+      weeksElement.textContent = formatWeeks(weeks);
+      doseElement.textContent = `${fmt(dosePerFraction, 2)} Gy/fx`;
+      fractionsElement.textContent = `${fmt(fractions)} fractions total`;
+      boostElement.textContent = "";
+      boostElement.hidden = true;
+
+      if (boostPlan.active && boostPlan.mode === "sib") {
+        doseElement.textContent = `${fmt(dosePerFraction, 2)} Gy/fx whole breast`;
+
+        if (boostPlan.valid) {
+          boostElement.textContent =
+            `SIB: ${fmt(totalDose, 2)} Gy/${fmt(fractions)} fx whole breast + ` +
+            `${fmt(boostPlan.sibTotalDose, 2)} Gy/${fmt(fractions)} fx tumor bed`;
+          boostElement.hidden = false;
+          field.title =
+            `${formatWeeks(weeks)} and ${fmt(fractions)} total fractions. ` +
+            `The whole breast receives ${fmt(totalDose, 2)} Gy and the tumor bed receives ` +
+            `${fmt(boostPlan.sibTotalDose, 2)} Gy over the same fractions.`;
+        } else {
+          boostElement.textContent = "SIB tumor-bed dose incomplete";
+          boostElement.hidden = false;
+          field.title =
+            `${formatWeeks(weeks)} and ${fmt(fractions)} total fractions. Enter the SIB tumor-bed dose.`;
+        }
+        return;
+      }
+
+      field.title =
+        `${formatWeeks(weeks)} • ${fmt(fractions)} total fractions • ` +
+        `${fmt(dosePerFraction, 2)} Gy per fraction`;
     }
 
     function updateDose() {
@@ -5387,12 +6159,44 @@
     if ($("breastTreatmentSetting")) $("breastTreatmentSetting").addEventListener("change", () => {
       populateBreastPresetOptions({ preserveSelection: false });
       updateBreastRegimenPanel({ syncCategory: false });
+      updateDose();
+      updateTreatmentCourse();
+      requestAnimationFrame(syncWorkspaceColumnHeights);
     });
     if ($("breastFractionationCategory")) $("breastFractionationCategory").addEventListener("change", () => {
       populateBreastPresetOptions({ preserveSelection: false });
       updateBreastRegimenPanel({ syncCategory: false });
     });
     if ($("breastRegimenPreset")) $("breastRegimenPreset").addEventListener("change", applyBreastRegimenPreset);
+    document.querySelectorAll('input[name="breastBoostMode"]').forEach(input => {
+      input.addEventListener("change", () => {
+        updateBreastBoostControls();
+        updateDose();
+        updateTreatmentCourse();
+        requestAnimationFrame(syncWorkspaceColumnHeights);
+      });
+    });
+    ["breastBoostDose", "breastBoostFractions", "breastSibTotalDose"].forEach(id => {
+      if ($(id)) $(id).addEventListener("input", () => {
+        updateBreastBoostControls();
+        updateDose();
+        updateTreatmentCourse();
+        requestAnimationFrame(syncWorkspaceColumnHeights);
+      });
+    });
+    if ($("breastAlphaBeta")) {
+      $("breastAlphaBeta").addEventListener("input", () => {
+        const input = $("breastAlphaBeta");
+        if (input.value.includes(".")) input.value = input.value.split(".")[0];
+        updateBreastBoostControls();
+        requestAnimationFrame(syncWorkspaceColumnHeights);
+      });
+      $("breastAlphaBeta").addEventListener("change", () => {
+        normalizeAlphaBetaInput();
+        updateBreastBoostControls();
+        requestAnimationFrame(syncWorkspaceColumnHeights);
+      });
+    }
     if ($("noteTemplateSelect")) $("noteTemplateSelect").addEventListener("change", e => { if (e.target.value) insertClinicianNoteTemplate(); });
     window.addEventListener("resize", () => {
       updateViewer();
