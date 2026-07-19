@@ -1035,6 +1035,14 @@
       padding: 20px;
     }
 
+
+    .field input[readonly] {
+      background: rgba(241, 245, 247, 0.78);
+      color: var(--primary-dark);
+      font-weight: 850;
+      cursor: default;
+    }
+
     .field label {
       display: block;
       color: var(--muted);
@@ -2468,6 +2476,10 @@
                   <input id="treatmentsPerWeek" type="number" min="1" max="7" step="1" value="5" />
                 </div>
                 <div class="field">
+                  <label for="treatmentWeeks">Number of weeks</label>
+                  <input id="treatmentWeeks" type="text" value="" readonly aria-live="polite" />
+                </div>
+                <div class="field">
                   <label for="technique">Technique</label>
                   <select id="technique">
                     <option>IMRT/VMAT</option>
@@ -3496,7 +3508,7 @@
       if (valid) {
         $('courseTreatmentText').textContent = isBrachytherapy
           ? `Radiation is delivered with applicators or sources placed near the target.`
-          : `Each session uses the treatment plan to accurately position and deliver radiation to the target area.`;
+          : `Each session uses the completed treatment plan to accurately position and deliver radiation to the target area.`;
         if ($('courseSummary')) $('courseSummary').innerHTML = `<b>Course overview:</b> Planning, treatment delivery, and follow-up are tailored to ${site.name.toLowerCase()} using ${technique}.`;
       } else {
         $('courseTreatmentText').textContent = `Treatment delivery follows the finalized plan and technique.`;
@@ -3506,7 +3518,26 @@
       $('courseFollowText').textContent = `Recovery, side effects, and surveillance are reviewed after treatment.`;
     }
 
+
+    function updateTreatmentWeeksDisplay() {
+      const field = $("treatmentWeeks");
+      if (!field) return;
+
+      const fractions = parseFloat($("fractions")?.value || "");
+      const perWeek = parseFloat($("treatmentsPerWeek")?.value || "");
+
+      if (!(fractions > 0 && perWeek > 0)) {
+        field.value = "";
+        return;
+      }
+
+      const weeks = fractions / perWeek;
+      const fmt = (value) => Number.isInteger(value) ? String(value) : value.toFixed(1).replace(/\.0$/, "");
+      field.value = `${fmt(weeks)} week${weeks === 1 ? "" : "s"}`;
+    }
+
     function updateDose() {
+      updateTreatmentWeeksDisplay();
       const total = parseFloat($("totalDose").value);
       const fractions = parseFloat($("fractions").value);
       const perWeek = parseFloat($("treatmentsPerWeek").value);
@@ -3529,7 +3560,7 @@
       const fmt = (value) => Number.isInteger(value) ? String(value) : value.toFixed(1).replace(/\.0$/, "");
       $("doseResult").innerHTML = `
         <strong>${dosePerFraction.toFixed(2).replace(/\.00$/, "")} Gy/fraction</strong>
-        <span>${fmt(total)} Gy total over ${fmt(fractions)} treatment${fractions === 1 ? "" : "s"}, approximately ${weeks.toFixed(1).replace(/\.0$/, "")} week${weeks === 1 ? "" : "s"} at ${fmt(perWeek)} treatment${perWeek === 1 ? "" : "s"}/week using ${technique}.</span>
+        <span>${fmt(total)} Gy total over ${fmt(fractions)} treatment${fractions === 1 ? "" : "s"}, which is approximately ${fmt(weeks)} week${weeks === 1 ? "" : "s"} at ${fmt(perWeek)} treatment${perWeek === 1 ? "" : "s"}/week using ${technique}.</span>
       `;
 
       const descriptors = [];
