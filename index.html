@@ -1044,6 +1044,99 @@
       background: var(--primary);
     }
 
+    .prostate-regimen-panel {
+      display: grid;
+      gap: 12px;
+      margin: 10px 0 14px;
+      padding: 14px;
+      border: 1px solid rgba(47, 127, 136, 0.24);
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(47, 127, 136, 0.10), rgba(119, 100, 216, 0.07));
+    }
+
+    .prostate-regimen-panel[hidden] {
+      display: none;
+    }
+
+    .prostate-regimen-head {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .prostate-regimen-head strong {
+      display: block;
+      color: var(--ink);
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .prostate-regimen-head p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .prostate-regimen-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .prostate-preset-field {
+      grid-column: 1 / -1;
+    }
+
+    .prostate-regimen-status {
+      border-radius: 14px;
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.70);
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .prostate-regimen-status strong {
+      display: block;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+
+    .prostate-regimen-status.ok {
+      border-color: rgba(37, 122, 79, 0.28);
+      background: rgba(226, 245, 235, 0.84);
+      color: #315f49;
+    }
+
+    .prostate-regimen-status.warning {
+      border-color: rgba(173, 92, 0, 0.28);
+      background: rgba(255, 247, 237, 0.92);
+      color: #6f3b00;
+    }
+
+    .prostate-regimen-status.info {
+      border-color: rgba(47, 127, 136, 0.24);
+      background: rgba(239, 248, 249, 0.86);
+    }
+
+    .prostate-regimen-disclaimer {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.76rem;
+      line-height: 1.35;
+    }
+
+    @media (max-width: 620px) {
+      .prostate-regimen-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .prostate-preset-field {
+        grid-column: auto;
+      }
+    }
+
     .dose-inline-card {
       border-top: 1px solid var(--line);
       padding-top: 16px;
@@ -2458,8 +2551,9 @@
 
             <article class="reference-card">
               <strong>Radiation oncology guidelines</strong>
-              <p>When disease-site details are added or refined, content should be checked against relevant ASTRO and multidisciplinary clinical practice guidelines.</p>
+              <p>When disease-site details are added or refined, content should be checked against relevant ASTRO and multidisciplinary clinical practice guidelines. The prostate dose module uses educational categories and common examples from public ASTRO/AUA guidance, not an automated treatment recommendation.</p>
               <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines" target="_blank" rel="noopener noreferrer">ASTRO clinical practice guidelines</a>
+              <a href="https://www.auanet.org/guidelines-and-quality/guidelines/prostate-cancer-hypofractionated-radiotherapy-guideline" target="_blank" rel="noopener noreferrer">AUA/ASTRO/ASCO prostate hypofractionation guideline</a>
             </article>
 
             <article class="reference-card">
@@ -2566,6 +2660,47 @@
                   <p>For patient-facing discussion</p>
                 </div>
               </div>
+              <div class="prostate-regimen-panel" id="prostateRegimenPanel" hidden>
+                <div class="prostate-regimen-head">
+                  <div>
+                    <strong>Prostate regimen guidance</strong>
+                    <p>Choose the clinical setting and a common educational regimen, or enter a custom prescription below.</p>
+                  </div>
+                  <span class="tag">Prostate only</span>
+                </div>
+
+                <div class="prostate-regimen-grid">
+                  <div class="field">
+                    <label for="prostateTreatmentSetting">Treatment setting</label>
+                    <select id="prostateTreatmentSetting">
+                      <option value="intact">Intact prostate, definitive</option>
+                      <option value="postop">Post-prostatectomy</option>
+                      <option value="pelvic-nodes">Prostate plus pelvic nodes / SIB</option>
+                      <option value="brachy-boost">EBRT plus brachytherapy boost</option>
+                      <option value="other">Custom or other</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="prostateFractionationCategory">Fractionation category</label>
+                    <select id="prostateFractionationCategory">
+                      <option value="conventional">Conventional, 1.8 to 2.0 Gy/fraction</option>
+                      <option value="moderate">Moderately hypofractionated, 2.4 to 3.4 Gy/fraction</option>
+                      <option value="ultra">Ultrahypofractionated/SBRT, at least 5 Gy/fraction</option>
+                      <option value="custom">Custom or other</option>
+                    </select>
+                  </div>
+
+                  <div class="field prostate-preset-field">
+                    <label for="prostateRegimenPreset">Common regimen preset</label>
+                    <select id="prostateRegimenPreset"></select>
+                  </div>
+                </div>
+
+                <div class="prostate-regimen-status info" id="prostateRegimenStatus" aria-live="polite"></div>
+                <p class="prostate-regimen-disclaimer">Educational decision support only. Confirm the treatment setting, target volumes, normal-tissue constraints, systemic therapy, current guidelines, and institutional protocol before clinical use.</p>
+              </div>
+
               <div class="dose-grid">
                 <div class="field">
                   <label for="totalDose">Total dose, Gy</label>
@@ -2878,10 +3013,10 @@
     const systems = [
       {
         id: "cns", icon: "icons/neurologic.png", name: "Neurologic", subtitle: "Brain, spine, skull base", defaultDose: [60, 30],
-        purpose: "Radiation may be used after surgery, as definitive treatment, or for palliation to treat visible tumor and microscopic disease while respecting dose limits to the brainstem, optic apparatus, cochlea, spinal cord, and other critical structures.",
-        expectation: "Patients often need a custom thermoplastic mask or immobilization setup. Treatment is usually painless and brief, but planning is highly individualized because millimeters matter around eloquent structures.",
+        purpose: "Radiation may be used after surgery, definitively, or for palliation to treat tumor while protecting nearby critical structures.",
+        expectation: "A custom mask or immobilization device is often used. Treatment is painless, brief, and planned with high precision.",
         support: ["Steroids only when clinically indicated for edema", "Antiemetics if nausea develops", "Fatigue counseling and sleep/activity pacing", "Skin and scalp care when hair-bearing scalp receives dose"],
-        position: "Supine setup is common, usually with a custom mask. SRS may use frameless mask-based immobilization or institution-specific stereotactic setup.",
+        position: "Usually supine with a custom mask. SRS may use frameless stereotactic immobilization.",
         sites: [
           { id: "gbm", name: "Glioblastoma", hint: "Brain parenchyma", tags: ["brain", "mask", "IMRT"], dose: [60, 30] },
           { id: "brain-mets", name: "Brain metastases", hint: "SRS or whole brain RT", tags: ["SRS", "WBRT", "mask"], dose: [20, 1] },
@@ -2896,10 +3031,10 @@
       },
       {
         id: "thoracic", icon: "icons/thoracic.png", name: "Thoracic", subtitle: "Lung, esophagus, mediastinum", defaultDose: [60, 30],
-        purpose: "Thoracic radiation targets tumors in the lung, esophagus, mediastinum, or chest wall while limiting exposure to lung, heart, esophagus, spinal cord, and brachial plexus.",
-        expectation: "Simulation may include 4D-CT to account for breathing motion. Some patients are treated with breath guidance, compression, or motion management depending on tumor location.",
+        purpose: "Thoracic radiation treats tumors in the chest while limiting dose to the lungs, heart, esophagus, spinal cord, and brachial plexus.",
+        expectation: "Simulation may include 4D-CT and breathing-motion management, depending on tumor location.",
         support: ["Nutrition support for esophagitis risk", "Cough and dyspnea monitoring", "Skin care across entry and exit regions", "Smoking cessation support when relevant"],
-        position: "Most patients lie supine with arms above the head. Some require customized vacuum cushions or breath-hold coaching.",
+        position: "Usually supine with arms raised, using customized support and breath-hold coaching when needed.",
         sites: [
           { id: "nsclc", name: "Non-small cell lung cancer", hint: "Central or peripheral lung", tags: ["lung", "IMRT", "SBRT"], dose: [60, 30] },
           { id: "sclc", name: "Small cell lung cancer", hint: "Thorax and PCI discussion", tags: ["chemoRT", "thorax"], dose: [45, 30] },
@@ -2914,10 +3049,10 @@
       },
       {
         id: "breast", icon: "icons/breast.png", name: "Breast", subtitle: "Breast, chest wall, nodes", defaultDose: [40.05, 15],
-        purpose: "Breast radiation lowers local recurrence risk after breast-conserving surgery and may treat the chest wall or regional nodes after mastectomy when indicated.",
-        expectation: "The treated area is mapped during simulation. Left-sided treatment may use deep inspiration breath hold to reduce heart dose.",
+        purpose: "Breast radiation lowers local recurrence risk and may treat the breast, chest wall, or regional nodes.",
+        expectation: "Simulation maps the treatment area. Left-sided treatment may use deep inspiration breath hold to reduce heart dose.",
         support: ["Gentle skin care and moisturizer per clinic protocol", "Supportive bra or soft clothing", "Fatigue pacing", "Shoulder range-of-motion encouragement when appropriate"],
-        position: "Usually supine on a breast board with one or both arms raised. Prone setup or breath hold may be used for selected patients.",
+        position: "Usually supine on a breast board with one or both arms raised. Prone setup or breath hold may be used selectively.",
         sites: [
           { id: "whole-breast", name: "Whole breast", hint: "Lumpectomy setting", tags: ["hypofractionation", "boost"], dose: [40.05, 15] },
           { id: "pbi", name: "Partial breast", hint: "Selected early-stage cases", tags: ["APBI", "short course"], dose: [30, 5] },
@@ -2932,10 +3067,10 @@
       },
       {
         id: "gi", icon: "icons/gastrointestinal.png", name: "Gastrointestinal", subtitle: "Pancreas, rectum, liver, anal", defaultDose: [50.4, 28],
-        purpose: "GI radiation may be used before surgery, after surgery, definitively with chemotherapy, or for palliation, with careful attention to bowel, stomach, liver, kidneys, bladder, and spinal cord.",
-        expectation: "Simulation instructions may include fasting, bladder filling, bowel preparation, contrast, or motion management depending on the target.",
+        purpose: "GI radiation may be used before or after surgery, with chemotherapy, or for palliation while protecting nearby abdominal and pelvic organs.",
+        expectation: "Simulation may require fasting, bladder filling, bowel preparation, contrast, or motion management.",
         support: ["Antidiarrheals or bowel regimen depending on symptoms", "Nutrition and hydration planning", "Nausea management", "Perianal skin care for pelvic/anal fields"],
-        position: "Often supine. Some pelvic treatments use customized immobilization and bladder/rectal preparation to improve reproducibility.",
+        position: "Often supine, with customized immobilization and bladder or rectal preparation when needed.",
         sites: [
           { id: "rectal", name: "Rectal cancer", hint: "Pelvic chemoradiation", tags: ["pelvis", "chemoRT"], dose: [50.4, 28] },
           { id: "anal", name: "Anal cancer", hint: "Definitive chemoRT", tags: ["pelvis", "skin care"], dose: [54, 30] },
@@ -2950,10 +3085,10 @@
       },
       {
         id: "gu", icon: "icons/genitourinary.png", name: "Genitourinary", subtitle: "Prostate, bladder, kidney/adrenal, testis", defaultDose: [70, 28],
-        purpose: "GU radiation is used for localized, postoperative, salvage, nodal, or oligometastatic prostate cancer; bladder-preserving chemoradiation for selected muscle-invasive bladder cancers; selected seminoma nodal treatment; and SBRT or palliative treatment for selected kidney, adrenal, or metastatic targets. Planning prioritizes target coverage while limiting dose to rectum, bladder, urethra, bowel, kidneys, femoral heads, penile bulb, sexual organs, and marrow when relevant.",
-        expectation: "Simulation emphasizes reproducible anatomy. Prostate and pelvic plans often require consistent bladder filling and rectal emptying, with MRI or PET fusion, fiducials, daily image guidance, and sometimes a rectal spacer. Bladder-preservation workflows are coordinated with TURBT, concurrent chemotherapy, and cystoscopic response assessment. Kidney/adrenal SBRT requires respiratory motion management and careful bowel, stomach, duodenum, spinal cord, and renal-dose review.",
+        purpose: "GU radiation may treat prostate, bladder, testicular, kidney, adrenal, nodal, or metastatic disease while limiting dose to nearby bowel, urinary, renal, and sexual structures.",
+        expectation: "Simulation emphasizes reproducible anatomy. Pelvic treatment may require bladder and rectal preparation, while kidney or adrenal SBRT may require respiratory motion management.",
         support: ["Bladder filling and bowel routine coaching", "Baseline urinary, bowel, sexual, and fertility assessment", "Alpha blocker discussion for prostate-related obstructive symptoms", "Hydration guidance and bowel/antidiarrheal support when appropriate", "ADT, chemotherapy, sperm banking, and fertility counseling when relevant"],
-        position: "Most GU external beam treatments are supine. Prostate and pelvic cases may use knee/foot immobilization, daily image guidance, and bladder/rectal preparation. Kidney or adrenal SBRT may use arms-up positioning, body immobilization, abdominal compression, breath hold, respiratory gating, or 4D-CT depending on motion and institutional workflow.",
+        position: "Most GU treatments are supine. Pelvic cases use leg support and daily image guidance; kidney or adrenal SBRT may use arms-up setup and motion management.",
         sites: [
           { id: "prostate", name: "Prostate cancer", hint: "Definitive, postoperative/salvage, nodal, SBRT, or brachytherapy discussion", tags: ["IGRT", "ADT", "SBRT"], dose: [70, 28] },
           { id: "bladder", name: "Bladder cancer", hint: "Bladder preservation after maximal TURBT with concurrent chemoradiation", tags: ["TMT", "chemoRT", "cystoscopy"], dose: [64, 32] },
@@ -2968,10 +3103,10 @@
       },
       {
         id: "gyn", icon: "icons/gynecologic.png", name: "Gynecologic", subtitle: "Cervix, uterus, vagina, vulva", defaultDose: [45, 25],
-        purpose: "Gynecologic radiation may combine external beam radiation with brachytherapy to treat cervical, endometrial, vaginal, or vulvar cancers while accounting for bladder, bowel, rectum, vagina, ovaries, and pelvic bone marrow.",
-        expectation: "Treatment may involve pelvic external beam radiation and, for selected cancers, internal radiation called brachytherapy. Simulation often includes bladder and bowel instructions.",
+        purpose: "Gynecologic radiation may combine external beam treatment with brachytherapy while protecting nearby pelvic organs.",
+        expectation: "Treatment may include pelvic external beam radiation and brachytherapy, with bladder and bowel preparation when needed.",
         support: ["Diarrhea and urinary symptom management", "Skin care for vulvar/groin fields", "Vaginal health and dilator counseling when appropriate", "Fertility and ovarian function counseling when relevant"],
-        position: "External beam treatment is commonly supine with leg immobilization. Brachytherapy positioning depends on applicator type and anesthesia workflow.",
+        position: "External beam treatment is usually supine with leg support. Brachytherapy positioning depends on the applicator and procedure.",
         sites: [
           { id: "cervix", name: "Cervical cancer", hint: "EBRT plus brachytherapy", tags: ["pelvis", "brachytherapy"], dose: [45, 25] },
           { id: "endometrial", name: "Endometrial cancer", hint: "Vaginal cuff or pelvis", tags: ["vaginal cuff", "pelvis"], dose: [45, 25] },
@@ -2986,10 +3121,10 @@
       },
       {
         id: "hn", icon: "icons/headneck.png", name: "Head & neck", subtitle: "Oral cavity, pharynx, larynx, salivary", defaultDose: [70, 35],
-        purpose: "Head and neck radiation treats mucosal, salivary, thyroid, skin, or nodal disease while carefully limiting dose to swallowing structures, salivary glands, mandible, spinal cord, brainstem, optic structures, and cochlea.",
-        expectation: "Patients usually require a custom mask. Dental evaluation, nutrition planning, speech/swallow support, and concurrent systemic therapy may be part of care.",
+        purpose: "Head and neck radiation treats primary and nodal disease while protecting swallowing, salivary, neural, and sensory structures.",
+        expectation: "A custom mask is usually required. Dental, nutrition, and speech/swallow support may also be part of care.",
         support: ["Oral rinses and mucositis management", "Nutrition and hydration support", "Pain control escalation plan", "Dental, speech, and swallow therapy coordination"],
-        position: "Supine with a custom head, neck, and shoulder mask. Bite block, tongue depressor, or shoulder traction may be used in selected cases.",
+        position: "Supine with a custom head, neck, and shoulder mask. Bite blocks or shoulder support may be added.",
         sites: [
           { id: "oropharynx", name: "Oropharynx", hint: "Tonsil/base of tongue", tags: ["mucositis", "swallow"], dose: [70, 35] },
           { id: "larynx", name: "Larynx", hint: "Voice and swallowing", tags: ["larynx", "chemoRT"], dose: [70, 35] },
@@ -3004,10 +3139,10 @@
       },
       {
         id: "heme", icon: "icons/heme.png", name: "Heme/Lymphatic", subtitle: "Lymphoma, myeloma, marrow", defaultDose: [30, 15],
-        purpose: "Radiation for hematologic malignancies often uses involved-site or focal approaches to treat lymphoma, plasmacytoma, myeloma lesions, or symptomatic disease with attention to nearby normal tissue and marrow reserve.",
-        expectation: "Fields may be smaller than historical lymphoma radiation fields. The plan is often coordinated with systemic therapy timing and response imaging.",
+        purpose: "Radiation for hematologic malignancies usually targets involved sites or focal symptomatic disease while limiting normal-tissue and marrow exposure.",
+        expectation: "Treatment fields are often limited and coordinated with systemic therapy and response imaging.",
         support: ["Fatigue counseling", "Site-specific skin or mucosal care", "Blood count monitoring when marrow exposure is relevant", "Pain flare counseling for bony lesions"],
-        position: "Positioning depends on disease site. Immobilization is selected for reproducibility and comfort.",
+        position: "Positioning depends on the treated site, with immobilization chosen for comfort and reproducibility.",
         sites: [
           { id: "hodgkin", name: "Hodgkin lymphoma", hint: "Involved-site RT", tags: ["ISRT", "PET"], dose: [30, 15] },
           { id: "nhl", name: "Non-Hodgkin lymphoma", hint: "Indolent or aggressive", tags: ["ISRT", "palliation"], dose: [30, 15] },
@@ -3022,10 +3157,10 @@
       },
       {
         id: "skin-sarcoma", icon: "icons/skin.png", name: "Skin & sarcoma", subtitle: "Melanoma, NMSC, soft tissue, bone", defaultDose: [50, 25],
-        purpose: "Radiation can treat skin cancers, sarcomas, bone tumors, or postoperative beds while balancing tumor control with wound healing, limb function, skin, bone, nerve, and joint toxicity.",
-        expectation: "Setup depends on location. Some superficial cancers use electrons, orthovoltage, brachytherapy, or custom bolus. Sarcomas require careful target definition around surgical beds and compartments.",
+        purpose: "Radiation may treat skin cancer, sarcoma, bone disease, or postoperative beds while preserving wound healing and function.",
+        expectation: "Setup depends on location. Superficial techniques, bolus, or compartment-based planning may be used.",
         support: ["Skin care and dressing coordination", "Wound monitoring", "Physical therapy or range-of-motion preservation", "Pain and edema management"],
-        position: "Positioning is anatomy-dependent and often uses customized immobilization, bolus, or reproducible limb setup.",
+        position: "Positioning is site-specific and may use customized immobilization, bolus, or limb support.",
         sites: [
           { id: "nmsc", name: "Non-melanoma skin cancer", hint: "Superficial or postoperative", tags: ["skin", "electrons"], dose: [55, 20] },
           { id: "melanoma", name: "Melanoma", hint: "Adjuvant or palliation", tags: ["skin", "nodes"], dose: [48, 20] },
@@ -3040,10 +3175,10 @@
       },
       {
         id: "peds", icon: "icons/peds.png", name: "Pediatric", subtitle: "Pediatric solid tumors", defaultDose: [54, 30],
-        purpose: "Pediatric radiation requires disease-specific treatment with heightened attention to growth, cognition, endocrine function, fertility, organs at risk, anesthesia needs, and survivorship.",
-        expectation: "Care is family-centered and often coordinated with child life, anesthesia, systemic therapy teams, rehabilitation, fertility preservation, and school support.",
+        purpose: "Pediatric radiation is highly individualized, with added attention to growth, cognition, fertility, organ function, and survivorship.",
+        expectation: "Care is family-centered and may include child life, anesthesia, rehabilitation, fertility, and school support.",
         support: ["Child life preparation", "Nutrition and hydration support", "Developmentally appropriate symptom tracking", "Survivorship and late-effects counseling"],
-        position: "Positioning depends on age, site, and ability to cooperate. Anesthesia or sedation may be needed for reproducible daily treatment.",
+        position: "Positioning depends on age and treatment site. Sedation or anesthesia may be needed for reproducible treatment.",
         sites: [
           { id: "medulloblastoma", name: "Medulloblastoma", hint: "CSI and boost", tags: ["CSI", "protons"], dose: [54, 30] },
           { id: "ependymoma", name: "Ependymoma", hint: "Focal CNS RT", tags: ["CNS", "conformal"], dose: [59.4, 33] },
@@ -3623,6 +3758,281 @@
     }
 
 
+
+    const prostateRegimenPresets = [
+      {
+        id: "conv-78-39",
+        setting: "intact",
+        category: "conventional",
+        label: "78 Gy in 39 fractions",
+        totalDose: 78,
+        fractions: 39,
+        treatmentsPerWeek: 5,
+        technique: "IMRT/VMAT",
+        summary: "Dose-escalated conventional fractionation example."
+      },
+      {
+        id: "conv-79.2-44",
+        setting: "intact",
+        category: "conventional",
+        label: "79.2 Gy in 44 fractions",
+        totalDose: 79.2,
+        fractions: 44,
+        treatmentsPerWeek: 5,
+        technique: "IMRT/VMAT",
+        summary: "Dose-escalated conventional fractionation example."
+      },
+      {
+        id: "mod-60-20",
+        setting: "intact",
+        category: "moderate",
+        label: "60 Gy in 20 fractions",
+        totalDose: 60,
+        fractions: 20,
+        treatmentsPerWeek: 5,
+        technique: "IMRT/VMAT",
+        summary: "Common moderately hypofractionated example."
+      },
+      {
+        id: "mod-70-28",
+        setting: "intact",
+        category: "moderate",
+        label: "70 Gy in 28 fractions",
+        totalDose: 70,
+        fractions: 28,
+        treatmentsPerWeek: 5,
+        technique: "IMRT/VMAT",
+        summary: "Common moderately hypofractionated example."
+      },
+      {
+        id: "sbrt-36.25-5",
+        setting: "intact",
+        category: "ultra",
+        label: "36.25 Gy in 5 fractions",
+        totalDose: 36.25,
+        fractions: 5,
+        treatmentsPerWeek: 5,
+        technique: "SBRT/SABR",
+        summary: "Common five-fraction prostate SBRT example."
+      },
+      {
+        id: "sbrt-40-5",
+        setting: "intact",
+        category: "ultra",
+        label: "40 Gy in 5 fractions",
+        totalDose: 40,
+        fractions: 5,
+        treatmentsPerWeek: 5,
+        technique: "SBRT/SABR",
+        summary: "Five-fraction prostate SBRT example requiring protocol-specific review."
+      }
+    ];
+
+    function isActiveProstateSite() {
+      return state.systemId === "gu" && state.siteId === "prostate";
+    }
+
+    function nearlyEqual(a, b, tolerance = 0.051) {
+      return Number.isFinite(a) && Number.isFinite(b) && Math.abs(a - b) <= tolerance;
+    }
+
+    function classifyProstateFractionation(totalDose, fractions) {
+      if (!(totalDose > 0 && fractions > 0)) {
+        return { id: "custom", label: "Custom or other", dosePerFraction: NaN };
+      }
+
+      const dosePerFraction = totalDose / fractions;
+
+      if (dosePerFraction >= 1.75 && dosePerFraction <= 2.05) {
+        return { id: "conventional", label: "Conventional fractionation", dosePerFraction };
+      }
+
+      if (dosePerFraction >= 2.4 && dosePerFraction <= 3.4) {
+        return { id: "moderate", label: "Moderately hypofractionated", dosePerFraction };
+      }
+
+      if (dosePerFraction >= 5) {
+        return { id: "ultra", label: "Ultrahypofractionated/SBRT", dosePerFraction };
+      }
+
+      return { id: "custom", label: "Custom or other", dosePerFraction };
+    }
+
+    function currentProstatePreset(totalDose, fractions) {
+      return prostateRegimenPresets.find(preset =>
+        nearlyEqual(preset.totalDose, totalDose) &&
+        nearlyEqual(preset.fractions, fractions, 0.01)
+      ) || null;
+    }
+
+    function populateProstatePresetOptions({ preserveSelection = true } = {}) {
+      const select = $("prostateRegimenPreset");
+      const settingSelect = $("prostateTreatmentSetting");
+      const categorySelect = $("prostateFractionationCategory");
+      if (!select || !settingSelect || !categorySelect) return;
+
+      const previousValue = preserveSelection ? select.value : "";
+      const setting = settingSelect.value;
+      const category = categorySelect.value;
+      const matching = prostateRegimenPresets.filter(preset =>
+        preset.setting === setting && preset.category === category
+      );
+
+      if (!matching.length) {
+        select.innerHTML = `<option value="">No built-in preset for this setting/category</option>`;
+        select.disabled = true;
+        return;
+      }
+
+      select.disabled = false;
+      select.innerHTML = `<option value="">Choose a common regimen...</option>` + matching.map(preset =>
+        `<option value="${preset.id}">${preset.label}</option>`
+      ).join("");
+
+      if (matching.some(preset => preset.id === previousValue)) {
+        select.value = previousValue;
+      }
+    }
+
+    function getProstateRegimenAssessment(totalDose, fractions, technique) {
+      const setting = $("prostateTreatmentSetting")?.value || "intact";
+      const classification = classifyProstateFractionation(totalDose, fractions);
+      const preset = currentProstatePreset(totalDose, fractions);
+      const dosePerFraction = classification.dosePerFraction;
+
+      if (!(totalDose > 0 && fractions > 0)) {
+        return {
+          tone: "info",
+          title: "Enter a complete prescription",
+          message: "The fractionation category and regimen check will update automatically."
+        };
+      }
+
+      if (setting !== "intact") {
+        const settingLabels = {
+          postop: "Post-prostatectomy",
+          "pelvic-nodes": "Prostate plus pelvic nodes / SIB",
+          "brachy-boost": "EBRT plus brachytherapy boost",
+          other: "Custom or other"
+        };
+        return {
+          tone: "info",
+          title: `${settingLabels[setting] || "Selected setting"}: individualized prescription`,
+          message: "This module does not validate postoperative, multi-dose-level pelvic nodal, or brachytherapy-boost prescriptions. Confirm target volumes, dose levels, sequencing, and institutional protocol."
+        };
+      }
+
+      let tone = "info";
+      let title = classification.label;
+      let message = `Entered dose: ${totalDose} Gy in ${fractions} fractions (${dosePerFraction.toFixed(2).replace(/\.00$/, "")} Gy/fraction).`;
+
+      if (preset) {
+        tone = "ok";
+        title = preset.summary;
+        message = `${preset.label} matches a built-in intact-prostate educational preset.`;
+      } else if (classification.id === "conventional") {
+        if (totalDose <= 72) {
+          tone = "warning";
+          title = "Definitive conventional dose needs review";
+          message = "For an intact-prostate definitive course, this resembles a lower-dose conventional schedule. It is not equivalent to 70 Gy in 28 fractions, which is moderately hypofractionated. Confirm a current dose-escalated protocol.";
+        } else if (totalDose >= 76 && totalDose <= 81) {
+          tone = "ok";
+          title = "Dose-escalated conventional fractionation";
+          message = "This falls within the range of common dose-escalated conventional examples, although the exact prescription remains protocol-specific.";
+        } else {
+          message = "This is conventionally fractionated but does not exactly match a built-in preset. Confirm the total dose and target definition.";
+        }
+      } else if (classification.id === "moderate") {
+        title = "Custom moderately hypofractionated regimen";
+        message = "This falls within the moderate hypofractionation dose-per-fraction range but does not exactly match the built-in 60 Gy/20 or 70 Gy/28 examples.";
+      } else if (classification.id === "ultra") {
+        tone = fractions === 5 ? "info" : "warning";
+        title = fractions === 5 ? "Custom five-fraction SBRT regimen" : "Ultrahypofractionated regimen needs review";
+        message = fractions === 5
+          ? "This is a five-fraction ultrahypofractionated course but does not exactly match a built-in preset."
+          : "The dose per fraction is in the ultrahypofractionated range, but the entered fraction count is outside the built-in five-fraction examples.";
+      } else {
+        tone = "warning";
+        title = "Outside common prostate fractionation bands";
+        message = "The entered dose per fraction does not fit the conventional, moderate, or ultrahypofractionated bands used by this educational module.";
+      }
+
+      if (classification.id === "ultra" && technique !== "SBRT/SABR") {
+        tone = "warning";
+        message += " The selected technique should also be reviewed because ultrahypofractionation generally requires an SBRT-capable workflow with high-quality image guidance.";
+      }
+
+      if ((classification.id === "conventional" || classification.id === "moderate") && technique === "3D conformal radiation") {
+        tone = "warning";
+        message += " Review the selected technique because modern definitive prostate treatment commonly uses highly conformal image-guided planning such as IMRT/VMAT.";
+      }
+
+      return { tone, title, message };
+    }
+
+    function updateProstateRegimenPanel({ syncCategory = true } = {}) {
+      const panel = $("prostateRegimenPanel");
+      if (!panel) return;
+
+      const active = isActiveProstateSite();
+      panel.hidden = !active;
+      if (!active) return;
+
+      const totalDose = parseFloat($("totalDose")?.value || "");
+      const fractions = parseFloat($("fractions")?.value || "");
+      const technique = $("technique")?.value || "";
+      const settingSelect = $("prostateTreatmentSetting");
+      const categorySelect = $("prostateFractionationCategory");
+      const presetSelect = $("prostateRegimenPreset");
+      const status = $("prostateRegimenStatus");
+
+      if (!settingSelect || !categorySelect || !presetSelect || !status) return;
+
+      const classification = classifyProstateFractionation(totalDose, fractions);
+      if (syncCategory && settingSelect.value === "intact") {
+        categorySelect.value = classification.id;
+      }
+
+      populateProstatePresetOptions();
+
+      const matchedPreset = currentProstatePreset(totalDose, fractions);
+      if (
+        matchedPreset &&
+        matchedPreset.setting === settingSelect.value &&
+        matchedPreset.category === categorySelect.value
+      ) {
+        presetSelect.value = matchedPreset.id;
+      } else if (presetSelect.value && !prostateRegimenPresets.some(preset =>
+        preset.id === presetSelect.value &&
+        preset.setting === settingSelect.value &&
+        preset.category === categorySelect.value
+      )) {
+        presetSelect.value = "";
+      }
+
+      const assessment = getProstateRegimenAssessment(totalDose, fractions, technique);
+      status.className = `prostate-regimen-status ${assessment.tone}`;
+      status.innerHTML = `<strong>${assessment.title}</strong>${assessment.message}`;
+    }
+
+    function applyProstateRegimenPreset() {
+      const select = $("prostateRegimenPreset");
+      if (!select || !select.value) return;
+      const preset = prostateRegimenPresets.find(item => item.id === select.value);
+      if (!preset) return;
+
+      $("totalDose").value = preset.totalDose;
+      $("fractions").value = preset.fractions;
+      $("treatmentsPerWeek").value = preset.treatmentsPerWeek;
+      $("technique").value = preset.technique;
+
+      updateDose();
+      setupSlideIndex = 0;
+      updateSetupCard();
+      updateTimeline();
+      updateTrendsPage();
+    }
+
     function updateTreatmentWeeksDisplay() {
       const field = $("treatmentWeeks");
       if (!field) return;
@@ -3648,6 +4058,8 @@
       const technique = $("technique").value;
       const valid = total > 0 && fractions > 0 && perWeek > 0;
 
+      updateProstateRegimenPanel({ syncCategory: true });
+
       if (!valid) {
         $("doseResult").innerHTML = `
           <strong class="dose-placeholder-title">Dose</strong>
@@ -3668,9 +4080,14 @@
       `;
 
       const descriptors = [];
-      if (fractions <= 5) descriptors.push("short course");
-      if (dosePerFraction >= 5) descriptors.push("high dose per visit");
-      if (fractions >= 25) descriptors.push("conventional course");
+      if (isActiveProstateSite()) {
+        const prostateClass = classifyProstateFractionation(total, fractions);
+        descriptors.push(prostateClass.label);
+      } else {
+        if (fractions <= 5) descriptors.push("short course");
+        if (dosePerFraction >= 5) descriptors.push("high dose per visit");
+        if (fractions >= 25) descriptors.push("multi-week course");
+      }
       descriptors.push(technique);
       $("doseTags").innerHTML = descriptors.map(x => `<span class="tag">${x}</span>`).join("");
       updateTreatmentCourse();
@@ -4305,6 +4722,7 @@
       updateDetails();
       updateViewer();
       updateDose();
+      updateProstateRegimenPanel({ syncCategory: true });
       updateSetupCard();
       updateTrendsPage();
       renderPage();
@@ -4348,6 +4766,15 @@
     if ($("saveLinksBtn")) $("saveLinksBtn").addEventListener("click", saveEmbedLinks);
     if ($("clearLinksBtn")) $("clearLinksBtn").addEventListener("click", clearEmbedLinks);
     $("openModelBtn").addEventListener("click", openCurrentModel);
+    if ($("prostateTreatmentSetting")) $("prostateTreatmentSetting").addEventListener("change", () => {
+      populateProstatePresetOptions({ preserveSelection: false });
+      updateProstateRegimenPanel({ syncCategory: false });
+    });
+    if ($("prostateFractionationCategory")) $("prostateFractionationCategory").addEventListener("change", () => {
+      populateProstatePresetOptions({ preserveSelection: false });
+      updateProstateRegimenPanel({ syncCategory: false });
+    });
+    if ($("prostateRegimenPreset")) $("prostateRegimenPreset").addEventListener("change", applyProstateRegimenPreset);
     if ($("noteTemplateSelect")) $("noteTemplateSelect").addEventListener("change", e => { if (e.target.value) insertClinicianNoteTemplate(); });
     window.addEventListener("resize", () => {
       updateViewer();
