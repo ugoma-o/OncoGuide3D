@@ -1359,6 +1359,68 @@
       line-height: 1.35;
     }
 
+    .prostate-secondary-dose-panel {
+      display: grid;
+      gap: 10px;
+      padding: 11px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.58);
+    }
+
+    .prostate-secondary-dose-panel[hidden],
+    .prostate-brachy-fields[hidden],
+    .prostate-ldr-note[hidden] {
+      display: none;
+    }
+
+    .prostate-brachy-fields {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      align-items: end;
+    }
+
+    .prostate-regimen-source {
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.62);
+    }
+
+    .prostate-regimen-source b {
+      color: var(--ink);
+    }
+
+    .prostate-regimen-source .basis-type {
+      color: var(--primary-dark);
+      font-weight: 900;
+    }
+
+    .prostate-regimen-source .basis-links {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 5px 9px;
+      margin-left: 4px;
+    }
+
+    .prostate-ldr-note {
+      grid-column: 1 / -1;
+      padding: 10px;
+      border: 1px solid rgba(191, 129, 32, 0.24);
+      border-radius: 12px;
+      background: rgba(255, 247, 237, 0.88);
+      color: #6f3b00;
+      font-size: 0.76rem;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 620px) {
+      .prostate-brachy-fields {
+        grid-template-columns: 1fr;
+      }
+    }
+
     @media (max-width: 620px) {
       .breast-radiobio-heading {
         align-items: stretch;
@@ -2918,9 +2980,12 @@
 
             <article class="reference-card">
               <strong>Radiation oncology guidelines</strong>
-              <p>Disease-site regimen modules use educational categories and common examples from current society guidelines. They support clinician review and do not generate an automated treatment recommendation.</p>
+              <p>Disease-site regimen modules use educational categories and common examples from society guidelines, consensus statements, and pivotal trials. The source type is displayed beside each matched preset.</p>
               <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines" target="_blank" rel="noopener noreferrer">ASTRO clinical practice guidelines</a>
-              <a href="https://www.auanet.org/guidelines-and-quality/guidelines/prostate-cancer-hypofractionated-radiotherapy-guideline" target="_blank" rel="noopener noreferrer">AUA/ASTRO/ASCO prostate hypofractionation guideline</a>
+              <a href="https://www.astro.org/provider-resources/guidelines/clinically-localized-prostate-cancer" target="_blank" rel="noopener noreferrer">AUA/ASTRO localized prostate guideline</a>
+              <a href="https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-hypofractionation-for-localized-prostate-cancer" target="_blank" rel="noopener noreferrer">ASTRO/ASCO/AUA prostate hypofractionation guideline</a>
+              <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/salvage-therapy-guideline" target="_blank" rel="noopener noreferrer">AUA/ASTRO/SUO salvage therapy guideline</a>
+              <a href="https://pubmed.ncbi.nlm.nih.gov/40707306/" target="_blank" rel="noopener noreferrer">HDR prostate brachytherapy boost consensus</a>
               <a href="https://www.astro.org/provider-resources/guidelines/whole-breast-irradiation-gl" target="_blank" rel="noopener noreferrer">ASTRO whole-breast irradiation guideline</a>
               <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/pbi-guideline-replacement" target="_blank" rel="noopener noreferrer">ASTRO partial-breast irradiation guideline</a>
               <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/postmastectomy-radiation-therapy" target="_blank" rel="noopener noreferrer">ASTRO/ASCO/SSO postmastectomy guideline</a>
@@ -3044,8 +3109,9 @@
                     <label for="prostateTreatmentSetting">Treatment setting</label>
                     <select id="prostateTreatmentSetting">
                       <option value="intact">Intact prostate, definitive</option>
-                      <option value="postop">Post-prostatectomy</option>
-                      <option value="pelvic-nodes">Prostate plus pelvic nodes / SIB</option>
+                      <option value="postop">Post-prostatectomy prostate bed</option>
+                      <option value="pelvic-nodes">Intact prostate plus pelvic nodes / SIB</option>
+                      <option value="postop-nodes">Post-prostatectomy bed plus pelvic nodes</option>
                       <option value="brachy-boost">EBRT plus brachytherapy boost</option>
                       <option value="other">Custom or other</option>
                     </select>
@@ -3067,8 +3133,82 @@
                   </div>
                 </div>
 
+                <div class="breast-radiobio-panel prostate-radiobio-panel" aria-label="Prostate BED and EQD2 calculator">
+                  <div class="breast-radiobio-heading">
+                    <div>
+                      <strong>Prostate BED and EQD2 estimate</strong>
+                      <p>Linear-quadratic comparison for the selected prostate prescription and target dose level.</p>
+                    </div>
+                    <div class="alpha-beta-control">
+                      <label for="prostateAlphaBeta">α/β, Gy</label>
+                      <input id="prostateAlphaBeta" type="number" min="1" max="10" step="1" inputmode="numeric" value="2" />
+                      <span class="alpha-beta-band very-low" id="prostateAlphaBetaBand">Very low</span>
+                    </div>
+                  </div>
+
+                  <div class="alpha-beta-scale" aria-label="Relative alpha beta category scale">
+                    <span><b>Very low</b> 1–2</span>
+                    <span><b>Low</b> 3–4</span>
+                    <span><b>Intermediate</b> 5–7</span>
+                    <span><b>High</b> 8–10</span>
+                  </div>
+
+                  <div class="prostate-secondary-dose-panel" id="prostateSecondaryDosePanel" hidden>
+                    <div class="breast-boost-fields" id="prostateNodalDoseFields" hidden>
+                      <div class="field">
+                        <label for="prostateNodalDose" id="prostateNodalDoseLabel">Pelvic nodal dose, Gy</label>
+                        <input id="prostateNodalDose" type="number" min="0.1" step="0.1" placeholder="Enter nodal dose" />
+                      </div>
+                      <div class="field">
+                        <label for="prostateNodalFractions" id="prostateNodalFractionsLabel">Pelvic nodal fractions</label>
+                        <input id="prostateNodalFractions" type="number" min="1" step="1" placeholder="Enter fractions" />
+                      </div>
+                    </div>
+
+                    <div class="prostate-brachy-fields" id="prostateBrachyDoseFields" hidden>
+                      <div class="field">
+                        <label for="prostateBrachyModality">Brachytherapy boost type</label>
+                        <select id="prostateBrachyModality">
+                          <option value="hdr">HDR boost</option>
+                          <option value="ldr">LDR implant</option>
+                        </select>
+                      </div>
+                      <div class="field" id="prostateHdrDoseField">
+                        <label for="prostateHdrDose">HDR boost total dose, Gy</label>
+                        <input id="prostateHdrDose" type="number" min="0.1" step="0.1" placeholder="Enter HDR dose" />
+                      </div>
+                      <div class="field" id="prostateHdrFractionsField">
+                        <label for="prostateHdrFractions">HDR boost fractions</label>
+                        <input id="prostateHdrFractions" type="number" min="1" step="1" placeholder="Enter fractions" />
+                      </div>
+                      <div class="field" id="prostateLdrIsotopeField" hidden>
+                        <label for="prostateLdrIsotope">LDR isotope</label>
+                        <select id="prostateLdrIsotope">
+                          <option value="I-125">I-125</option>
+                          <option value="Pd-103">Pd-103</option>
+                          <option value="Cs-131">Cs-131</option>
+                        </select>
+                      </div>
+                      <div class="field" id="prostateLdrDoseField" hidden>
+                        <label for="prostateLdrDose">LDR implant prescription, Gy</label>
+                        <input id="prostateLdrDose" type="number" min="0.1" step="0.1" placeholder="Enter implant dose" />
+                      </div>
+                      <div class="prostate-ldr-note" id="prostateLdrNote" hidden>
+                        Permanent-implant BED and EQD2 require isotope-, source-strength-, repair-, and dose-rate-specific modeling. This module displays the physical implant prescription but does not convert it with the simple external-beam/HDR equation.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="breast-radiobio-results" id="prostateRadiobioResults" aria-live="polite"></div>
+
+                  <p class="breast-radiobio-note">
+                    The default α/β of 2 Gy is an integer approximation for a commonly modeled low prostate-tumor α/β. BED and EQD2 are model-based comparisons, not plan-quality or toxicity determinations.
+                  </p>
+                </div>
+
                 <div class="prostate-regimen-status info" id="prostateRegimenStatus" aria-live="polite"></div>
-                <p class="prostate-regimen-disclaimer">Educational decision support only. Confirm the treatment setting, target volumes, normal-tissue constraints, systemic therapy, current guidelines, and institutional protocol before clinical use.</p>
+                <div class="breast-regimen-source prostate-regimen-source" id="prostateRegimenSource"></div>
+                <p class="prostate-regimen-disclaimer">Educational decision support only. A preset identifies a published guideline, consensus, or trial framework; it does not determine candidacy or replace target-volume, normal-tissue, systemic-therapy, physics, and institutional review.</p>
               </div>
 
               <div class="prostate-regimen-panel breast-regimen-panel" id="breastRegimenPanel" hidden>
@@ -4232,7 +4372,17 @@
       if (valid) {
         const boostPlan = getBreastBoostPlan();
 
-        if (boostPlan.active && boostPlan.mode === "sequential" && boostPlan.valid) {
+        const prostatePlan = isActiveProstateSite() ? getProstateRadiobiologyPlan() : null;
+
+        if (prostatePlan?.setting === "pelvic-nodes" && prostatePlan.secondaryValid) {
+          $('courseTreatmentText').textContent = `The prostate/SV and pelvic nodes receive different dose levels during the same ${prostatePlan.baseFractions} image-guided treatment visits.`;
+        } else if (prostatePlan?.setting === "postop-nodes" && prostatePlan.secondaryValid) {
+          $('courseTreatmentText').textContent = `Pelvic nodal treatment is completed over ${prostatePlan.nodalFractions} visits while prostate-bed treatment continues to ${prostatePlan.baseFractions} visits.`;
+        } else if (prostatePlan?.setting === "brachy-boost") {
+          $('courseTreatmentText').textContent = prostatePlan.secondaryType === "hdr-boost"
+            ? `External-beam treatment is combined with ${prostatePlan.hdrFractions || "an additional"} HDR boost procedure${prostatePlan.hdrFractions === 1 ? "" : "s"}.`
+            : `External-beam treatment is combined with a permanent ${prostatePlan.ldrIsotope || "LDR"} seed implant boost.`;
+        } else if (boostPlan.active && boostPlan.mode === "sequential" && boostPlan.valid) {
           $('courseTreatmentText').textContent = `The course includes ${boostPlan.baseFractions} whole-breast treatments followed by ${boostPlan.boostFractions} tumor-bed boost treatments, for ${boostPlan.totalFractions} total visits.`;
         } else if (boostPlan.active && boostPlan.mode === "sib" && boostPlan.valid) {
           $('courseTreatmentText').textContent = `Each of the ${boostPlan.baseFractions} sessions delivers the whole-breast dose and a higher integrated tumor-bed dose during the same visit.`;
@@ -4263,7 +4413,15 @@
         fractions: 39,
         treatmentsPerWeek: 5,
         technique: "IMRT/VMAT",
-        summary: "Dose-escalated conventional fractionation example."
+        summary: "Dose-escalated conventional fractionation example.",
+        basisType: "Evidence-based conventional example",
+        basisDetail: "A dose-escalated conventional external-beam example within the contemporary localized-prostate treatment framework.",
+        sources: [
+          {
+            label: "AUA/ASTRO localized prostate guideline",
+            url: "https://www.astro.org/provider-resources/guidelines/clinically-localized-prostate-cancer"
+          }
+        ]
       },
       {
         id: "conv-79.2-44",
@@ -4274,7 +4432,15 @@
         fractions: 44,
         treatmentsPerWeek: 5,
         technique: "IMRT/VMAT",
-        summary: "Dose-escalated conventional fractionation example."
+        summary: "Dose-escalated conventional fractionation example.",
+        basisType: "Evidence-based conventional example",
+        basisDetail: "A dose-escalated conventional external-beam example within the contemporary localized-prostate treatment framework.",
+        sources: [
+          {
+            label: "AUA/ASTRO localized prostate guideline",
+            url: "https://www.astro.org/provider-resources/guidelines/clinically-localized-prostate-cancer"
+          }
+        ]
       },
       {
         id: "mod-60-20",
@@ -4285,7 +4451,15 @@
         fractions: 20,
         treatmentsPerWeek: 5,
         technique: "IMRT/VMAT",
-        summary: "Common moderately hypofractionated example."
+        summary: "Preferred moderate-hypofractionation example.",
+        basisType: "ASTRO/ASCO/AUA guideline-preferred",
+        basisDetail: "One of the two moderate-hypofractionation schedules with the largest evidentiary base in the published joint guideline.",
+        sources: [
+          {
+            label: "ASTRO/ASCO/AUA hypofractionation guideline",
+            url: "https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-hypofractionation-for-localized-prostate-cancer"
+          }
+        ]
       },
       {
         id: "mod-70-28",
@@ -4296,7 +4470,15 @@
         fractions: 28,
         treatmentsPerWeek: 5,
         technique: "IMRT/VMAT",
-        summary: "Common moderately hypofractionated example."
+        summary: "Preferred moderate-hypofractionation example.",
+        basisType: "ASTRO/ASCO/AUA guideline-preferred",
+        basisDetail: "One of the two moderate-hypofractionation schedules with the largest evidentiary base in the published joint guideline.",
+        sources: [
+          {
+            label: "ASTRO/ASCO/AUA hypofractionation guideline",
+            url: "https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-hypofractionation-for-localized-prostate-cancer"
+          }
+        ]
       },
       {
         id: "sbrt-36.25-5",
@@ -4307,7 +4489,15 @@
         fractions: 5,
         treatmentsPerWeek: 5,
         technique: "SBRT/SABR",
-        summary: "Common five-fraction prostate SBRT example."
+        summary: "Five-fraction ultrahypofractionation example.",
+        basisType: "ASTRO/ASCO/AUA guideline-supported",
+        basisDetail: "Ultrahypofractionation is supported for appropriately selected patients; exact dose and delivery cadence remain protocol-specific.",
+        sources: [
+          {
+            label: "ASTRO/ASCO/AUA hypofractionation guideline",
+            url: "https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-hypofractionation-for-localized-prostate-cancer"
+          }
+        ]
       },
       {
         id: "sbrt-40-5",
@@ -4318,7 +4508,275 @@
         fractions: 5,
         treatmentsPerWeek: 5,
         technique: "SBRT/SABR",
-        summary: "Five-fraction prostate SBRT example requiring protocol-specific review."
+        summary: "Dose-escalated five-fraction SBRT example.",
+        basisType: "Evidence-supported SBRT example",
+        basisDetail: "A commonly used five-fraction dose level that should be tied to an institutional protocol and modern image-guided SBRT workflow.",
+        sources: [
+          {
+            label: "ASTRO hypofractionation guideline framework",
+            url: "https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-hypofractionation-for-localized-prostate-cancer"
+          }
+        ]
+      },
+      {
+        id: "postop-62.5-25",
+        setting: "postop",
+        category: "moderate",
+        label: "62.5 Gy in 25 fractions",
+        totalDose: 62.5,
+        fractions: 25,
+        treatmentsPerWeek: 5,
+        technique: "IMRT/VMAT",
+        summary: "Hypofractionated post-prostatectomy regimen.",
+        basisType: "Phase III trial-supported",
+        basisDetail: "NRG-GU003 found 62.5 Gy in 25 fractions noninferior to 66.6 Gy in 37 fractions for late patient-reported GU and GI symptoms.",
+        sources: [
+          {
+            label: "NRG-GU003",
+            url: "https://pubmed.ncbi.nlm.nih.gov/38483412/"
+          },
+          {
+            label: "AUA/ASTRO/SUO salvage guideline",
+            url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/salvage-therapy-guideline"
+          }
+        ]
+      },
+      {
+        id: "postop-66.6-37",
+        setting: "postop",
+        category: "conventional",
+        label: "66.6 Gy in 37 fractions",
+        totalDose: 66.6,
+        fractions: 37,
+        treatmentsPerWeek: 5,
+        technique: "IMRT/VMAT",
+        summary: "Conventional post-prostatectomy regimen.",
+        basisType: "Phase III trial-supported",
+        basisDetail: "The conventionally fractionated comparator used in NRG-GU003.",
+        sources: [
+          {
+            label: "NRG-GU003",
+            url: "https://pubmed.ncbi.nlm.nih.gov/38483412/"
+          },
+          {
+            label: "AUA/ASTRO/SUO salvage guideline",
+            url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/salvage-therapy-guideline"
+          }
+        ]
+      },
+      {
+        id: "nodes-poprt-68-25",
+        setting: "pelvic-nodes",
+        category: "moderate",
+        label: "POP-RT: 68 Gy/25 prostate + 50 Gy/25 nodes",
+        totalDose: 68,
+        fractions: 25,
+        treatmentsPerWeek: 5,
+        technique: "IMRT/VMAT",
+        nodalDose: 50,
+        nodalFractions: 25,
+        summary: "Whole-pelvis phase III trial regimen.",
+        basisType: "Phase III trial-supported",
+        basisDetail: "POP-RT used 68 Gy in 25 fractions to the prostate and 50 Gy in 25 fractions to pelvic nodes in high- and very-high-risk disease.",
+        sources: [
+          {
+            label: "POP-RT",
+            url: "https://pubmed.ncbi.nlm.nih.gov/33497252/"
+          },
+          {
+            label: "AUA/ASTRO localized prostate guideline",
+            url: "https://www.auanet.org/guidelines-and-quality/guidelines/clinically-localized-prostate-cancer"
+          }
+        ]
+      },
+      {
+        id: "nodes-70-28-50.4",
+        setting: "pelvic-nodes",
+        category: "moderate",
+        label: "70 Gy/28 prostate + 50.4 Gy/28 nodes",
+        totalDose: 70,
+        fractions: 28,
+        treatmentsPerWeek: 5,
+        technique: "IMRT/VMAT",
+        nodalDose: 50.4,
+        nodalFractions: 28,
+        summary: "Moderate-hypofractionation with elective nodal SIB.",
+        basisType: "Guideline-supported range plus clinical evidence",
+        basisDetail: "The 50.4 Gy elective nodal dose is within the AUA/ASTRO 45–52 Gy range and has been delivered simultaneously with 70 Gy in 28 fractions to the prostate.",
+        sources: [
+          {
+            label: "AUA/ASTRO localized prostate guideline",
+            url: "https://www.auanet.org/guidelines-and-quality/guidelines/clinically-localized-prostate-cancer"
+          },
+          {
+            label: "Clinical nodal SIB report",
+            url: "https://pubmed.ncbi.nlm.nih.gov/22966463/"
+          }
+        ]
+      },
+      {
+        id: "spport-64.8-36",
+        setting: "postop-nodes",
+        category: "conventional",
+        label: "SPPORT-style: 64.8 Gy/36 bed + 45 Gy/25 nodes",
+        totalDose: 64.8,
+        fractions: 36,
+        treatmentsPerWeek: 5,
+        technique: "IMRT/VMAT",
+        nodalDose: 45,
+        nodalFractions: 25,
+        summary: "Post-prostatectomy prostate-bed plus pelvic-node regimen.",
+        basisType: "Phase III trial-supported",
+        basisDetail: "SPPORT used pelvic nodes to 45 Gy and prostate-bed doses of 64.8–70.2 Gy; the pelvic-node arm also included 4–6 months of short-term ADT.",
+        sources: [
+          {
+            label: "SPPORT",
+            url: "https://pubmed.ncbi.nlm.nih.gov/35569466/"
+          },
+          {
+            label: "AUA/ASTRO/SUO salvage guideline",
+            url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/salvage-therapy-guideline"
+          }
+        ]
+      },
+      {
+        id: "spport-70.2-39",
+        setting: "postop-nodes",
+        category: "conventional",
+        label: "SPPORT-style: 70.2 Gy/39 bed + 45 Gy/25 nodes",
+        totalDose: 70.2,
+        fractions: 39,
+        treatmentsPerWeek: 5,
+        technique: "IMRT/VMAT",
+        nodalDose: 45,
+        nodalFractions: 25,
+        summary: "Post-prostatectomy prostate-bed plus pelvic-node regimen.",
+        basisType: "Phase III trial-supported",
+        basisDetail: "SPPORT used pelvic nodes to 45 Gy and prostate-bed doses of 64.8–70.2 Gy; the pelvic-node arm also included 4–6 months of short-term ADT.",
+        sources: [
+          {
+            label: "SPPORT",
+            url: "https://pubmed.ncbi.nlm.nih.gov/35569466/"
+          },
+          {
+            label: "AUA/ASTRO/SUO salvage guideline",
+            url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/salvage-therapy-guideline"
+          }
+        ]
+      },
+      {
+        id: "hdr-37.5-15-15x1",
+        setting: "brachy-boost",
+        category: "moderate",
+        label: "37.5 Gy/15 EBRT + 15 Gy × 1 HDR",
+        totalDose: 37.5,
+        fractions: 15,
+        treatmentsPerWeek: 5,
+        technique: "IMRT/VMAT",
+        brachyModality: "hdr",
+        hdrDose: 15,
+        hdrFractions: 1,
+        summary: "Short-course EBRT plus single-fraction HDR boost.",
+        basisType: "Prospective trial-supported",
+        basisDetail: "A studied combined regimen using 37.5 Gy in 15 EBRT fractions and a 15 Gy single-fraction HDR boost.",
+        sources: [
+          {
+            label: "Single-fraction HDR boost study",
+            url: "https://pubmed.ncbi.nlm.nih.gov/21924511/"
+          },
+          {
+            label: "HDR boost consensus",
+            url: "https://pubmed.ncbi.nlm.nih.gov/40707306/"
+          }
+        ]
+      },
+      {
+        id: "hdr-45-25-15x1",
+        setting: "brachy-boost",
+        category: "conventional",
+        label: "45 Gy/25 EBRT + 15 Gy × 1 HDR",
+        totalDose: 45,
+        fractions: 25,
+        treatmentsPerWeek: 5,
+        technique: "IMRT/VMAT",
+        brachyModality: "hdr",
+        hdrDose: 15,
+        hdrFractions: 1,
+        summary: "Conventional EBRT plus single-fraction HDR boost.",
+        basisType: "Society consensus-supported",
+        basisDetail: "The evidence-based HDR boost consensus accepts 15 Gy in one fraction with EBRT equivalent to 45–50.4 Gy in 1.8–2 Gy fractions.",
+        sources: [
+          {
+            label: "HDR boost consensus",
+            url: "https://pubmed.ncbi.nlm.nih.gov/40707306/"
+          }
+        ]
+      },
+      {
+        id: "hdr-45-25-10.5x2",
+        setting: "brachy-boost",
+        category: "conventional",
+        label: "45 Gy/25 EBRT + 10.5 Gy × 2 HDR",
+        totalDose: 45,
+        fractions: 25,
+        treatmentsPerWeek: 5,
+        technique: "IMRT/VMAT",
+        brachyModality: "hdr",
+        hdrDose: 21,
+        hdrFractions: 2,
+        summary: "Conventional EBRT plus two-fraction HDR boost.",
+        basisType: "Society consensus-supported",
+        basisDetail: "The evidence-based HDR boost consensus accepts two HDR fractions of 9.5–11 Gy each with EBRT equivalent to 45–50.4 Gy.",
+        sources: [
+          {
+            label: "HDR boost consensus",
+            url: "https://pubmed.ncbi.nlm.nih.gov/40707306/"
+          }
+        ]
+      },
+      {
+        id: "hdr-50.4-28-15x1",
+        setting: "brachy-boost",
+        category: "conventional",
+        label: "50.4 Gy/28 EBRT + 15 Gy × 1 HDR",
+        totalDose: 50.4,
+        fractions: 28,
+        treatmentsPerWeek: 5,
+        technique: "IMRT/VMAT",
+        brachyModality: "hdr",
+        hdrDose: 15,
+        hdrFractions: 1,
+        summary: "Conventional EBRT plus single-fraction HDR boost.",
+        basisType: "Society consensus-supported",
+        basisDetail: "The evidence-based HDR boost consensus accepts 15 Gy in one fraction with EBRT equivalent to 45–50.4 Gy in 1.8–2 Gy fractions.",
+        sources: [
+          {
+            label: "HDR boost consensus",
+            url: "https://pubmed.ncbi.nlm.nih.gov/40707306/"
+          }
+        ]
+      },
+      {
+        id: "ldr-ascende-46-23",
+        setting: "brachy-boost",
+        category: "conventional",
+        label: "ASCENDE-RT: 46 Gy/23 EBRT + I-125 115 Gy LDR",
+        totalDose: 46,
+        fractions: 23,
+        treatmentsPerWeek: 5,
+        technique: "IMRT/VMAT",
+        brachyModality: "ldr",
+        ldrIsotope: "I-125",
+        ldrDose: 115,
+        summary: "Pelvic EBRT plus permanent-seed LDR boost.",
+        basisType: "Phase III trial protocol",
+        basisDetail: "ASCENDE-RT used 46 Gy in 23 pelvic EBRT fractions followed by an I-125 implant prescribed to 115 Gy.",
+        sources: [
+          {
+            label: "ASCENDE-RT",
+            url: "https://pubmed.ncbi.nlm.nih.gov/36528488/"
+          }
+        ]
       }
     ];
 
@@ -4352,11 +4810,151 @@
       return { id: "custom", label: "Custom or other", dosePerFraction };
     }
 
+    function prostatePresetSecondaryMatches(preset) {
+      const setting = $("prostateTreatmentSetting")?.value || "intact";
+
+      if (preset.setting !== setting) return false;
+
+      if (preset.nodalDose !== undefined) {
+        const nodalDose = parseFloat($("prostateNodalDose")?.value || "");
+        const nodalFractions = parseFloat($("prostateNodalFractions")?.value || "");
+        if (
+          !nearlyEqual(preset.nodalDose, nodalDose) ||
+          !nearlyEqual(preset.nodalFractions, nodalFractions, 0.01)
+        ) return false;
+      }
+
+      if (preset.brachyModality) {
+        const modality = $("prostateBrachyModality")?.value || "hdr";
+        if (modality !== preset.brachyModality) return false;
+
+        if (modality === "hdr") {
+          const hdrDose = parseFloat($("prostateHdrDose")?.value || "");
+          const hdrFractions = parseFloat($("prostateHdrFractions")?.value || "");
+          if (
+            !nearlyEqual(preset.hdrDose, hdrDose) ||
+            !nearlyEqual(preset.hdrFractions, hdrFractions, 0.01)
+          ) return false;
+        }
+
+        if (modality === "ldr") {
+          const ldrDose = parseFloat($("prostateLdrDose")?.value || "");
+          const isotope = $("prostateLdrIsotope")?.value || "";
+          if (
+            !nearlyEqual(preset.ldrDose, ldrDose) ||
+            preset.ldrIsotope !== isotope
+          ) return false;
+        }
+      }
+
+      return true;
+    }
+
     function currentProstatePreset(totalDose, fractions) {
+      const setting = $("prostateTreatmentSetting")?.value || "intact";
       return prostateRegimenPresets.find(preset =>
+        preset.setting === setting &&
         nearlyEqual(preset.totalDose, totalDose) &&
-        nearlyEqual(preset.fractions, fractions, 0.01)
+        nearlyEqual(preset.fractions, fractions, 0.01) &&
+        prostatePresetSecondaryMatches(preset)
       ) || null;
+    }
+
+    const prostateSettingBasis = {
+      intact: {
+        basisType: "Guideline framework",
+        basisDetail: "Use the AUA/ASTRO localized-prostate framework and the published ASTRO/ASCO/AUA hypofractionation guideline; exact regimen selection depends on risk group and treatment volumes.",
+        sources: [
+          {
+            label: "AUA/ASTRO localized prostate guideline",
+            url: "https://www.astro.org/provider-resources/guidelines/clinically-localized-prostate-cancer"
+          },
+          {
+            label: "ASTRO/ASCO/AUA hypofractionation guideline",
+            url: "https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-hypofractionation-for-localized-prostate-cancer"
+          }
+        ]
+      },
+      postop: {
+        basisType: "Guideline plus phase III evidence",
+        basisDetail: "The AUA/ASTRO/SUO salvage guideline addresses postoperative salvage care; NRG-GU003 provides comparative fractionation evidence.",
+        sources: [
+          {
+            label: "AUA/ASTRO/SUO salvage guideline",
+            url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/salvage-therapy-guideline"
+          },
+          {
+            label: "NRG-GU003",
+            url: "https://pubmed.ncbi.nlm.nih.gov/38483412/"
+          }
+        ]
+      },
+      "pelvic-nodes": {
+        basisType: "Guideline-supported nodal range",
+        basisDetail: "AUA/ASTRO recommends IMRT and approximately 45–52 Gy when elective pelvic nodes are treated; exact paired prostate and nodal doses are protocol-specific.",
+        sources: [
+          {
+            label: "AUA/ASTRO localized prostate guideline",
+            url: "https://www.auanet.org/guidelines-and-quality/guidelines/clinically-localized-prostate-cancer"
+          }
+        ]
+      },
+      "postop-nodes": {
+        basisType: "Salvage guideline plus phase III evidence",
+        basisDetail: "The salvage guideline provides the clinical framework; SPPORT supports pelvic-node treatment with short-term ADT in selected postoperative salvage patients.",
+        sources: [
+          {
+            label: "AUA/ASTRO/SUO salvage guideline",
+            url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/salvage-therapy-guideline"
+          },
+          {
+            label: "SPPORT",
+            url: "https://pubmed.ncbi.nlm.nih.gov/35569466/"
+          }
+        ]
+      },
+      "brachy-boost": {
+        basisType: "Society consensus and trial framework",
+        basisDetail: "HDR dose combinations should follow evidence-based brachytherapy consensus; LDR boost prescriptions should remain isotope- and protocol-specific.",
+        sources: [
+          {
+            label: "HDR boost consensus",
+            url: "https://pubmed.ncbi.nlm.nih.gov/40707306/"
+          },
+          {
+            label: "ASCENDE-RT",
+            url: "https://pubmed.ncbi.nlm.nih.gov/36528488/"
+          }
+        ]
+      },
+      other: {
+        basisType: "Custom regimen",
+        basisDetail: "No preset-specific evidence label is assigned. Confirm the prescription against the current disease setting, guideline, protocol, and institutional standards.",
+        sources: [
+          {
+            label: "ASTRO clinical practice guidelines",
+            url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines"
+          }
+        ]
+      }
+    };
+
+    function renderProstateGuidelineBasis(preset = null) {
+      const source = $("prostateRegimenSource");
+      if (!source) return;
+
+      const setting = $("prostateTreatmentSetting")?.value || "intact";
+      const basis = preset || prostateSettingBasis[setting] || prostateSettingBasis.other;
+      const links = (basis.sources || []).map(item =>
+        `<a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.label}</a>`
+      ).join("");
+
+      source.innerHTML = `
+        <b>Guideline basis:</b>
+        <span class="basis-type">${basis.basisType}</span>
+        — ${basis.basisDetail}
+        ${links ? `<span class="basis-links">${links}</span>` : ""}
+      `;
     }
 
     function populateProstatePresetOptions({ preserveSelection = true } = {}) {
@@ -4388,31 +4986,322 @@
       }
     }
 
+
+    function normalizeProstateAlphaBetaInput() {
+      const input = $("prostateAlphaBeta");
+      if (!input) return 2;
+
+      const parsed = Number.parseInt(input.value, 10);
+      const value = Number.isFinite(parsed)
+        ? Math.min(10, Math.max(1, Math.round(parsed)))
+        : 2;
+
+      input.value = value;
+      return value;
+    }
+
+    function getProstateRadiobiologyPlan() {
+      const setting = $("prostateTreatmentSetting")?.value || "intact";
+      const baseDose = parseFloat($("totalDose")?.value || "");
+      const baseFractions = parseFloat($("fractions")?.value || "");
+      const baseValid = baseDose > 0 && baseFractions > 0;
+
+      const plan = {
+        setting,
+        baseDose,
+        baseFractions,
+        baseValid,
+        secondaryType: "none",
+        secondaryValid: false
+      };
+
+      if (setting === "pelvic-nodes" || setting === "postop-nodes") {
+        const nodalDose = parseFloat($("prostateNodalDose")?.value || "");
+        const nodalFractions = parseFloat($("prostateNodalFractions")?.value || "");
+        return {
+          ...plan,
+          secondaryType: setting === "pelvic-nodes" ? "nodal-sib" : "postop-nodal-course",
+          nodalDose,
+          nodalFractions,
+          secondaryValid: nodalDose > 0 && nodalFractions > 0
+        };
+      }
+
+      if (setting === "brachy-boost") {
+        const modality = $("prostateBrachyModality")?.value || "hdr";
+        const hdrDose = parseFloat($("prostateHdrDose")?.value || "");
+        const hdrFractions = parseFloat($("prostateHdrFractions")?.value || "");
+        const ldrDose = parseFloat($("prostateLdrDose")?.value || "");
+        const ldrIsotope = $("prostateLdrIsotope")?.value || "I-125";
+
+        return {
+          ...plan,
+          secondaryType: modality === "hdr" ? "hdr-boost" : "ldr-implant",
+          modality,
+          hdrDose,
+          hdrFractions,
+          ldrDose,
+          ldrIsotope,
+          secondaryValid: modality === "hdr"
+            ? hdrDose > 0 && hdrFractions > 0
+            : ldrDose > 0 && Boolean(ldrIsotope)
+        };
+      }
+
+      return plan;
+    }
+
+    function prostatePrimaryTargetLabel(setting) {
+      const labels = {
+        intact: "Prostate target",
+        postop: "Prostate bed",
+        "pelvic-nodes": "Prostate/SV target",
+        "postop-nodes": "Prostate bed",
+        "brachy-boost": "External beam component",
+        other: "Entered target"
+      };
+      return labels[setting] || "Entered target";
+    }
+
+    function updateProstateSecondaryDoseControls() {
+      const panel = $("prostateSecondaryDosePanel");
+      const nodalFields = $("prostateNodalDoseFields");
+      const nodalDoseLabel = $("prostateNodalDoseLabel");
+      const nodalFractionsLabel = $("prostateNodalFractionsLabel");
+      const nodalFractions = $("prostateNodalFractions");
+      const brachyFields = $("prostateBrachyDoseFields");
+      const modality = $("prostateBrachyModality")?.value || "hdr";
+      const hdrDoseField = $("prostateHdrDoseField");
+      const hdrFractionsField = $("prostateHdrFractionsField");
+      const ldrIsotopeField = $("prostateLdrIsotopeField");
+      const ldrDoseField = $("prostateLdrDoseField");
+      const ldrNote = $("prostateLdrNote");
+      const setting = $("prostateTreatmentSetting")?.value || "intact";
+      const fractions = parseFloat($("fractions")?.value || "");
+
+      if (
+        !panel ||
+        !nodalFields ||
+        !nodalDoseLabel ||
+        !nodalFractionsLabel ||
+        !nodalFractions ||
+        !brachyFields ||
+        !hdrDoseField ||
+        !hdrFractionsField ||
+        !ldrIsotopeField ||
+        !ldrDoseField ||
+        !ldrNote
+      ) return;
+
+      const showNodal = setting === "pelvic-nodes" || setting === "postop-nodes";
+      const showBrachy = setting === "brachy-boost";
+
+      panel.hidden = !(showNodal || showBrachy);
+      nodalFields.hidden = !showNodal;
+      brachyFields.hidden = !showBrachy;
+
+      if (showNodal) {
+        const previousSetting = nodalFields.dataset.setting || "";
+        const settingChanged = previousSetting !== setting;
+        nodalFields.dataset.setting = setting;
+
+        if (setting === "pelvic-nodes") {
+          nodalDoseLabel.textContent = "Pelvic nodal SIB dose, Gy";
+          nodalFractionsLabel.textContent = "Nodal SIB fractions";
+          nodalFractions.readOnly = true;
+          nodalFractions.value = fractions > 0 ? fractions : "";
+        } else {
+          nodalDoseLabel.textContent = "Pelvic nodal dose, Gy";
+          nodalFractionsLabel.textContent = "Pelvic nodal fractions";
+          nodalFractions.readOnly = false;
+          if (settingChanged || !(parseFloat(nodalFractions.value) > 0)) {
+            nodalFractions.value = 25;
+          }
+        }
+      }
+
+      const showLdr = showBrachy && modality === "ldr";
+      hdrDoseField.hidden = showLdr;
+      hdrFractionsField.hidden = showLdr;
+      ldrIsotopeField.hidden = !showLdr;
+      ldrDoseField.hidden = !showLdr;
+      ldrNote.hidden = !showLdr;
+    }
+
+    function updateProstateRadiobiology() {
+      const results = $("prostateRadiobioResults");
+      const bandElement = $("prostateAlphaBetaBand");
+      if (!results || !bandElement) return;
+
+      updateProstateSecondaryDoseControls();
+
+      const alphaBeta = normalizeProstateAlphaBetaInput();
+      const band = alphaBetaBand(alphaBeta);
+      bandElement.textContent = band.label;
+      bandElement.className = `alpha-beta-band ${band.className}`;
+
+      const plan = getProstateRadiobiologyPlan();
+      const fmt = (value, digits = 1) =>
+        Number.isFinite(value)
+          ? value.toFixed(digits).replace(/\.0$/, "")
+          : "—";
+
+      if (!plan.baseValid) {
+        results.innerHTML = `
+          <div class="radiobio-result-card">
+            <strong>Complete the prostate prescription</strong>
+            <div class="radiobio-result-values">
+              <span>BED<b>—</b></span>
+              <span>EQD2<b>—</b></span>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const baseBed = calculateBed(plan.baseDose, plan.baseFractions, alphaBeta);
+      const baseEqd2 = calculateEqd2FromBed(baseBed, alphaBeta);
+      const baseDosePerFraction = plan.baseDose / plan.baseFractions;
+      const primaryLabel = prostatePrimaryTargetLabel(plan.setting);
+
+      const cards = [
+        `
+          <div class="radiobio-result-card">
+            <strong>${primaryLabel}</strong>
+            <div class="radiobio-result-values">
+              <span>BED, Gy (α/β=${alphaBeta})<b>${fmt(baseBed)}</b></span>
+              <span>EQD2, Gy<b>${fmt(baseEqd2)}</b></span>
+            </div>
+          </div>
+        `,
+        `
+          <div class="radiobio-result-card">
+            <strong>Physical fractionation</strong>
+            <div class="radiobio-result-values">
+              <span>Total dose<b>${fmt(plan.baseDose)} Gy</b></span>
+              <span>Dose/fraction<b>${fmt(baseDosePerFraction, 2)} Gy</b></span>
+            </div>
+          </div>
+        `
+      ];
+
+      if (plan.secondaryType === "nodal-sib" || plan.secondaryType === "postop-nodal-course") {
+        if (plan.secondaryValid) {
+          const nodalBed = calculateBed(plan.nodalDose, plan.nodalFractions, alphaBeta);
+          const nodalEqd2 = calculateEqd2FromBed(nodalBed, alphaBeta);
+          const isPostopNodes = plan.secondaryType === "postop-nodal-course";
+          cards.push(`
+            <div class="radiobio-result-card">
+              <strong>${isPostopNodes ? "Pelvic nodal phase" : "Pelvic nodal SIB"}</strong>
+              <div class="radiobio-result-values">
+                <span>BED, Gy (α/β=${alphaBeta})<b>${fmt(nodalBed)}</b></span>
+                <span>EQD2, Gy<b>${fmt(nodalEqd2)}</b></span>
+              </div>
+            </div>
+          `);
+          cards.push(`
+            <div class="radiobio-result-card">
+              <strong>${isPostopNodes ? "Postoperative field structure" : "Two dose levels, same visits"}</strong>
+              <div class="radiobio-result-values">
+                <span>${isPostopNodes ? "Prostate bed" : "Prostate/SV"}<b>${fmt(plan.baseDose)} Gy/${fmt(plan.baseFractions, 0)} fx</b></span>
+                <span>Pelvic nodes<b>${fmt(plan.nodalDose)} Gy/${fmt(plan.nodalFractions, 0)} fx</b></span>
+              </div>
+            </div>
+          `);
+        } else {
+          cards.push(`
+            <div class="radiobio-result-card">
+              <strong>Pelvic nodal prescription incomplete</strong>
+              <div class="radiobio-result-values">
+                <span>BED<b>—</b></span>
+                <span>EQD2<b>—</b></span>
+              </div>
+            </div>
+          `);
+        }
+      }
+
+      if (plan.secondaryType === "hdr-boost") {
+        if (plan.secondaryValid) {
+          const hdrBed = calculateBed(plan.hdrDose, plan.hdrFractions, alphaBeta);
+          const hdrEqd2 = calculateEqd2FromBed(hdrBed, alphaBeta);
+          const cumulativeBed = baseBed + hdrBed;
+          const cumulativeEqd2 = calculateEqd2FromBed(cumulativeBed, alphaBeta);
+          cards.push(`
+            <div class="radiobio-result-card">
+              <strong>HDR boost component</strong>
+              <div class="radiobio-result-values">
+                <span>BED, Gy (α/β=${alphaBeta})<b>${fmt(hdrBed)}</b></span>
+                <span>EQD2, Gy<b>${fmt(hdrEqd2)}</b></span>
+              </div>
+            </div>
+          `);
+          cards.push(`
+            <div class="radiobio-result-card">
+              <strong>Cumulative prostate target</strong>
+              <div class="radiobio-result-values">
+                <span>BED, Gy (α/β=${alphaBeta})<b>${fmt(cumulativeBed)}</b></span>
+                <span>EQD2, Gy<b>${fmt(cumulativeEqd2)}</b></span>
+              </div>
+            </div>
+          `);
+        } else {
+          cards.push(`
+            <div class="radiobio-result-card">
+              <strong>HDR boost incomplete</strong>
+              <div class="radiobio-result-values">
+                <span>BED<b>—</b></span>
+                <span>EQD2<b>—</b></span>
+              </div>
+            </div>
+          `);
+        }
+      }
+
+      if (plan.secondaryType === "ldr-implant") {
+        cards.push(`
+          <div class="radiobio-result-card">
+            <strong>LDR implant prescription</strong>
+            <div class="radiobio-result-values">
+              <span>Physical dose<b>${plan.secondaryValid ? `${plan.ldrDose} Gy` : "—"}</b></span>
+              <span>Isotope<b>${plan.ldrIsotope || "—"}</b></span>
+            </div>
+          </div>
+        `);
+        cards.push(`
+          <div class="radiobio-result-card">
+            <strong>LDR radiobiology not modeled</strong>
+            <div class="radiobio-result-values">
+              <span>BED<b>Source-specific</b></span>
+              <span>EQD2<b>Source-specific</b></span>
+            </div>
+          </div>
+        `);
+      }
+
+      results.innerHTML = cards.join("");
+    }
+
     function getProstateRegimenAssessment(totalDose, fractions, technique) {
       const setting = $("prostateTreatmentSetting")?.value || "intact";
       const classification = classifyProstateFractionation(totalDose, fractions);
       const preset = currentProstatePreset(totalDose, fractions);
+      const plan = getProstateRadiobiologyPlan();
       const dosePerFraction = classification.dosePerFraction;
 
       if (!(totalDose > 0 && fractions > 0)) {
         return {
           tone: "info",
           title: "Enter a complete prescription",
-          message: "The fractionation category and regimen check will update automatically."
+          message: "The fractionation category, radiobiology, preset match, and guideline basis will update automatically."
         };
       }
 
-      if (setting !== "intact") {
-        const settingLabels = {
-          postop: "Post-prostatectomy",
-          "pelvic-nodes": "Prostate plus pelvic nodes / SIB",
-          "brachy-boost": "EBRT plus brachytherapy boost",
-          other: "Custom or other"
-        };
+      if (preset) {
         return {
-          tone: "info",
-          title: `${settingLabels[setting] || "Selected setting"}: individualized prescription`,
-          message: "This module does not validate postoperative, multi-dose-level pelvic nodal, or brachytherapy-boost prescriptions. Confirm target volumes, dose levels, sequencing, and institutional protocol."
+          tone: preset.tone || "ok",
+          title: preset.summary,
+          message: `${preset.label} matches a built-in ${preset.basisType.toLowerCase()} regimen. Confirm that the patient, target volumes, image guidance, systemic therapy, and normal-tissue constraints match the cited framework.`
         };
       }
 
@@ -4420,45 +5309,101 @@
       let title = classification.label;
       let message = `Entered dose: ${totalDose} Gy in ${fractions} fractions (${dosePerFraction.toFixed(2).replace(/\.00$/, "")} Gy/fraction).`;
 
-      if (preset) {
-        tone = "ok";
-        title = preset.summary;
-        message = `${preset.label} matches a built-in intact-prostate educational preset.`;
-      } else if (classification.id === "conventional") {
-        if (totalDose <= 72) {
-          tone = "warning";
-          title = "Definitive conventional dose needs review";
-          message = "For an intact-prostate definitive course, this resembles a lower-dose conventional schedule. It is not equivalent to 70 Gy in 28 fractions, which is moderately hypofractionated. Confirm a current dose-escalated protocol.";
-        } else if (totalDose >= 76 && totalDose <= 81) {
-          tone = "ok";
-          title = "Dose-escalated conventional fractionation";
-          message = "This falls within the range of common dose-escalated conventional examples, although the exact prescription remains protocol-specific.";
-        } else {
-          message = "This is conventionally fractionated but does not exactly match a built-in preset. Confirm the total dose and target definition.";
+      if (setting === "intact") {
+        if (classification.id === "conventional") {
+          if (totalDose <= 72) {
+            tone = "warning";
+            title = "Definitive conventional dose needs review";
+            message = "For an intact-prostate definitive course, this resembles a lower-dose conventional schedule. It is not equivalent to 70 Gy in 28 fractions, which is moderately hypofractionated.";
+          } else if (totalDose >= 76 && totalDose <= 81) {
+            tone = "ok";
+            title = "Dose-escalated conventional fractionation";
+            message = "This is within a common dose-escalated conventional range but does not exactly match a built-in preset.";
+          }
+        } else if (classification.id === "moderate") {
+          title = "Custom moderately hypofractionated regimen";
+          message = "This falls within the moderate-hypofractionation range but does not exactly match the built-in 60 Gy/20 or 70 Gy/28 guideline-preferred examples.";
+        } else if (classification.id === "ultra") {
+          tone = fractions === 5 ? "info" : "warning";
+          title = fractions === 5 ? "Custom five-fraction SBRT regimen" : "Ultrahypofractionated regimen needs review";
+          message = fractions === 5
+            ? "This is a five-fraction ultrahypofractionated course but does not exactly match a built-in preset."
+            : "The dose per fraction is ultrahypofractionated, but the fraction count is outside the built-in five-fraction examples.";
         }
-      } else if (classification.id === "moderate") {
-        title = "Custom moderately hypofractionated regimen";
-        message = "This falls within the moderate hypofractionation dose-per-fraction range but does not exactly match the built-in 60 Gy/20 or 70 Gy/28 examples.";
-      } else if (classification.id === "ultra") {
-        tone = fractions === 5 ? "info" : "warning";
-        title = fractions === 5 ? "Custom five-fraction SBRT regimen" : "Ultrahypofractionated regimen needs review";
-        message = fractions === 5
-          ? "This is a five-fraction ultrahypofractionated course but does not exactly match a built-in preset."
-          : "The dose per fraction is in the ultrahypofractionated range, but the entered fraction count is outside the built-in five-fraction examples.";
-      } else {
-        tone = "warning";
-        title = "Outside common prostate fractionation bands";
-        message = "The entered dose per fraction does not fit the conventional, moderate, or ultrahypofractionated bands used by this educational module.";
+      }
+
+      if (setting === "postop") {
+        title = "Custom post-prostatectomy regimen";
+        message = "This does not exactly match the built-in NRG-GU003 schedules. Confirm the prostate-bed target, salvage timing, imaging, and any indication for ADT.";
+      }
+
+      if (setting === "pelvic-nodes") {
+        const nodalInGuidelineRange = plan.secondaryValid && plan.nodalDose >= 45 && plan.nodalDose <= 52;
+        tone = nodalInGuidelineRange ? "info" : "warning";
+        title = nodalInGuidelineRange
+          ? "Pelvic nodal dose within the AUA/ASTRO range"
+          : "Pelvic nodal prescription needs review";
+        message = plan.secondaryValid
+          ? `The pelvic nodes receive ${plan.nodalDose} Gy in ${plan.nodalFractions} fractions. AUA/ASTRO identifies approximately 45–52 Gy with IMRT for elective pelvic nodal treatment; the paired prostate dose remains protocol-specific.`
+          : "Enter the pelvic nodal dose. Intact-prostate nodal treatment is modeled as a simultaneous dose level over the prostate fraction count.";
+      }
+
+      if (setting === "postop-nodes") {
+        const spportLike = (
+          plan.secondaryValid &&
+          nearlyEqual(plan.nodalDose, 45) &&
+          plan.nodalFractions === 25 &&
+          totalDose >= 64.8 &&
+          totalDose <= 70.2
+        );
+        tone = spportLike ? "info" : "warning";
+        title = spportLike
+          ? "Postoperative prescription resembles the SPPORT framework"
+          : "Custom postoperative pelvic-node regimen";
+        message = spportLike
+          ? "The entered field doses fall within the SPPORT prostate-bed and pelvic-node framework, but ADT selection and patient eligibility still require clinical review."
+          : "This does not exactly match a built-in SPPORT-style preset. Confirm pelvic-node fractions, prostate-bed dose, sequencing, ADT, and salvage indication.";
+      }
+
+      if (setting === "brachy-boost") {
+        if (plan.secondaryType === "hdr-boost") {
+          const acceptableHdr = (
+            plan.secondaryValid &&
+            (
+              (nearlyEqual(plan.hdrDose, 15) && nearlyEqual(plan.hdrFractions, 1, 0.01)) ||
+              (plan.hdrFractions === 2 && plan.hdrDose / plan.hdrFractions >= 9.5 && plan.hdrDose / plan.hdrFractions <= 11)
+            )
+          );
+          tone = acceptableHdr ? "info" : "warning";
+          title = acceptableHdr ? "HDR boost within consensus dose options" : "Custom HDR boost regimen";
+          message = acceptableHdr
+            ? "The HDR component matches a society-consensus dose option, but the EBRT combination does not exactly match a built-in preset."
+            : "Confirm the HDR dose per fraction and EBRT combination against the current brachytherapy consensus and institutional protocol.";
+        } else {
+          tone = plan.secondaryValid ? "info" : "warning";
+          title = "LDR boost requires isotope-specific review";
+          message = plan.secondaryValid
+            ? `The entered ${plan.ldrIsotope} implant prescription is displayed as physical dose only; simple BED/EQD2 conversion is not applied.`
+            : "Enter the LDR isotope and implant prescription. Permanent-seed conversion requires a dedicated dose-rate model.";
+        }
+      }
+
+      if (setting === "other") {
+        title = "Custom prostate prescription";
+        message = "No preset-specific evidence label is assigned. Confirm the prescription against the applicable disease setting and current protocol.";
       }
 
       if (classification.id === "ultra" && technique !== "SBRT/SABR") {
         tone = "warning";
-        message += " The selected technique should also be reviewed because ultrahypofractionation generally requires an SBRT-capable workflow with high-quality image guidance.";
+        message += " The selected technique should be reviewed because ultrahypofractionation generally requires an SBRT-capable image-guided workflow.";
       }
 
-      if ((classification.id === "conventional" || classification.id === "moderate") && technique === "3D conformal radiation") {
+      if (
+        ["intact", "postop", "pelvic-nodes", "postop-nodes"].includes(setting) &&
+        technique === "3D conformal radiation"
+      ) {
         tone = "warning";
-        message += " Review the selected technique because modern definitive prostate treatment commonly uses highly conformal image-guided planning such as IMRT/VMAT.";
+        message += " Review the selected technique because modern prostate and pelvic treatment commonly uses highly conformal image-guided IMRT/VMAT.";
       }
 
       return { tone, title, message };
@@ -4483,10 +5428,11 @@
       if (!settingSelect || !categorySelect || !presetSelect || !status) return;
 
       const classification = classifyProstateFractionation(totalDose, fractions);
-      if (syncCategory && settingSelect.value === "intact") {
+      if (syncCategory) {
         categorySelect.value = classification.id;
       }
 
+      updateProstateRadiobiology();
       populateProstatePresetOptions();
 
       const matchedPreset = currentProstatePreset(totalDose, fractions);
@@ -4507,11 +5453,13 @@
       const assessment = getProstateRegimenAssessment(totalDose, fractions, technique);
       status.className = `prostate-regimen-status ${assessment.tone}`;
       status.innerHTML = `<strong>${assessment.title}</strong>${assessment.message}`;
+      renderProstateGuidelineBasis(matchedPreset);
     }
 
     function applyProstateRegimenPreset() {
       const select = $("prostateRegimenPreset");
       if (!select || !select.value) return;
+
       const preset = prostateRegimenPresets.find(item => item.id === select.value);
       if (!preset) return;
 
@@ -4519,14 +5467,34 @@
       $("fractions").value = preset.fractions;
       $("treatmentsPerWeek").value = preset.treatmentsPerWeek;
       $("technique").value = preset.technique;
+      $("prostateFractionationCategory").value = preset.category;
 
+      if (preset.nodalDose !== undefined) {
+        $("prostateNodalDose").value = preset.nodalDose;
+        $("prostateNodalFractions").value = preset.nodalFractions;
+      }
+
+      if (preset.brachyModality) {
+        $("prostateBrachyModality").value = preset.brachyModality;
+
+        if (preset.brachyModality === "hdr") {
+          $("prostateHdrDose").value = preset.hdrDose;
+          $("prostateHdrFractions").value = preset.hdrFractions;
+        } else {
+          $("prostateLdrIsotope").value = preset.ldrIsotope;
+          $("prostateLdrDose").value = preset.ldrDose;
+        }
+      }
+
+      updateProstateSecondaryDoseControls();
       updateDose();
+      updateTreatmentCourse();
       setupSlideIndex = 0;
       updateSetupCard();
       updateTimeline();
       updateTrendsPage();
+      requestAnimationFrame(syncWorkspaceColumnHeights);
     }
-
 
     const breastRegimenConfigs = {
       "whole-breast": {
@@ -5354,6 +6322,59 @@
         `${fmt(weeks)} week${weeks === 1 ? "" : "s"}`;
 
       const boostPlan = getBreastBoostPlan();
+      const prostatePlan = isActiveProstateSite() ? getProstateRadiobiologyPlan() : null;
+
+      if (prostatePlan?.setting === "pelvic-nodes") {
+        const weeks = fractions / perWeek;
+        weeksElement.textContent = formatWeeks(weeks);
+        doseElement.textContent = `${fmt(dosePerFraction, 2)} Gy/fx prostate/SV`;
+        fractionsElement.textContent = `${fmt(fractions)} fractions total`;
+        boostElement.textContent = prostatePlan.secondaryValid
+          ? `SIB: ${fmt(totalDose, 2)} Gy/${fmt(fractions)} fx prostate/SV + ${fmt(prostatePlan.nodalDose, 2)} Gy/${fmt(prostatePlan.nodalFractions)} fx pelvic nodes`
+          : "Pelvic nodal SIB dose incomplete";
+        boostElement.hidden = false;
+        field.title = prostatePlan.secondaryValid
+          ? `${formatWeeks(weeks)} and ${fmt(fractions)} total visits with simultaneous prostate/SV and pelvic-node dose levels.`
+          : `${formatWeeks(weeks)} and ${fmt(fractions)} total visits. Enter the pelvic nodal SIB dose.`;
+        return;
+      }
+
+      if (prostatePlan?.setting === "postop-nodes") {
+        const totalVisits = Math.max(fractions, prostatePlan.nodalFractions || 0);
+        const weeks = totalVisits / perWeek;
+        weeksElement.textContent = formatWeeks(weeks);
+        doseElement.textContent = `${fmt(dosePerFraction, 2)} Gy/fx prostate bed`;
+        fractionsElement.textContent = `${fmt(totalVisits)} treatment visits`;
+        boostElement.textContent = prostatePlan.secondaryValid
+          ? `${fmt(totalDose, 2)} Gy/${fmt(fractions)} fx prostate bed + ${fmt(prostatePlan.nodalDose, 2)} Gy/${fmt(prostatePlan.nodalFractions)} fx pelvic nodes`
+          : "Postoperative pelvic nodal prescription incomplete";
+        boostElement.hidden = false;
+        field.title = prostatePlan.secondaryValid
+          ? `${formatWeeks(weeks)} with pelvic nodes completed over ${fmt(prostatePlan.nodalFractions)} visits and the prostate bed completed over ${fmt(fractions)} visits.`
+          : `${formatWeeks(weeks)}. Enter the postoperative pelvic nodal dose and fractions.`;
+        return;
+      }
+
+      if (prostatePlan?.setting === "brachy-boost") {
+        const weeks = fractions / perWeek;
+        weeksElement.textContent = `${formatWeeks(weeks)} EBRT`;
+        doseElement.textContent = `${fmt(dosePerFraction, 2)} Gy/fx EBRT`;
+        fractionsElement.textContent = `${fmt(fractions)} EBRT fractions`;
+
+        if (prostatePlan.secondaryType === "hdr-boost") {
+          boostElement.textContent = prostatePlan.secondaryValid
+            ? `HDR boost: ${fmt(prostatePlan.hdrDose, 2)} Gy/${fmt(prostatePlan.hdrFractions)} fx • overall duration protocol-specific`
+            : "HDR boost dose/fractions incomplete";
+        } else {
+          boostElement.textContent = prostatePlan.secondaryValid
+            ? `LDR boost: ${prostatePlan.ldrIsotope} ${fmt(prostatePlan.ldrDose, 2)} Gy • BED/EQD2 source-specific`
+            : "LDR implant boost prescription incomplete";
+        }
+
+        boostElement.hidden = false;
+        field.title = `${formatWeeks(weeks)} of external beam treatment plus a brachytherapy boost; overall duration depends on sequencing.`;
+        return;
+      }
 
       if (boostPlan.active && boostPlan.mode === "sequential" && boostPlan.valid) {
         const weeks = boostPlan.totalFractions / perWeek;
@@ -6148,14 +7169,53 @@
     if ($("clearLinksBtn")) $("clearLinksBtn").addEventListener("click", clearEmbedLinks);
     $("openModelBtn").addEventListener("click", openCurrentModel);
     if ($("prostateTreatmentSetting")) $("prostateTreatmentSetting").addEventListener("change", () => {
+      updateProstateSecondaryDoseControls();
+      updateProstateRegimenPanel({ syncCategory: true });
       populateProstatePresetOptions({ preserveSelection: false });
-      updateProstateRegimenPanel({ syncCategory: false });
+      updateDose();
+      updateTreatmentCourse();
+      requestAnimationFrame(syncWorkspaceColumnHeights);
     });
     if ($("prostateFractionationCategory")) $("prostateFractionationCategory").addEventListener("change", () => {
       populateProstatePresetOptions({ preserveSelection: false });
       updateProstateRegimenPanel({ syncCategory: false });
     });
     if ($("prostateRegimenPreset")) $("prostateRegimenPreset").addEventListener("change", applyProstateRegimenPreset);
+    if ($("prostateAlphaBeta")) {
+      $("prostateAlphaBeta").addEventListener("input", () => {
+        const input = $("prostateAlphaBeta");
+        if (input.value.includes(".")) input.value = input.value.split(".")[0];
+        updateProstateRadiobiology();
+        requestAnimationFrame(syncWorkspaceColumnHeights);
+      });
+      $("prostateAlphaBeta").addEventListener("change", () => {
+        normalizeProstateAlphaBetaInput();
+        updateProstateRadiobiology();
+        requestAnimationFrame(syncWorkspaceColumnHeights);
+      });
+    }
+    ["prostateNodalDose", "prostateNodalFractions", "prostateHdrDose", "prostateHdrFractions", "prostateLdrDose"].forEach(id => {
+      if ($(id)) $(id).addEventListener("input", () => {
+        updateProstateRadiobiology();
+        updateDose();
+        updateTreatmentCourse();
+        requestAnimationFrame(syncWorkspaceColumnHeights);
+      });
+    });
+    if ($("prostateBrachyModality")) $("prostateBrachyModality").addEventListener("change", () => {
+      updateProstateSecondaryDoseControls();
+      populateProstatePresetOptions({ preserveSelection: false });
+      updateProstateRadiobiology();
+      updateDose();
+      updateTreatmentCourse();
+      requestAnimationFrame(syncWorkspaceColumnHeights);
+    });
+    if ($("prostateLdrIsotope")) $("prostateLdrIsotope").addEventListener("change", () => {
+      updateProstateRadiobiology();
+      updateDose();
+      updateTreatmentCourse();
+      requestAnimationFrame(syncWorkspaceColumnHeights);
+    });
     if ($("breastTreatmentSetting")) $("breastTreatmentSetting").addEventListener("change", () => {
       populateBreastPresetOptions({ preserveSelection: false });
       updateBreastRegimenPanel({ syncCategory: false });
