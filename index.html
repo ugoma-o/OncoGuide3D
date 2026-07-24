@@ -4050,6 +4050,12 @@
 
 
 
+    const sharedSetupImagesByTechnique = {
+      "IMRT/VMAT": {
+        machine: "images/IMRT.jpg"
+      }
+    };
+
     const setupImageLibrary = {
       "gu:prostate": {
         "IMRT/VMAT": {
@@ -4075,7 +4081,7 @@
         description: "A linear accelerator rotates around the patient while daily image guidance helps align the treatment target.",
         slides: [
           ["🛏️", "Patient position", "Placeholder for a supine treatment setup image. Replace this with your site-specific patient positioning photo."],
-          ["⚙️", "Treatment machine", "Placeholder for a linear accelerator image, such as TrueBeam or comparable linac."],
+          ["⚙️", "Treatment machine", "Linear accelerator used to deliver image-guided IMRT/VMAT treatments."],
           ["🧩", "Immobilizer", "Placeholder for thermoplastic mask, Vac-Lok cushion, breast board, wing board, or pelvic immobilization device."]
         ]
       },
@@ -4309,6 +4315,7 @@
       const [icon, title, text] = slides[setupSlideIndex];
       const slideType = getSetupSlideType(title);
       const imagePath =
+        sharedSetupImagesByTechnique[technique]?.[slideType] ||
         setupImageLibrary[key]?.[technique]?.[slideType] ||
         setupImageLibrary[key]?.["IMRT/VMAT"]?.[slideType] ||
         "";
