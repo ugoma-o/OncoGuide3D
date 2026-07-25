@@ -889,6 +889,32 @@
       gap: 14px;
     }
 
+    .setup-preview-heading {
+      display: block;
+      margin-bottom: 6px;
+      text-align: left;
+    }
+
+    .setup-preview-heading > div {
+      width: 100%;
+    }
+
+    .setup-preview-heading h3 {
+      margin: 0;
+      letter-spacing: -0.03em;
+      text-align: left;
+    }
+
+    .setup-preview-heading p {
+      margin: 7px 0 0;
+      font-size: clamp(0.84rem, 1.05vw, 0.98rem);
+      line-height: 1.2;
+      font-weight: 800;
+      color: var(--primary-dark);
+      text-align: center;
+      text-transform: capitalize;
+    }
+
     .setup-media {
       position: relative;
       height: 460px;
@@ -3096,18 +3122,18 @@
           </div>
         </section>
           <section class="side-card setup-card">
-            <div class="panel-heading">
+            <div class="panel-heading setup-preview-heading">
               <div>
-                <h3>Treatment setup preview</h3>
-                <p id="setupSubtitle">Positioning, machine, and immobilization</p>
+                <h3>Treatment setup</h3>
+                <p id="setupSubtitle">Treatment Machine Preview</p>
               </div>
             </div>
 
             <div class="setup-media" id="setupMedia" role="img" aria-label="Treatment setup image placeholder">
-              <div class="setup-placeholder-icon" id="setupIcon">🛏️</div>
+              <div class="setup-placeholder-icon" id="setupIcon">⚙️</div>
               <div>
-                <strong id="setupImageTitle">Patient position</strong>
-                <p id="setupImageText">Placeholder for patient positioning image.</p>
+                <strong id="setupImageTitle">Treatment machine</strong>
+                <p id="setupImageText">Treatment-machine preview.</p>
               </div>
             </div>
 
@@ -4095,17 +4121,17 @@
     const setupImageLibrary = {
       "gu:prostate": {
         "IMRT/VMAT": {
-          position: "images/Supine.png",
+          position: "images/genitourinary/prostate/position.png",
           machine: "images/genitourinary/prostate/machine.png",
           immobilizer: "images/genitourinary/prostate/immobilizer.png"
         },
         "3D conformal radiation": {
-          position: "images/Supine.png",
+          position: "images/genitourinary/prostate/position.png",
           machine: "images/genitourinary/prostate/machine.png",
           immobilizer: "images/genitourinary/prostate/immobilizer.png"
         },
         "SBRT/SABR": {
-          position: "images/Supine.png",
+          position: "images/genitourinary/prostate/position.png",
           machine: "images/genitourinary/prostate/machine.png",
           immobilizer: "images/genitourinary/prostate/immobilizer.png"
         }
@@ -4116,48 +4142,48 @@
       "IMRT/VMAT": {
         description: "A linear accelerator rotates around the patient while daily image guidance helps align the treatment target.",
         slides: [
-          ["🛏️", "Patient position", "Supine prostate treatment position with both arms resting over the chest and the knees supported by a round leg rest."],
           ["⚙️", "Treatment machine", "Linear accelerator used to deliver image-guided IMRT/VMAT treatments."],
+          ["🛏️", "Patient position", "Placeholder for a supine treatment setup image. Replace this with your site-specific patient positioning photo."],
           ["🧩", "Immobilizer", "Placeholder for thermoplastic mask, Vac-Lok cushion, breast board, wing board, or pelvic immobilization device."]
         ]
       },
       "3D conformal radiation": {
         description: "A linear accelerator delivers shaped fields from selected beam angles using patient-specific blocks, MLCs, and reproducible setup.",
         slides: [
-          ["🛏️", "Patient position", "Supine prostate treatment position with both arms resting over the chest and the knees supported by a round leg rest."],
           ["⚙️", "Treatment machine", "Linear accelerator used to deliver shaped 3D conformal radiation fields."],
+          ["🛏️", "Patient position", "Placeholder for conventional supine or site-specific treatment setup."],
           ["🧩", "Immobilizer", "Placeholder for custom cradle, mask, breast board, or extremity setup device."]
         ]
       },
       "SBRT/SABR": {
         description: "SBRT/SABR uses highly focused radiation over a small number of treatments, with strict immobilization and motion management when needed.",
         slides: [
-          ["🛏️", "Patient position", "Supine prostate treatment position with both arms resting over the chest and the knees supported by a round leg rest."],
           ["🎯", "Treatment machine", "Placeholder for linac-based SBRT, CyberKnife, or other stereotactic platform."],
+          ["🛏️", "Patient position", "Placeholder for SBRT setup, commonly supine with customized body immobilization."],
           ["🧩", "Immobilizer", "Placeholder for Vac-Lok cradle, abdominal compression, body frame, or breath-hold setup."]
         ]
       },
       "SRS": {
         description: "SRS uses stereotactic localization and very precise immobilization to treat intracranial targets in one or a few sessions.",
         slides: [
-          ["🛏️", "Patient position", "Placeholder for cranial stereotactic setup."],
           ["🎯", "Treatment machine", "Placeholder for Gamma Knife, linac SRS, CyberKnife, or comparable system."],
+          ["🛏️", "Patient position", "Placeholder for cranial stereotactic setup."],
           ["🧩", "Immobilizer", "Placeholder for frameless mask, stereotactic frame, bite block, or head fixation system."]
         ]
       },
       "Protons": {
         description: "Proton therapy uses charged particles with finite range, often requiring highly reproducible setup and anatomy-specific verification.",
         slides: [
-          ["🛏️", "Patient position", "Placeholder for proton treatment setup."],
           ["🌀", "Treatment machine", "Placeholder for proton gantry, fixed beam room, or nozzle image."],
+          ["🛏️", "Patient position", "Placeholder for proton treatment setup."],
           ["🧩", "Immobilizer", "Placeholder for mask, body mold, breast board, or pediatric immobilization device."]
         ]
       },
       "Brachytherapy": {
         description: "Brachytherapy places a radiation source close to or inside the treatment region using applicators, catheters, or seeds.",
         slides: [
-          ["🛏️", "Patient position", "Placeholder for procedure or treatment position."],
           ["🏥", "Treatment equipment", "Placeholder for HDR afterloader, applicator setup, or procedure suite."],
+          ["🛏️", "Patient position", "Placeholder for procedure or treatment position."],
           ["🧩", "Applicator/immobilizer", "Placeholder for applicator, template, cylinder, tandem/ring, needles, or site-specific device."]
         ]
       }
