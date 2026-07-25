@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>OncoGuide 3D</title>
+  <!-- Build: larger session timing descriptions + Delivery label -->
+  <!-- Build: patient-facing-no-bed-eqd2-2026-07-25 -->
   <meta name="description" content="A clinical tool for showing patients anatomy, tumor locations, radiation treatment concepts, dose schedules, and expected symptoms over time." />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2218%22%20fill%3D%22%232f7f88%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2253%25%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%20font-family%3D%22Inter%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2225%22%20font-weight%3D%22900%22%20fill%3D%22white%22%3EOG%3C%2Ftext%3E%3C%2Fsvg%3E" />
   <link rel="manifest" href="./manifest.webmanifest" />
@@ -1131,7 +1133,11 @@
     }
 
     .prostate-preset-field {
-      grid-column: 1 / -1;
+      grid-column: auto;
+    }
+
+    .regimen-technique-field {
+      grid-column: 1;
     }
 
     .prostate-regimen-status {
@@ -1586,11 +1592,11 @@
       .dose-grid {
         grid-template-columns: 1fr;
         grid-template-areas:
-          "total"
           "fractions"
           "frequency"
-          "technique"
-          "summary";
+          "duration"
+          "summary"
+          "technique";
       }
 
       .course-summary-display {
@@ -1606,22 +1612,24 @@
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       grid-template-areas:
-        "total fractions"
-        "frequency summary"
-        "technique summary";
+        "fractions frequency"
+        "duration duration"
+        "summary summary"
+        "technique technique";
       gap: 12px;
       margin: 12px 0;
       align-items: stretch;
     }
 
-    .dose-total-field { grid-area: total; }
     .dose-fractions-field { grid-area: fractions; }
     .dose-frequency-field { grid-area: frequency; }
+    .dose-duration-field { grid-area: duration; }
     .dose-technique-field { grid-area: technique; }
     .dose-summary-field {
       grid-area: summary;
       display: flex;
       flex-direction: column;
+      margin-top: 22px;
     }
 
     .course-summary-display {
@@ -2998,7 +3006,182 @@
       }
     }
 
-  </style>
+  
+    /* Compact patient-facing regimen status */
+    .regimen-quiet-meta {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 9px;
+      flex-wrap: wrap;
+      min-height: 18px;
+      margin-top: -2px;
+    }
+
+    .regimen-quiet-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      color: var(--muted) !important;
+      font-size: 0.69rem !important;
+      font-weight: 750;
+      line-height: 1.25;
+      opacity: 0.76;
+      white-space: nowrap;
+    }
+
+    .regimen-quiet-status::before {
+      content: "ⓘ";
+      font-size: 0.72rem;
+      opacity: 0.74;
+    }
+
+    .regimen-quiet-status.ok {
+      color: #426b5a !important;
+    }
+
+    .regimen-quiet-status.warning {
+      color: #7b541c !important;
+    }
+
+    .regimen-source-disclosure {
+      color: var(--muted);
+      font-size: 0.68rem;
+      line-height: 1.35;
+    }
+
+    .regimen-source-disclosure summary {
+      cursor: pointer;
+      color: var(--muted);
+      font-weight: 750;
+      opacity: 0.68;
+      list-style: none;
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-underline-offset: 3px;
+    }
+
+    .regimen-source-disclosure summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .regimen-source-disclosure[open] {
+      flex-basis: 100%;
+    }
+
+    .regimen-source-detail {
+      margin-top: 7px;
+      padding: 9px 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.50);
+      color: var(--muted);
+      font-size: 0.70rem;
+      line-height: 1.4;
+    }
+
+    .regimen-source-detail .basis-links {
+      margin-left: 0;
+      margin-top: 4px;
+    }
+
+    .regimen-disclaimer-quiet {
+      margin: -2px 0 0;
+      color: var(--muted);
+      font-size: 0.66rem;
+      line-height: 1.3;
+      opacity: 0.62;
+      text-align: right;
+    }
+
+    @media (max-width: 620px) {
+      .regimen-quiet-meta {
+        justify-content: flex-start;
+      }
+
+      .regimen-disclaimer-quiet {
+        text-align: left;
+      }
+    }
+
+    .dose-technique-field[hidden] {
+      display: none !important;
+    }
+
+    .session-timing-card {
+      min-height: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      align-items: stretch;
+      padding: 14px 14px 3px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(241, 245, 247, 0.78);
+      color: var(--muted);
+    }
+
+    .session-timing-step {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr);
+      gap: 9px;
+      align-items: start;
+    }
+
+    .session-timing-number {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      font-size: 0.84rem;
+      font-weight: 900;
+      border: 1px solid rgba(31, 111, 120, 0.18);
+    }
+
+    .session-timing-step strong {
+      display: block;
+      color: var(--ink);
+      font-size: 0.96rem;
+      line-height: 1.15;
+      margin-bottom: 5px;
+    }
+
+    .session-timing-step span:last-child {
+      display: block;
+      color: var(--muted);
+      font-size: 0.94rem;
+      line-height: 1.42;
+    }
+.session-timing-total {
+      grid-column: 1 / -1;
+      margin-top: 2px;
+      padding: 8px 0 0;
+      border-top: 1px solid var(--line);
+      color: var(--primary-dark);
+      font-size: 1.04rem;
+      line-height: 1.2;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    @media (max-width: 720px) {
+      .session-timing-card {
+        grid-template-columns: 1fr;
+      }
+.session-timing-total {
+        grid-column: 1;
+      }
+    }
+</style>
 </head>
 <body>
   <div class="app-shell">
@@ -3173,7 +3356,7 @@
             <div class="dose-inline-card">
               <div class="panel-heading dose-heading-inline">
                 <div>
-                  <h3>Dose explanation</h3>
+                  <h3>Treatment plan</h3>
                   <p>For patient-facing discussion</p>
                 </div>
               </div>
@@ -3209,33 +3392,25 @@
                     </select>
                   </div>
 
+                  <div class="field regimen-technique-field">
+                    <label for="prostateTechnique">Technique</label>
+                    <select id="prostateTechnique">
+                      <option>IMRT/VMAT</option>
+                      <option>3D conformal radiation</option>
+                      <option>SBRT/SABR</option>
+                      <option>SRS</option>
+                      <option>Protons</option>
+                      <option>Brachytherapy</option>
+                    </select>
+                  </div>
+
                   <div class="field prostate-preset-field">
-                    <label for="prostateRegimenPreset">Common regimen preset</label>
+                    <label for="prostateRegimenPreset">Common regimen</label>
                     <select id="prostateRegimenPreset"></select>
                   </div>
                 </div>
 
-                <div class="breast-radiobio-panel prostate-radiobio-panel" aria-label="Prostate BED and EQD2 calculator">
-                  <div class="breast-radiobio-heading">
-                    <div>
-                      <strong>Prostate BED and EQD2 estimate</strong>
-                      <p>Linear-quadratic comparison for the selected prostate prescription and target dose level.</p>
-                    </div>
-                    <div class="alpha-beta-control">
-                      <label for="prostateAlphaBeta">α/β, Gy</label>
-                      <input id="prostateAlphaBeta" type="number" min="1" max="10" step="1" inputmode="numeric" value="2" />
-                      <span class="alpha-beta-band very-low" id="prostateAlphaBetaBand">Very low</span>
-                    </div>
-                  </div>
-
-                  <div class="alpha-beta-scale" aria-label="Relative alpha beta category scale">
-                    <span><b>Very low</b> 1–2</span>
-                    <span><b>Low</b> 3–4</span>
-                    <span><b>Intermediate</b> 5–7</span>
-                    <span><b>High</b> 8–10</span>
-                  </div>
-
-                  <div class="prostate-secondary-dose-panel" id="prostateSecondaryDosePanel" hidden>
+                <div class="prostate-secondary-dose-panel" id="prostateSecondaryDosePanel" hidden>
                     <div class="breast-boost-fields" id="prostateNodalDoseFields" hidden>
                       <div class="field">
                         <label for="prostateNodalDose" id="prostateNodalDoseLabel">Pelvic nodal dose, Gy</label>
@@ -3276,21 +3451,24 @@
                         <input id="prostateLdrDose" type="number" min="0.1" step="0.1" placeholder="Enter implant dose" />
                       </div>
                       <div class="prostate-ldr-note" id="prostateLdrNote" hidden>
-                        Permanent-implant BED and EQD2 require isotope-, source-strength-, repair-, and dose-rate-specific modeling. This module displays the physical implant prescription but does not convert it with the simple external-beam/HDR equation.
+                        Permanent-implant radiobiologic comparison requires isotope-, source-strength-, repair-, and dose-rate-specific modeling. This module displays the physical implant prescription without applying the simplified external-beam/HDR equation.
                       </div>
                     </div>
                   </div>
+                  <div hidden aria-hidden="true">
+                    <input id="prostateAlphaBeta" type="number" value="2" />
+                    <span id="prostateAlphaBetaBand"></span>
+                    <div id="prostateRadiobioResults"></div>
+                  </div>
 
-                  <div class="breast-radiobio-results" id="prostateRadiobioResults" aria-live="polite"></div>
-
-                  <p class="breast-radiobio-note">
-                    The default α/β of 2 Gy is an integer approximation for a commonly modeled low prostate-tumor α/β. BED and EQD2 are model-based comparisons, not plan-quality or toxicity determinations.
-                  </p>
+                <div class="regimen-quiet-meta">
+                  <span class="regimen-quiet-status info" id="prostateRegimenStatus" aria-live="polite"></span>
+                  <details class="regimen-source-disclosure">
+                    <summary>Source</summary>
+                    <div class="breast-regimen-source prostate-regimen-source regimen-source-detail" id="prostateRegimenSource"></div>
+                  </details>
                 </div>
-
-                <div class="prostate-regimen-status info" id="prostateRegimenStatus" aria-live="polite"></div>
-                <div class="breast-regimen-source prostate-regimen-source" id="prostateRegimenSource"></div>
-                <p class="prostate-regimen-disclaimer">Educational decision support only. A preset identifies a published guideline, consensus, or trial framework; it does not determine candidacy or replace target-volume, normal-tissue, systemic-therapy, physics, and institutional review.</p>
+                <p class="prostate-regimen-disclaimer regimen-disclaimer-quiet">Educational decision support only. Final regimen selection remains individualized.</p>
               </div>
 
               <div class="prostate-regimen-panel breast-regimen-panel" id="breastRegimenPanel" hidden>
@@ -3319,8 +3497,20 @@
                     </select>
                   </div>
 
+                  <div class="field regimen-technique-field">
+                    <label for="breastTechnique">Technique</label>
+                    <select id="breastTechnique">
+                      <option>IMRT/VMAT</option>
+                      <option>3D conformal radiation</option>
+                      <option>SBRT/SABR</option>
+                      <option>SRS</option>
+                      <option>Protons</option>
+                      <option>Brachytherapy</option>
+                    </select>
+                  </div>
+
                   <div class="field prostate-preset-field">
-                    <label for="breastRegimenPreset">Common regimen preset</label>
+                    <label for="breastRegimenPreset">Common regimen</label>
                     <select id="breastRegimenPreset"></select>
                   </div>
                 </div>
@@ -3367,54 +3557,66 @@
 
                   <div class="breast-boost-summary" id="breastBoostSummary" aria-live="polite"></div>
 
-                  <div class="breast-radiobio-panel" aria-label="BED and EQD2 calculator">
-                    <div class="breast-radiobio-heading">
-                      <div>
-                        <strong>BED and EQD2 estimate</strong>
-                        <p>Linear-quadratic estimate using the selected α/β ratio.</p>
-                      </div>
-                      <div class="alpha-beta-control">
-                        <label for="breastAlphaBeta">α/β, Gy</label>
-                        <input id="breastAlphaBeta" type="number" min="1" max="10" step="1" inputmode="numeric" value="4" />
-                        <span class="alpha-beta-band low" id="breastAlphaBetaBand">Low</span>
-                      </div>
-                    </div>
-
-                    <div class="alpha-beta-scale" aria-label="Relative alpha beta category scale">
-                      <span><b>Very low</b> 1–2</span>
-                      <span><b>Low</b> 3–4</span>
-                      <span><b>Intermediate</b> 5–7</span>
-                      <span><b>High</b> 8–10</span>
-                    </div>
-
-                    <div class="breast-radiobio-results" id="breastRadiobioResults" aria-live="polite"></div>
-
-                    <p class="breast-radiobio-note">
-                      BED and EQD2 are model-based comparisons, not delivered-dose measurements. The relative α/β bands are interface labels only and are not universal tissue classifications.
-                    </p>
+                  <div hidden aria-hidden="true">
+                    <input id="breastAlphaBeta" type="number" value="4" />
+                    <span id="breastAlphaBetaBand"></span>
+                    <div id="breastRadiobioResults"></div>
                   </div>
                 </div>
 
-                <div class="prostate-regimen-status info" id="breastRegimenStatus" aria-live="polite"></div>
-                <div class="breast-regimen-source" id="breastRegimenSource"></div>
-                <p class="prostate-regimen-disclaimer">Educational decision support only. Selection depends on pathology, stage, surgery, nodal risk, reconstruction, boost indication, normal-tissue exposure, systemic therapy, patient preference, current guidelines, and institutional protocol.</p>
+                <div class="regimen-quiet-meta">
+                  <span class="regimen-quiet-status info" id="breastRegimenStatus" aria-live="polite"></span>
+                  <details class="regimen-source-disclosure">
+                    <summary>Source</summary>
+                    <div class="breast-regimen-source regimen-source-detail" id="breastRegimenSource"></div>
+                  </details>
+                </div>
+                <p class="prostate-regimen-disclaimer regimen-disclaimer-quiet">Educational decision support only. Final regimen selection remains individualized.</p>
               </div>
 
+              <input id="totalDose" type="hidden" value="50" />
+
               <div class="dose-grid">
-                <div class="field dose-total-field">
-                  <label for="totalDose">Total dose, Gy</label>
-                  <input id="totalDose" type="number" min="0" step="0.1" value="50" />
-                </div>
                 <div class="field dose-fractions-field">
-                  <label for="fractions">Fractions</label>
+                  <label for="fractions">Treatment sessions</label>
                   <input id="fractions" type="number" min="1" step="1" value="25" />
                 </div>
+
                 <div class="field dose-frequency-field">
-                  <label for="treatmentsPerWeek">Treatments/week</label>
+                  <label for="treatmentsPerWeek">Sessions/week</label>
                   <input id="treatmentsPerWeek" type="number" min="0.5" max="14" step="0.5" value="5" />
                 </div>
+
+                <div class="field dose-duration-field">
+                  <span class="field-label">Session timing</span>
+                  <div class="session-timing-card" id="sessionDuration" aria-live="polite">
+                    <div class="session-timing-step">
+                      <span class="session-timing-number">1</span>
+                      <div>
+                        <strong>Prep</strong>
+                        <span>Enter the room and get into position.</span>
+                      </div>
+                    </div>
+                    <div class="session-timing-step">
+                      <span class="session-timing-number">2</span>
+                      <div>
+                        <strong>Set up</strong>
+                        <span>Imaging and alignment are completed.</span>
+                      </div>
+                    </div>
+                    <div class="session-timing-step">
+                      <span class="session-timing-number">3</span>
+                      <div>
+                        <strong>Delivery</strong>
+                        <span id="sessionDeliveryText">The radiation itself often takes only a few minutes.</span>
+                      </div>
+                    </div>
+                    <div class="session-timing-total" id="sessionDurationTotal">About 15–30 minutes total</div>
+                  </div>
+                </div>
+
                 <div class="field dose-summary-field">
-                  <span class="field-label" id="courseSummaryLabel">Course length / fractionation</span>
+                  <span class="field-label" id="courseSummaryLabel">Estimated treatment course</span>
                   <div
                     class="course-summary-display"
                     id="treatmentWeeks"
@@ -3423,12 +3625,12 @@
                     aria-labelledby="courseSummaryLabel"
                   >
                     <div class="course-summary-weeks" id="courseSummaryWeeks"></div>
-                    <div class="course-summary-dose" id="courseSummaryDose"></div>
                     <div class="course-summary-fractions" id="courseSummaryFractions"></div>
                     <div class="course-summary-boost" id="courseSummaryBoost" hidden></div>
                   </div>
                 </div>
-                <div class="field dose-technique-field">
+
+                <div class="field dose-technique-field" id="doseTechniqueField">
                   <label for="technique">Technique</label>
                   <select id="technique">
                     <option>IMRT/VMAT</option>
@@ -5390,7 +5592,7 @@
         return {
           tone: "info",
           title: "Enter a complete prescription",
-          message: "The fractionation category, radiobiology, preset match, and guideline basis will update automatically."
+          message: "The fractionation category, preset match, and guideline basis will update automatically."
         };
       }
 
@@ -5480,7 +5682,7 @@
           tone = plan.secondaryValid ? "info" : "warning";
           title = "LDR boost requires isotope-specific review";
           message = plan.secondaryValid
-            ? `The entered ${plan.ldrIsotope} implant prescription is displayed as physical dose only; simple BED/EQD2 conversion is not applied.`
+            ? `The entered ${plan.ldrIsotope} implant prescription is displayed as physical dose only; source-specific radiobiologic modeling is not applied.`
             : "Enter the LDR isotope and implant prescription. Permanent-seed conversion requires a dedicated dose-rate model.";
         }
       }
@@ -5506,6 +5708,31 @@
       return { tone, title, message };
     }
 
+    function syncRegimenTechniqueControls() {
+      const value = $("technique")?.value || "IMRT/VMAT";
+      if ($("prostateTechnique") && $("prostateTechnique").value !== value) {
+        $("prostateTechnique").value = value;
+      }
+      if ($("breastTechnique") && $("breastTechnique").value !== value) {
+        $("breastTechnique").value = value;
+      }
+    }
+
+    function setTechniqueFromRegimenControl(value) {
+      const mainTechnique = $("technique");
+      if (!mainTechnique || !value) return;
+      mainTechnique.value = value;
+      syncRegimenTechniqueControls();
+      mainTechnique.dispatchEvent(new Event("input", { bubbles: true }));
+      mainTechnique.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+
+    function updateTechniqueFieldPlacement() {
+      const lowerField = $("doseTechniqueField");
+      if (!lowerField) return;
+      lowerField.hidden = isActiveProstateSite() || isActiveBreastSite();
+    }
+
     function updateProstateRegimenPanel({ syncCategory = true } = {}) {
       const panel = $("prostateRegimenPanel");
       if (!panel) return;
@@ -5517,6 +5744,8 @@
       const totalDose = parseFloat($("totalDose")?.value || "");
       const fractions = parseFloat($("fractions")?.value || "");
       const technique = $("technique")?.value || "";
+      syncRegimenTechniqueControls();
+      updateTechniqueFieldPlacement();
       const settingSelect = $("prostateTreatmentSetting");
       const categorySelect = $("prostateFractionationCategory");
       const presetSelect = $("prostateRegimenPreset");
@@ -5548,8 +5777,15 @@
       }
 
       const assessment = getProstateRegimenAssessment(totalDose, fractions, technique);
-      status.className = `prostate-regimen-status ${assessment.tone}`;
-      status.innerHTML = `<strong>${assessment.title}</strong>${assessment.message}`;
+      const quietStatus = matchedPreset
+        ? { tone: "ok", text: "Guidance support" }
+        : assessment.tone === "warning"
+          ? { tone: "warning", text: "Review custom regimen" }
+          : { tone: "info", text: "Custom regimen" };
+
+      status.className = `regimen-quiet-status ${quietStatus.tone}`;
+      status.textContent = quietStatus.text;
+      status.removeAttribute("title");
       renderProstateGuidelineBasis(matchedPreset);
     }
 
@@ -6060,6 +6296,8 @@
       const totalDose = parseFloat($("totalDose")?.value || "");
       const fractions = parseFloat($("fractions")?.value || "");
       const technique = $("technique")?.value || "";
+      syncRegimenTechniqueControls();
+      updateTechniqueFieldPlacement();
       const settingSelect = $("breastTreatmentSetting");
       const categorySelect = $("breastFractionationCategory");
       const presetSelect = $("breastRegimenPreset");
@@ -6091,9 +6329,16 @@
       }
 
       const assessment = getBreastRegimenAssessment(totalDose, fractions, technique);
-      status.className = `prostate-regimen-status ${assessment.tone}`;
-      status.innerHTML = `<strong>${assessment.title}</strong>${assessment.message}`;
-      source.innerHTML = `<b>Guideline basis:</b> <a href="${config.sourceUrl}" target="_blank" rel="noopener noreferrer">${config.sourceLabel}</a>.`;
+      const quietStatus = matchedPreset
+        ? { tone: "ok", text: "Guidance support" }
+        : assessment.tone === "warning"
+          ? { tone: "warning", text: "Review custom regimen" }
+          : { tone: "info", text: "Custom regimen" };
+
+      status.className = `regimen-quiet-status ${quietStatus.tone}`;
+      status.textContent = quietStatus.text;
+      status.removeAttribute("title");
+      source.innerHTML = `<b>Clinical source:</b> <a href="${config.sourceUrl}" target="_blank" rel="noopener noreferrer">${config.sourceLabel}</a>.`;
     }
 
     function applyBreastRegimenPreset() {
@@ -6366,7 +6611,7 @@
           : "";
 
       if (!plan.valid) {
-        summary.innerHTML = `<b>Complete the boost prescription</b> to update total fractions, course duration, target-specific dose, BED, and EQD2.`;
+        summary.innerHTML = `<b>Complete the boost prescription</b> to update total fractions, course duration, and target-specific dose.`;
         updateBreastRadiobiology(plan);
         return;
       }
@@ -6380,34 +6625,77 @@
       updateBreastRadiobiology(plan);
     }
 
+    function getSessionTimingForTechnique(technique) {
+      const timings = {
+        "IMRT/VMAT": {
+          total: "About 15–30 minutes total",
+          delivery: "The radiation itself often takes only a few minutes."
+        },
+        "3D conformal radiation": {
+          total: "About 15–30 minutes total",
+          delivery: "The radiation itself often takes only a few minutes."
+        },
+        "SBRT/SABR": {
+          total: "About 30–60 minutes total",
+          delivery: "Delivery can take longer because of repeated imaging and precise alignment."
+        },
+        "SRS": {
+          total: "About 30–90 minutes total",
+          delivery: "Delivery time varies by target number, machine, and treatment plan."
+        },
+        "Protons": {
+          total: "About 20–45 minutes total",
+          delivery: "The beam portion is usually shorter than the preparation and alignment time."
+        },
+        "Brachytherapy": {
+          total: "Timing varies by procedure",
+          delivery: "The source-delivery portion may be brief, but preparation and recovery can take longer."
+        }
+      };
+      return timings[technique] || {
+        total: "Timing varies by treatment",
+        delivery: "Most session time is spent on preparation, positioning, and imaging."
+      };
+    }
+
+    function updateSessionDuration() {
+      const timing = getSessionTimingForTechnique(
+        $("technique")?.value || "IMRT/VMAT"
+      );
+      if ($("sessionDurationTotal")) {
+        $("sessionDurationTotal").textContent = timing.total;
+      }
+      if ($("sessionDeliveryText")) {
+        $("sessionDeliveryText").textContent = timing.delivery;
+      }
+    }
+
     function updateTreatmentWeeksDisplay() {
       const field = $("treatmentWeeks");
       const weeksElement = $("courseSummaryWeeks");
-      const doseElement = $("courseSummaryDose");
       const fractionsElement = $("courseSummaryFractions");
       const boostElement = $("courseSummaryBoost");
 
-      if (!field || !weeksElement || !doseElement || !fractionsElement || !boostElement) return;
+      if (!field || !weeksElement || !fractionsElement || !boostElement) return;
 
-      const totalDose = parseFloat($("totalDose")?.value || "");
       const fractions = parseFloat($("fractions")?.value || "");
       const perWeek = parseFloat($("treatmentsPerWeek")?.value || "");
+      const technique = $("technique")?.value || "IMRT/VMAT";
+      const sessionDuration = getSessionTimingForTechnique(technique).total;
 
       const clearSummary = () => {
         weeksElement.textContent = "";
-        doseElement.textContent = "";
         fractionsElement.textContent = "";
         boostElement.textContent = "";
         boostElement.hidden = true;
         field.title = "";
       };
 
-      if (!(totalDose > 0 && fractions > 0 && perWeek > 0)) {
+      if (!(fractions > 0 && perWeek > 0)) {
         clearSummary();
         return;
       }
 
-      const dosePerFraction = totalDose / fractions;
       const fmt = (value, digits = 1) =>
         Number.isFinite(value)
           ? (Number.isInteger(value)
@@ -6418,21 +6706,21 @@
       const formatWeeks = (weeks) =>
         `${fmt(weeks)} week${weeks === 1 ? "" : "s"}`;
 
+      const formatSessions = (sessions) =>
+        `${fmt(sessions)} treatment session${sessions === 1 ? "" : "s"}`;
+
       const boostPlan = getBreastBoostPlan();
       const prostatePlan = isActiveProstateSite() ? getProstateRadiobiologyPlan() : null;
 
       if (prostatePlan?.setting === "pelvic-nodes") {
         const weeks = fractions / perWeek;
         weeksElement.textContent = formatWeeks(weeks);
-        doseElement.textContent = `${fmt(dosePerFraction, 2)} Gy/fx prostate/SV`;
-        fractionsElement.textContent = `${fmt(fractions)} fractions total`;
+        fractionsElement.textContent = `${formatSessions(fractions)} • ${sessionDuration}`;
         boostElement.textContent = prostatePlan.secondaryValid
-          ? `SIB: ${fmt(totalDose, 2)} Gy/${fmt(fractions)} fx prostate/SV + ${fmt(prostatePlan.nodalDose, 2)} Gy/${fmt(prostatePlan.nodalFractions)} fx pelvic nodes`
-          : "Pelvic nodal SIB dose incomplete";
+          ? "The prostate and pelvic lymph nodes are treated during the same visits."
+          : "Pelvic lymph-node schedule incomplete.";
         boostElement.hidden = false;
-        field.title = prostatePlan.secondaryValid
-          ? `${formatWeeks(weeks)} and ${fmt(fractions)} total visits with simultaneous prostate/SV and pelvic-node dose levels.`
-          : `${formatWeeks(weeks)} and ${fmt(fractions)} total visits. Enter the pelvic nodal SIB dose.`;
+        field.title = `${formatWeeks(weeks)} with ${formatSessions(fractions)}.`;
         return;
       }
 
@@ -6440,93 +6728,65 @@
         const totalVisits = Math.max(fractions, prostatePlan.nodalFractions || 0);
         const weeks = totalVisits / perWeek;
         weeksElement.textContent = formatWeeks(weeks);
-        doseElement.textContent = `${fmt(dosePerFraction, 2)} Gy/fx prostate bed`;
-        fractionsElement.textContent = `${fmt(totalVisits)} treatment visits`;
+        fractionsElement.textContent = `${formatSessions(totalVisits)} • ${sessionDuration}`;
         boostElement.textContent = prostatePlan.secondaryValid
-          ? `${fmt(totalDose, 2)} Gy/${fmt(fractions)} fx prostate bed + ${fmt(prostatePlan.nodalDose, 2)} Gy/${fmt(prostatePlan.nodalFractions)} fx pelvic nodes`
-          : "Postoperative pelvic nodal prescription incomplete";
+          ? "Pelvic lymph-node treatment finishes first; prostate-bed treatment then continues."
+          : "Postoperative pelvic lymph-node schedule incomplete.";
         boostElement.hidden = false;
-        field.title = prostatePlan.secondaryValid
-          ? `${formatWeeks(weeks)} with pelvic nodes completed over ${fmt(prostatePlan.nodalFractions)} visits and the prostate bed completed over ${fmt(fractions)} visits.`
-          : `${formatWeeks(weeks)}. Enter the postoperative pelvic nodal dose and fractions.`;
+        field.title = `${formatWeeks(weeks)} with ${formatSessions(totalVisits)}.`;
         return;
       }
 
       if (prostatePlan?.setting === "brachy-boost") {
         const weeks = fractions / perWeek;
-        weeksElement.textContent = `${formatWeeks(weeks)} EBRT`;
-        doseElement.textContent = `${fmt(dosePerFraction, 2)} Gy/fx EBRT`;
-        fractionsElement.textContent = `${fmt(fractions)} EBRT fractions`;
+        weeksElement.textContent = `${formatWeeks(weeks)} of external-beam treatment`;
+        fractionsElement.textContent = `${formatSessions(fractions)} • ${sessionDuration}`;
 
         if (prostatePlan.secondaryType === "hdr-boost") {
           boostElement.textContent = prostatePlan.secondaryValid
-            ? `HDR boost: ${fmt(prostatePlan.hdrDose, 2)} Gy/${fmt(prostatePlan.hdrFractions)} fx • overall duration protocol-specific`
-            : "HDR boost dose/fractions incomplete";
+            ? `Includes ${fmt(prostatePlan.hdrFractions)} HDR brachytherapy procedure${prostatePlan.hdrFractions === 1 ? "" : "s"}.`
+            : "HDR brachytherapy schedule incomplete.";
         } else {
           boostElement.textContent = prostatePlan.secondaryValid
-            ? `LDR boost: ${prostatePlan.ldrIsotope} ${fmt(prostatePlan.ldrDose, 2)} Gy • BED/EQD2 source-specific`
-            : "LDR implant boost prescription incomplete";
+            ? "Includes a permanent seed-implant procedure."
+            : "Seed-implant schedule incomplete.";
         }
 
         boostElement.hidden = false;
-        field.title = `${formatWeeks(weeks)} of external beam treatment plus a brachytherapy boost; overall duration depends on sequencing.`;
+        field.title = `${formatWeeks(weeks)} of external-beam treatment plus a brachytherapy procedure.`;
         return;
       }
 
       if (boostPlan.active && boostPlan.mode === "sequential" && boostPlan.valid) {
         const weeks = boostPlan.totalFractions / perWeek;
-
         weeksElement.textContent = formatWeeks(weeks);
-        doseElement.textContent = `${fmt(dosePerFraction, 2)} Gy/fx whole breast`;
-        fractionsElement.textContent = `${fmt(boostPlan.totalFractions)} fractions total`;
+        fractionsElement.textContent = `${formatSessions(boostPlan.totalFractions)} • ${sessionDuration}`;
         boostElement.textContent =
-          `${fmt(totalDose, 2)} Gy/${fmt(fractions)} fx whole breast + ` +
-          `${fmt(boostPlan.boostDose, 2)} Gy/${fmt(boostPlan.boostFractions)} fx sequential boost ` +
-          `• Tumor bed ${fmt(boostPlan.tumorBedTotalDose, 2)} Gy`;
+          `Includes ${fmt(boostPlan.boostFractions)} additional tumor-bed boost session` +
+          `${boostPlan.boostFractions === 1 ? "" : "s"}.`;
         boostElement.hidden = false;
-
-        field.title =
-          `${formatWeeks(weeks)}. ${fmt(boostPlan.totalFractions)} total fractions: ` +
-          `${fmt(fractions)} whole-breast fractions followed by ` +
-          `${fmt(boostPlan.boostFractions)} sequential boost fractions.`;
+        field.title = `${formatWeeks(weeks)} with ${formatSessions(boostPlan.totalFractions)}.`;
         return;
       }
 
       const weeks = fractions / perWeek;
-
       weeksElement.textContent = formatWeeks(weeks);
-      doseElement.textContent = `${fmt(dosePerFraction, 2)} Gy/fx`;
-      fractionsElement.textContent = `${fmt(fractions)} fractions total`;
+      fractionsElement.textContent = `${formatSessions(fractions)} • ${sessionDuration}`;
       boostElement.textContent = "";
       boostElement.hidden = true;
 
       if (boostPlan.active && boostPlan.mode === "sib") {
-        doseElement.textContent = `${fmt(dosePerFraction, 2)} Gy/fx whole breast`;
-
-        if (boostPlan.valid) {
-          boostElement.textContent =
-            `SIB: ${fmt(totalDose, 2)} Gy/${fmt(fractions)} fx whole breast + ` +
-            `${fmt(boostPlan.sibTotalDose, 2)} Gy/${fmt(fractions)} fx tumor bed`;
-          boostElement.hidden = false;
-          field.title =
-            `${formatWeeks(weeks)} and ${fmt(fractions)} total fractions. ` +
-            `The whole breast receives ${fmt(totalDose, 2)} Gy and the tumor bed receives ` +
-            `${fmt(boostPlan.sibTotalDose, 2)} Gy over the same fractions.`;
-        } else {
-          boostElement.textContent = "SIB tumor-bed dose incomplete";
-          boostElement.hidden = false;
-          field.title =
-            `${formatWeeks(weeks)} and ${fmt(fractions)} total fractions. Enter the SIB tumor-bed dose.`;
-        }
-        return;
+        boostElement.textContent = boostPlan.valid
+          ? "The tumor-bed boost is delivered during the same treatment sessions."
+          : "Tumor-bed boost schedule incomplete.";
+        boostElement.hidden = false;
       }
 
-      field.title =
-        `${formatWeeks(weeks)} • ${fmt(fractions)} total fractions • ` +
-        `${fmt(dosePerFraction, 2)} Gy per fraction`;
+      field.title = `${formatWeeks(weeks)} with ${formatSessions(fractions)}.`;
     }
 
     function updateDose() {
+      updateSessionDuration();
       updateTreatmentWeeksDisplay();
       const total = parseFloat($("totalDose").value);
       const fractions = parseFloat($("fractions").value);
@@ -7215,6 +7475,8 @@
     }
 
     function updateAll() {
+      updateTechniqueFieldPlacement();
+      syncRegimenTechniqueControls();
       renderSystems($("searchInput").value);
       renderSites();
       updateDetails();
@@ -7265,6 +7527,13 @@
     if ($("saveLinksBtn")) $("saveLinksBtn").addEventListener("click", saveEmbedLinks);
     if ($("clearLinksBtn")) $("clearLinksBtn").addEventListener("click", clearEmbedLinks);
     $("openModelBtn").addEventListener("click", openCurrentModel);
+    if ($("prostateTechnique")) $("prostateTechnique").addEventListener("change", event => {
+      setTechniqueFromRegimenControl(event.target.value);
+    });
+    if ($("breastTechnique")) $("breastTechnique").addEventListener("change", event => {
+      setTechniqueFromRegimenControl(event.target.value);
+    });
+
     if ($("prostateTreatmentSetting")) $("prostateTreatmentSetting").addEventListener("change", () => {
       updateProstateSecondaryDoseControls();
       updateProstateRegimenPanel({ syncCategory: true });
