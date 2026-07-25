@@ -956,7 +956,7 @@
     .setup-media.has-image {
       padding: 0;
       overflow: hidden;
-      border: 3px solid #123c69;
+      border: none;
       background: var(--surface-soft);
     }
 
@@ -967,6 +967,10 @@
       object-fit: contain;
       object-position: center;
       display: block;
+      border-left: 3px solid #123c69;
+      border-right: 3px solid #123c69;
+      border-top: 0;
+      border-bottom: 0;
       border-radius: 22px;
       background: var(--surface-soft);
     }
