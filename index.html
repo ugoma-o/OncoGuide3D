@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>OncoGuide 3D</title>
-  <!-- Build: modular Supine / Supine_2 / Prone position selector -->
+  <!-- Build: slide-specific Treatment Technique and Patient Position controls -->
   <!-- Build: patient-facing-no-bed-eqd2-2026-07-25 -->
   <meta name="description" content="A clinical tool for showing patients anatomy, tumor locations, radiation treatment concepts, dose schedules, and expected symptoms over time." />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2218%22%20fill%3D%22%232f7f88%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2253%25%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%20font-family%3D%22Inter%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2225%22%20font-weight%3D%22900%22%20fill%3D%22white%22%3EOG%3C%2Ftext%3E%3C%2Fsvg%3E" />
@@ -960,6 +960,10 @@
       font-weight: 800;
     }
 
+    .setup-position-control[hidden] {
+      display: none !important;
+    }
+
     @media (max-width: 620px) {
       .setup-position-control {
         grid-template-columns: 1fr;
@@ -1175,11 +1179,7 @@
     }
 
     .prostate-preset-field {
-      grid-column: auto;
-    }
-
-    .regimen-technique-field {
-      grid-column: 1;
+      grid-column: 1 / -1;
     }
 
     .prostate-regimen-status {
@@ -1637,8 +1637,7 @@
           "fractions"
           "frequency"
           "duration"
-          "summary"
-          "technique";
+          "summary";
       }
 
       .course-summary-display {
@@ -1656,8 +1655,7 @@
       grid-template-areas:
         "fractions frequency"
         "duration duration"
-        "summary summary"
-        "technique technique";
+        "summary summary";
       gap: 12px;
       margin: 12px 0;
       align-items: stretch;
@@ -1666,7 +1664,6 @@
     .dose-fractions-field { grid-area: fractions; }
     .dose-frequency-field { grid-area: frequency; }
     .dose-duration-field { grid-area: duration; }
-    .dose-technique-field { grid-area: technique; }
     .dose-summary-field {
       grid-area: summary;
       display: flex;
@@ -3150,12 +3147,7 @@
         text-align: left;
       }
     }
-
-    .dose-technique-field[hidden] {
-      display: none !important;
-    }
-
-    .session-timing-card {
+.session-timing-card {
       min-height: 100%;
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -3377,7 +3369,22 @@
               </div>
             </div>
 
-            <div class="setup-position-control">
+            <div class="setup-position-control" id="setupTechniqueControl">
+              <div>
+                <label for="technique">Treatment technique</label>
+                <span>Choose the equipment and delivery approach planned for this patient.</span>
+              </div>
+              <select id="technique" aria-label="Treatment technique">
+                <option>IMRT/VMAT</option>
+                <option>3D conformal radiation</option>
+                <option>SBRT/SABR</option>
+                <option>SRS</option>
+                <option>Protons</option>
+                <option>Brachytherapy</option>
+              </select>
+            </div>
+
+            <div class="setup-position-control" id="setupPositionControl" hidden>
               <div>
                 <label for="patientPositionSelect">Patient position</label>
                 <span>Choose the position planned for this patient.</span>
@@ -3443,18 +3450,6 @@
                       <option value="moderate">Moderately hypofractionated, 2.4 to 3.4 Gy/fraction</option>
                       <option value="ultra">Ultrahypofractionated/SBRT, at least 5 Gy/fraction</option>
                       <option value="custom">Custom or other</option>
-                    </select>
-                  </div>
-
-                  <div class="field regimen-technique-field">
-                    <label for="prostateTechnique">Technique</label>
-                    <select id="prostateTechnique">
-                      <option>IMRT/VMAT</option>
-                      <option>3D conformal radiation</option>
-                      <option>SBRT/SABR</option>
-                      <option>SRS</option>
-                      <option>Protons</option>
-                      <option>Brachytherapy</option>
                     </select>
                   </div>
 
@@ -3548,18 +3543,6 @@
                       <option value="ultra">Ultrahypofractionated, at least 5 Gy/fraction</option>
                       <option value="brachy">Brachytherapy schedule</option>
                       <option value="custom">Custom or other</option>
-                    </select>
-                  </div>
-
-                  <div class="field regimen-technique-field">
-                    <label for="breastTechnique">Technique</label>
-                    <select id="breastTechnique">
-                      <option>IMRT/VMAT</option>
-                      <option>3D conformal radiation</option>
-                      <option>SBRT/SABR</option>
-                      <option>SRS</option>
-                      <option>Protons</option>
-                      <option>Brachytherapy</option>
                     </select>
                   </div>
 
@@ -3684,17 +3667,6 @@
                   </div>
                 </div>
 
-                <div class="field dose-technique-field" id="doseTechniqueField">
-                  <label for="technique">Technique</label>
-                  <select id="technique">
-                    <option>IMRT/VMAT</option>
-                    <option>3D conformal radiation</option>
-                    <option>SBRT/SABR</option>
-                    <option>SRS</option>
-                    <option>Protons</option>
-                    <option>Brachytherapy</option>
-                  </select>
-                </div>
               </div>
               <div class="tag-row" id="doseTags"></div>
             </div>
@@ -4702,8 +4674,16 @@
       const slideType = getSetupSlideType(title);
       const selectedPosition = getSelectedPatientPosition();
       const isPositionSlide = slideType === "position";
+      const isEquipmentSlide = slideType === "machine";
 
       syncPatientPositionSelect();
+
+      if ($("setupTechniqueControl")) {
+        $("setupTechniqueControl").hidden = !isEquipmentSlide;
+      }
+      if ($("setupPositionControl")) {
+        $("setupPositionControl").hidden = !isPositionSlide;
+      }
 
       const imagePath = isPositionSlide
         ? selectedPosition.image
@@ -5830,28 +5810,11 @@
     }
 
     function syncRegimenTechniqueControls() {
-      const value = $("technique")?.value || "IMRT/VMAT";
-      if ($("prostateTechnique") && $("prostateTechnique").value !== value) {
-        $("prostateTechnique").value = value;
-      }
-      if ($("breastTechnique") && $("breastTechnique").value !== value) {
-        $("breastTechnique").value = value;
-      }
-    }
-
-    function setTechniqueFromRegimenControl(value) {
-      const mainTechnique = $("technique");
-      if (!mainTechnique || !value) return;
-      mainTechnique.value = value;
-      syncRegimenTechniqueControls();
-      mainTechnique.dispatchEvent(new Event("input", { bubbles: true }));
-      mainTechnique.dispatchEvent(new Event("change", { bubbles: true }));
+      // Technique is selected from the Treatment Equipment preview.
     }
 
     function updateTechniqueFieldPlacement() {
-      const lowerField = $("doseTechniqueField");
-      if (!lowerField) return;
-      lowerField.hidden = isActiveProstateSite() || isActiveBreastSite();
+      // Technique no longer appears in the Treatment Plan section.
     }
 
     function updateProstateRegimenPanel({ syncCategory = true } = {}) {
@@ -7657,13 +7620,6 @@
     if ($("saveLinksBtn")) $("saveLinksBtn").addEventListener("click", saveEmbedLinks);
     if ($("clearLinksBtn")) $("clearLinksBtn").addEventListener("click", clearEmbedLinks);
     $("openModelBtn").addEventListener("click", openCurrentModel);
-    if ($("prostateTechnique")) $("prostateTechnique").addEventListener("change", event => {
-      setTechniqueFromRegimenControl(event.target.value);
-    });
-    if ($("breastTechnique")) $("breastTechnique").addEventListener("change", event => {
-      setTechniqueFromRegimenControl(event.target.value);
-    });
-
     if ($("prostateTreatmentSetting")) $("prostateTreatmentSetting").addEventListener("change", () => {
       updateProstateSecondaryDoseControls();
       updateProstateRegimenPanel({ syncCategory: true });
