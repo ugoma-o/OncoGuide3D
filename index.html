@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>OncoVis3D</title>
-  <!-- Build: OncoVis3D pilot version without Trends module -->
+  <!-- Build: OncoVis3D pilot without disease-site tag bubbles -->
   <!-- Build: patient-facing-no-bed-eqd2-2026-07-25 -->
   <meta name="description" content="A clinical tool for showing patients anatomy, tumor locations, radiation treatment concepts, dose schedules, and expected symptoms over time." />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2218%22%20fill%3D%22%232f7f88%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2253%25%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%20font-family%3D%22Inter%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2225%22%20font-weight%3D%22900%22%20fill%3D%22white%22%3EOG%3C%2Ftext%3E%3C%2Fsvg%3E" />
@@ -374,6 +374,69 @@
     .home-clinical-note {
       margin-top: 18px;
       width: 100%;
+    }
+
+
+    .workspace-landing {
+      min-height: clamp(280px, 46vh, 470px);
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 18px;
+      padding: clamp(34px, 7vw, 78px);
+      text-align: center;
+      border: 1px solid var(--line);
+      background:
+        radial-gradient(circle at 50% 15%, rgba(105, 186, 192, 0.16), transparent 42%),
+        rgba(255, 255, 255, 0.72);
+    }
+
+    .workspace-landing[hidden],
+    #workspaceContent[hidden] {
+      display: none !important;
+    }
+
+    .workspace-landing-icon {
+      width: 78px;
+      height: 78px;
+      border-radius: 24px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--primary), #7764d8);
+      color: #ffffff;
+      font-size: 1.35rem;
+      font-weight: 950;
+      letter-spacing: -0.06em;
+      box-shadow: 0 18px 34px rgba(47, 127, 136, 0.22);
+    }
+
+    .workspace-landing-copy {
+      max-width: 720px;
+    }
+
+    .workspace-landing-kicker {
+      display: inline-block;
+      margin-bottom: 9px;
+      color: var(--primary-dark);
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .workspace-landing h2 {
+      margin: 0 0 12px;
+      color: var(--ink);
+      font-size: clamp(1.85rem, 4vw, 3.15rem);
+      line-height: 1.02;
+      letter-spacing: -0.055em;
+    }
+
+    .workspace-landing p {
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(0.96rem, 1.5vw, 1.08rem);
+      line-height: 1.65;
     }
 
     .workspace {
@@ -3035,7 +3098,16 @@
           </div>
         </section>
 
-      <section class="workspace" aria-label="Cancer education workspace">
+        <section class="workspace-landing panel" id="workspaceLanding" aria-labelledby="workspaceLandingTitle">
+          <div class="workspace-landing-icon" aria-hidden="true">3D</div>
+          <div class="workspace-landing-copy">
+            <span class="workspace-landing-kicker">Treatment education workspace</span>
+            <h2 id="workspaceLandingTitle">Choose an organ system to begin</h2>
+            <p>Select an organ system above to load its disease sites, 3D anatomy model, treatment setup, treatment plan, symptom timeline, and clinician notes.</p>
+          </div>
+        </section>
+
+      <section class="workspace" id="workspaceContent" aria-label="Cancer education workspace" hidden>
         <div class="main-column">
         <section class="viewer-card" aria-live="polite">
           <div class="viewer-toolbar">
@@ -3736,15 +3808,19 @@
 
     const state = {
       page: "home",
-      systemId: systems[0].id,
-      siteId: systems[0].sites[0].id,
+      systemId: null,
+      siteId: null,
       embedLinks: { ...savedEmbedLinks, ...defaultEmbedLinks }
     };
 
     const $ = (id) => document.getElementById(id);
-    const activeSystem = () => systems.find(s => s.id === state.systemId) || systems[0];
-    const activeSite = () => activeSystem().sites.find(site => site.id === state.siteId) || activeSystem().sites[0];
+    const activeSystem = () => systems.find(s => s.id === state.systemId) || null;
+    const activeSite = () => {
+      const system = activeSystem();
+      return system?.sites.find(site => site.id === state.siteId) || null;
+    };
     const embedKey = (systemId, siteId) => `${systemId}:${siteId}`;
+    const hasWorkspaceSelection = () => Boolean(activeSystem() && activeSite());
 
     function setDoseForActiveSite() {
       const site = activeSite();
@@ -3753,9 +3829,29 @@
       if ($("fractions")) $("fractions").value = site.dose[1];
     }
 
+    function updateWorkspaceVisibility() {
+      const hasSelection = hasWorkspaceSelection();
+      const landing = $("workspaceLanding");
+      const content = $("workspaceContent");
+
+      if (landing) landing.hidden = hasSelection;
+      if (content) content.hidden = !hasSelection;
+
+      if (!hasSelection) {
+        const frame = $("modelFrame");
+        if (frame) {
+          frame.hidden = true;
+          frame.removeAttribute("src");
+        }
+      }
+    }
+
     function getRouteHash() {
       if (state.page === "team") return "#team";
-      if (state.page === "workspace") return `#workspace/${state.systemId}/${state.siteId}`;
+      if (state.page === "workspace") {
+        if (!hasWorkspaceSelection()) return "#workspace";
+        return `#workspace/${state.systemId}/${state.siteId}`;
+      }
       return "#about";
     }
 
@@ -3773,6 +3869,7 @@
       document.querySelectorAll("[data-page-tab]").forEach(tab => {
         tab.classList.toggle("active", tab.dataset.pageTab === state.page);
       });
+      updateWorkspaceVisibility();
       requestAnimationFrame(syncWorkspaceColumnHeights);
       requestAnimationFrame(updateOrganScrollButtons);
     }
@@ -3780,9 +3877,15 @@
     function goToPage(page, { replace = false } = {}) {
       if (!["home", "workspace", "team"].includes(page)) page = "home";
       state.page = page;
-      if (page === "workspace") setDoseForActiveSite();
+
+      if (page === "workspace") {
+        state.systemId = null;
+        state.siteId = null;
+        if ($("searchInput")) $("searchInput").value = "";
+      }
+
       updateRouteHash({ replace });
-      renderPage();
+      updateAll();
     }
 
     function loadStateFromRouteHash() {
@@ -3810,11 +3913,15 @@
       if (first === "workspace") {
         state.page = "workspace";
         const system = systems.find(item => item.id === second);
+
         if (system) {
           state.systemId = system.id;
           const matchedSite = system.sites.find(site => site.id === third);
           state.siteId = matchedSite ? matchedSite.id : system.sites[0].id;
           setDoseForActiveSite();
+        } else {
+          state.systemId = null;
+          state.siteId = null;
         }
         return true;
       }
@@ -3845,7 +3952,8 @@
     }
 
     function selectSite(siteId) {
-      const site = activeSystem().sites.find(item => item.id === siteId);
+      const system = activeSystem();
+      const site = system?.sites.find(item => item.id === siteId);
       if (!site) return;
       state.page = "workspace";
       state.siteId = site.id;
@@ -3908,7 +4016,6 @@
         <button class="site-card ${site.id === state.siteId ? "active" : ""}" type="button" data-site-id="${site.id}">
           <strong>${site.name}</strong>
           <span>${site.hint}</span>
-          <div class="tag-row">${(site.tags || []).slice(0, 3).map(tag => `<span class="tag">${tag}</span>`).join("")}</div>
         </button>
       `).join("");
 
@@ -6652,14 +6759,22 @@
     }
 
     function syncWorkspaceColumnHeights() {
+      if (!hasWorkspaceSelection() || $("workspaceContent")?.hidden) return;
       syncTreatmentCourseHeight();
       requestAnimationFrame(syncClinicianNotesHeight);
     }
 
     function updateAll() {
+      renderSystems($("searchInput")?.value || "");
+
+      if (!hasWorkspaceSelection()) {
+        updateWorkspaceVisibility();
+        renderPage();
+        return;
+      }
+
       updateTechniqueFieldPlacement();
       syncRegimenTechniqueControls();
-      renderSystems($("searchInput").value);
       renderSites();
       updateDetails();
       updateViewer();
