@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>OncoVis3D</title>
-  <!-- Build: Disease sites positioned above the 3D viewer -->
+  <!-- Build: adaptive viewer alignment with Treatment explanation -->
   <!-- Build: patient-facing-no-bed-eqd2-2026-07-25 -->
   <meta name="description" content="A clinical tool for showing patients anatomy, tumor locations, radiation treatment concepts, dose schedules, and expected symptoms over time." />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2218%22%20fill%3D%22%232f7f88%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2253%25%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%20font-family%3D%22Inter%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2225%22%20font-weight%3D%22900%22%20fill%3D%22white%22%3EOG%3C%2Ftext%3E%3C%2Fsvg%3E" />
@@ -694,7 +694,11 @@
     .system-card strong { display: block; font-size: 0.96rem; }
     .system-card span { display: block; color: var(--muted); font-size: 0.8rem; }
 
-    .viewer-card { overflow: hidden; }
+    .viewer-card {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
 
     .viewer-toolbar {
       display: flex;
@@ -711,12 +715,13 @@
 
     .viewer-frame-wrap {
       position: relative;
-      aspect-ratio: 16 / 13;
+      flex: 1 1 auto;
+      aspect-ratio: auto;
       background:
         linear-gradient(135deg, rgba(31, 111, 120, 0.12), rgba(139, 92, 246, 0.10)),
         #eff5f6;
-      min-height: 660px;
-      height: clamp(660px, 76vh, 960px);
+      min-height: 420px;
+      height: clamp(560px, 68vh, 900px);
     }
 
     iframe.model-frame {
@@ -2230,6 +2235,11 @@
       .workspace > .main-column,
       .workspace > .side-column { max-width: none; justify-self: stretch; }
       .side-column { grid-template-columns: 1fr; }
+
+      .viewer-frame-wrap {
+        min-height: 520px;
+        height: clamp(520px, 68vh, 760px);
+      }
 
       /* In narrow, one-column mode, visually flatten the main column so the
          clinician notes can remain last after the setup, explanation, and timeline cards. */
@@ -6732,12 +6742,51 @@
       if (!courseCard) return;
 
       /*
-        The Treatment course card now follows its content height. It is no
-        longer forced to align with cards in the opposite column because that
-        could clip longer treatment-course content.
+        Treatment course always follows its natural content height. Alignment
+        is handled by resizing the 3D viewer area instead of compressing this
+        card.
       */
       courseCard.style.height = "";
       courseCard.style.minHeight = "";
+      courseCard.style.overflow = "visible";
+    }
+
+    function syncViewerToTreatmentExplanation() {
+      const viewerCard = document.querySelector(".viewer-card");
+      const viewerFrame = $("viewerWrap");
+      const explanationCard = document.querySelector(".education-card");
+      const isStacked = window.matchMedia("(max-width: 980px)").matches;
+
+      if (!viewerCard || !viewerFrame || !explanationCard || isStacked) {
+        if (viewerCard) viewerCard.style.height = "";
+        if (viewerFrame) viewerFrame.style.height = "";
+        return;
+      }
+
+      /*
+        Reset before measuring so repeated updates do not compound. The target
+        is the distance from the top of the viewer card to the bottom of the
+        Treatment explanation card.
+      */
+      viewerCard.style.height = "";
+      viewerFrame.style.height = "";
+
+      const viewerRect = viewerCard.getBoundingClientRect();
+      const explanationRect = explanationCard.getBoundingClientRect();
+      const targetCardHeight = Math.round(explanationRect.bottom - viewerRect.top);
+
+      const fixedContentHeight = Array.from(viewerCard.children)
+        .filter(child => child !== viewerFrame)
+        .reduce((total, child) => total + child.getBoundingClientRect().height, 0);
+
+      const minimumFrameHeight = 420;
+      const targetFrameHeight = Math.max(
+        minimumFrameHeight,
+        Math.round(targetCardHeight - fixedContentHeight)
+      );
+
+      viewerFrame.style.height = `${targetFrameHeight}px`;
+      viewerCard.style.height = `${fixedContentHeight + targetFrameHeight}px`;
     }
 
     function syncClinicianNotesHeight() {
@@ -6766,10 +6815,12 @@
       if (!hasWorkspaceSelection() || $("workspaceContent")?.hidden) return;
 
       /*
-        Intermediate cards are allowed to use their natural height. Only the
-        final Clinician notes textarea is adjusted to align the column bottoms.
+        The viewer card aligns with the bottom of Treatment explanation.
+        Treatment course remains natural-height, and the final Clinician notes
+        textarea continues to align the overall column bottoms.
       */
       syncTreatmentCourseHeight();
+      syncViewerToTreatmentExplanation();
       requestAnimationFrame(syncClinicianNotesHeight);
     }
 
