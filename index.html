@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>OncoVis3D</title>
-  <!-- Build: calendar switch aligned right in Treatment Plan header -->
+  <!-- Build: single Treatment Plan header button toggles calendar and guidance -->
   <!-- Build: patient-facing-no-bed-eqd2-2026-07-25 -->
   <meta name="description" content="A clinical tool for showing patients anatomy, tumor locations, radiation treatment concepts, dose schedules, and expected symptoms over time." />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2218%22%20fill%3D%22%232f7f88%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2253%25%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%20font-family%3D%22Inter%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2225%22%20font-weight%3D%22900%22%20fill%3D%22white%22%3EOG%3C%2Ftext%3E%3C%2Fsvg%3E" />
@@ -2012,14 +2012,6 @@
         margin-left: 0;
       }
 
-      .calendar-return-row {
-        justify-content: stretch;
-      }
-
-      .calendar-return-button {
-        width: 100%;
-      }
-
       .treatment-plan-header-switch {
         margin-left: auto;
       }
@@ -3610,12 +3602,17 @@
 
                 <button
                   class="treatment-plan-switch-button treatment-plan-header-switch"
-                  id="switchToCalendarBtn"
+                  id="treatmentPlanHeaderToggle"
                   type="button"
                   aria-controls="regimenGuidanceView treatmentCalendarView"
+                  aria-expanded="false"
                 >
-                  <span>Switch to calendar view</span>
-                  <span class="treatment-plan-switch-arrow" aria-hidden="true">›</span>
+                  <span id="treatmentPlanHeaderToggleLabel">Switch to calendar view</span>
+                  <span
+                    class="treatment-plan-switch-arrow"
+                    id="treatmentPlanHeaderToggleArrow"
+                    aria-hidden="true"
+                  >›</span>
                 </button>
               </div>
               <div class="treatment-plan-stage" id="treatmentPlanStage">
@@ -3864,18 +3861,6 @@
                 data-treatment-plan-view="calendar"
                 hidden
               >
-                <div class="calendar-return-row">
-                  <button
-                    class="treatment-plan-switch-button calendar-return-button"
-                    id="backToGuidanceBtn"
-                    type="button"
-                    aria-controls="regimenGuidanceView treatmentCalendarView"
-                  >
-                    <span class="treatment-plan-switch-arrow" aria-hidden="true">‹</span>
-                    <span>Back to regimen guidance</span>
-                  </button>
-                </div>
-
                 <div class="treatment-calendar-intro">
                   <div>
                     <strong>Your estimated treatment calendar</strong>
@@ -7419,6 +7404,9 @@
       const guidanceView = $("regimenGuidanceView");
       const calendarView = $("treatmentCalendarView");
       const subtitle = $("treatmentPlanViewSubtitle");
+      const toggleButton = $("treatmentPlanHeaderToggle");
+      const toggleLabel = $("treatmentPlanHeaderToggleLabel");
+      const toggleArrow = $("treatmentPlanHeaderToggleArrow");
       const showingCalendar = current.id === "calendar";
 
       if (showingCalendar) {
@@ -7428,6 +7416,24 @@
       if (guidanceView) guidanceView.hidden = showingCalendar;
       if (calendarView) calendarView.hidden = !showingCalendar;
       if (subtitle) subtitle.textContent = current.subtitle;
+
+      if (toggleButton) {
+        toggleButton.setAttribute("aria-expanded", showingCalendar ? "true" : "false");
+        toggleButton.setAttribute(
+          "aria-label",
+          showingCalendar ? "Back to regimen guidance" : "Switch to calendar view"
+        );
+      }
+
+      if (toggleLabel) {
+        toggleLabel.textContent = showingCalendar
+          ? "Back to regimen guidance"
+          : "Switch to calendar view";
+      }
+
+      if (toggleArrow) {
+        toggleArrow.textContent = showingCalendar ? "‹" : "›";
+      }
 
       if (showingCalendar) updateTreatmentCalendar();
 
@@ -7712,12 +7718,10 @@
       }
     }));
 
-    if ($("switchToCalendarBtn")) {
-      $("switchToCalendarBtn").addEventListener("click", () => setTreatmentPlanView(1));
-    }
-
-    if ($("backToGuidanceBtn")) {
-      $("backToGuidanceBtn").addEventListener("click", () => setTreatmentPlanView(0));
+    if ($("treatmentPlanHeaderToggle")) {
+      $("treatmentPlanHeaderToggle").addEventListener("click", () => {
+        setTreatmentPlanView(treatmentPlanViewIndex === 0 ? 1 : 0);
+      });
     }
 
     if ($("treatmentStartDate")) {
