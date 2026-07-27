@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>OncoVis3D</title>
-  <!-- Build: adaptive viewer alignment with Treatment explanation -->
+  <!-- Build: adaptive lower viewer-card buffer alignment -->
   <!-- Build: patient-facing-no-bed-eqd2-2026-07-25 -->
   <meta name="description" content="A clinical tool for showing patients anatomy, tumor locations, radiation treatment concepts, dose schedules, and expected symptoms over time." />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2218%22%20fill%3D%22%232f7f88%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2253%25%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%20font-family%3D%22Inter%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2225%22%20font-weight%3D%22900%22%20fill%3D%22white%22%3EOG%3C%2Ftext%3E%3C%2Fsvg%3E" />
@@ -715,13 +715,20 @@
 
     .viewer-frame-wrap {
       position: relative;
-      flex: 1 1 auto;
-      aspect-ratio: auto;
+      flex: 0 0 auto;
+      aspect-ratio: 16 / 13;
       background:
         linear-gradient(135deg, rgba(31, 111, 120, 0.12), rgba(139, 92, 246, 0.10)),
         #eff5f6;
-      min-height: 420px;
-      height: clamp(560px, 68vh, 900px);
+      min-height: 660px;
+      height: clamp(660px, 76vh, 960px);
+    }
+
+    .viewer-bottom-buffer {
+      flex: 0 0 0;
+      min-height: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.01);
     }
 
     iframe.model-frame {
@@ -3154,6 +3161,8 @@
             </div>
             <iframe class="model-frame" id="modelFrame" title="Embedded 3D anatomy model" allow="fullscreen; xr-spatial-tracking; accelerometer; gyroscope; autoplay; encrypted-media; clipboard-read; clipboard-write" allowfullscreen loading="eager" referrerpolicy="strict-origin-when-cross-origin" scrolling="no" hidden></iframe>
           </div>
+
+          <div class="viewer-bottom-buffer" id="viewerBottomBuffer" aria-hidden="true"></div>
         </section>
           <section class="side-card setup-card">
             <div class="panel-heading setup-preview-heading">
@@ -6753,40 +6762,29 @@
 
     function syncViewerToTreatmentExplanation() {
       const viewerCard = document.querySelector(".viewer-card");
-      const viewerFrame = $("viewerWrap");
+      const viewerBuffer = $("viewerBottomBuffer");
       const explanationCard = document.querySelector(".education-card");
       const isStacked = window.matchMedia("(max-width: 980px)").matches;
 
-      if (!viewerCard || !viewerFrame || !explanationCard || isStacked) {
-        if (viewerCard) viewerCard.style.height = "";
-        if (viewerFrame) viewerFrame.style.height = "";
+      if (!viewerCard || !viewerBuffer || !explanationCard || isStacked) {
+        if (viewerBuffer) viewerBuffer.style.height = "";
         return;
       }
 
       /*
-        Reset before measuring so repeated updates do not compound. The target
-        is the distance from the top of the viewer card to the bottom of the
-        Treatment explanation card.
+        Keep the 3D player at its normal size. Only the blank buffer beneath
+        the player expands to align the viewer card with Treatment explanation.
       */
-      viewerCard.style.height = "";
-      viewerFrame.style.height = "";
+      viewerBuffer.style.height = "0px";
 
       const viewerRect = viewerCard.getBoundingClientRect();
       const explanationRect = explanationCard.getBoundingClientRect();
-      const targetCardHeight = Math.round(explanationRect.bottom - viewerRect.top);
-
-      const fixedContentHeight = Array.from(viewerCard.children)
-        .filter(child => child !== viewerFrame)
-        .reduce((total, child) => total + child.getBoundingClientRect().height, 0);
-
-      const minimumFrameHeight = 420;
-      const targetFrameHeight = Math.max(
-        minimumFrameHeight,
-        Math.round(targetCardHeight - fixedContentHeight)
+      const extraSpace = Math.max(
+        0,
+        Math.round(explanationRect.bottom - viewerRect.bottom)
       );
 
-      viewerFrame.style.height = `${targetFrameHeight}px`;
-      viewerCard.style.height = `${fixedContentHeight + targetFrameHeight}px`;
+      viewerBuffer.style.height = `${extraSpace}px`;
     }
 
     function syncClinicianNotesHeight() {
@@ -6815,9 +6813,10 @@
       if (!hasWorkspaceSelection() || $("workspaceContent")?.hidden) return;
 
       /*
-        The viewer card aligns with the bottom of Treatment explanation.
-        Treatment course remains natural-height, and the final Clinician notes
-        textarea continues to align the overall column bottoms.
+        The viewer card aligns with the bottom of Treatment explanation
+        by expanding the blank buffer beneath the 3D player. Treatment course
+        remains natural-height, and the final Clinician notes textarea
+        continues to align the overall column bottoms.
       */
       syncTreatmentCourseHeight();
       syncViewerToTreatmentExplanation();
