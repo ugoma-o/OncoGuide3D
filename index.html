@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>OncoVis3D</title>
-  <!-- Build: corrected adaptive lower viewer-card buffer alignment -->
+  <!-- Build: Estimated treatment course shifted down without tag bubbles -->
   <!-- Build: patient-facing-no-bed-eqd2-2026-07-25 -->
   <meta name="description" content="A clinical tool for showing patients anatomy, tumor locations, radiation treatment concepts, dose schedules, and expected symptoms over time." />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2218%22%20fill%3D%22%232f7f88%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2253%25%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%20font-family%3D%22Inter%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2225%22%20font-weight%3D%22900%22%20fill%3D%22white%22%3EOG%3C%2Ftext%3E%3C%2Fsvg%3E" />
@@ -1685,6 +1685,363 @@
       margin-bottom: 8px;
     }
 
+    .dose-heading-inline {
+      align-items: center;
+      gap: 14px;
+    }
+
+    .treatment-plan-switch-row {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: flex-end;
+      margin-top: -2px;
+      margin-bottom: 2px;
+    }
+
+    .calendar-return-row {
+      display: flex;
+      justify-content: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .treatment-plan-switch-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 42px;
+      padding: 10px 15px;
+      border: 1px solid rgba(31, 111, 120, 0.34);
+      border-radius: 13px;
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      font-size: 0.86rem;
+      font-weight: 900;
+      line-height: 1.2;
+      cursor: pointer;
+      transition: 0.16s ease;
+    }
+
+    .treatment-plan-switch-button:hover {
+      border-color: rgba(31, 111, 120, 0.60);
+      background: rgba(224, 242, 243, 0.98);
+      transform: translateY(-1px);
+    }
+
+    .treatment-plan-switch-arrow {
+      font-size: 1.25rem;
+      line-height: 0.8;
+    }
+
+    .calendar-return-button {
+      background: rgba(255, 255, 255, 0.88);
+    }
+
+    .treatment-plan-view[hidden] {
+      display: none !important;
+    }
+
+    .treatment-plan-stage {
+      position: relative;
+      min-height: 0;
+      transition: height 180ms ease;
+    }
+
+    .treatment-plan-stage.is-fixed {
+      overflow: hidden;
+    }
+
+    .treatment-plan-stage.is-fixed .treatment-calendar-view {
+      height: 100%;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding-right: 4px;
+    }
+
+    .treatment-plan-shared-summary {
+      margin-top: 34px;
+      margin-bottom: 8px;
+    }
+
+    .treatment-calendar-view {
+      padding-top: 4px;
+    }
+
+    .treatment-calendar-intro {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(190px, 0.54fr);
+      gap: 14px;
+      align-items: end;
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(248, 251, 252, 0.88);
+    }
+
+    .treatment-calendar-intro strong {
+      display: block;
+      color: var(--ink);
+      font-size: 1.02rem;
+      letter-spacing: -0.02em;
+      margin-bottom: 5px;
+    }
+
+    .treatment-calendar-intro p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    .calendar-start-field {
+      display: block;
+      min-width: 0;
+    }
+
+    .calendar-start-field > span:first-child {
+      display: block;
+      color: var(--muted);
+      font-size: 0.80rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .calendar-date-input-wrap {
+      display: flex;
+      width: 100%;
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.96);
+      padding: 9px 11px;
+    }
+
+    .calendar-date-input-wrap input {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: var(--ink);
+      font: inherit;
+      font-weight: 800;
+    }
+
+    .treatment-calendar-summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin: 10px 0;
+    }
+
+    .calendar-summary-item {
+      min-width: 0;
+      padding: 9px 10px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.78);
+      text-align: center;
+    }
+
+    .calendar-summary-item span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .calendar-summary-item strong {
+      display: block;
+      color: var(--primary-dark);
+      font-size: 0.98rem;
+      line-height: 1.2;
+    }
+
+    .treatment-calendar-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .treatment-calendar-legend > span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .calendar-legend-mark {
+      width: 11px;
+      height: 11px;
+      border-radius: 4px;
+      display: inline-block;
+      background: var(--primary);
+    }
+
+    .calendar-legend-mark.boost {
+      background: #7764d8;
+    }
+
+    .treatment-calendar-months {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 10px;
+    }
+
+    .treatment-calendar-month {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.86);
+    }
+
+    .treatment-calendar-month h4 {
+      margin: 0;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+      font-size: 0.94rem;
+      letter-spacing: -0.02em;
+      text-align: center;
+      background: rgba(224, 242, 243, 0.58);
+    }
+
+    .treatment-calendar-weekdays,
+    .treatment-calendar-days {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+
+    .treatment-calendar-weekdays span {
+      padding: 8px 2px 6px;
+      color: var(--muted);
+      font-size: 0.67rem;
+      font-weight: 900;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .calendar-day {
+      min-width: 0;
+      min-height: 48px;
+      padding: 4px;
+      border-top: 1px solid rgba(208, 220, 224, 0.78);
+      border-right: 1px solid rgba(208, 220, 224, 0.78);
+      background: rgba(255, 255, 255, 0.64);
+    }
+
+    .calendar-day:nth-child(7n) {
+      border-right: 0;
+    }
+
+    .calendar-day.empty {
+      background: rgba(241, 245, 247, 0.58);
+    }
+
+    .calendar-day-number {
+      display: block;
+      color: var(--muted);
+      font-size: 0.70rem;
+      font-weight: 850;
+      line-height: 1;
+    }
+
+    .calendar-day.has-session {
+      background: var(--primary-soft);
+    }
+
+    .calendar-day.has-boost {
+      background: rgba(119, 100, 216, 0.14);
+    }
+
+    .calendar-session-label {
+      display: block;
+      margin-top: 4px;
+      padding: 3px 4px;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 0.57rem;
+      font-weight: 900;
+      line-height: 1.15;
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
+
+    .calendar-day.has-boost .calendar-session-label {
+      background: #7764d8;
+    }
+
+    .treatment-calendar-note {
+      margin-top: 13px;
+      padding: 11px 13px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(248, 251, 252, 0.88);
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 720px) {
+      .dose-heading-inline {
+        align-items: flex-start;
+      }
+
+      .treatment-plan-view-nav {
+        width: 100%;
+        grid-template-columns: 38px minmax(0, 1fr) 38px;
+        margin-left: 0;
+      }
+
+      .treatment-plan-switch-row,
+      .calendar-return-row {
+        justify-content: stretch;
+      }
+
+      .treatment-plan-switch-button {
+        width: 100%;
+      }
+
+      .treatment-calendar-intro,
+      .treatment-calendar-summary {
+        grid-template-columns: 1fr;
+      }
+
+      .treatment-plan-stage,
+      .treatment-plan-stage.is-fixed {
+        height: auto !important;
+        overflow: visible;
+      }
+
+      .treatment-plan-stage.is-fixed .treatment-calendar-view {
+        height: auto;
+        overflow: visible;
+        padding-right: 0;
+      }
+
+      .treatment-calendar-months {
+        grid-template-columns: 1fr;
+      }
+
+      .calendar-day {
+        min-height: 58px;
+        padding: 5px 3px;
+      }
+
+      .calendar-session-label {
+        font-size: 0.56rem;
+        padding: 4px 2px;
+      }
+    }
+
     .clinician-notes-wide {
       margin-top: 0;
     }
@@ -3227,9 +3584,15 @@
               <div class="panel-heading dose-heading-inline">
                 <div>
                   <h3>Treatment plan</h3>
-                  <p>For patient-facing discussion</p>
+                  <p id="treatmentPlanViewSubtitle">Clinical plan details</p>
                 </div>
               </div>
+              <div class="treatment-plan-stage" id="treatmentPlanStage">
+              <div
+                class="treatment-plan-view active"
+                id="regimenGuidanceView"
+                data-treatment-plan-view="guidance"
+              >
               <div class="prostate-regimen-panel" id="prostateRegimenPanel" hidden>
                 <div class="prostate-regimen-head">
                   <div>
@@ -3433,6 +3796,18 @@
                   <input id="treatmentsPerWeek" type="number" min="0.5" max="14" step="0.5" value="5" />
                 </div>
 
+                <div class="treatment-plan-switch-row">
+                  <button
+                    class="treatment-plan-switch-button"
+                    id="switchToCalendarBtn"
+                    type="button"
+                    aria-controls="regimenGuidanceView treatmentCalendarView"
+                  >
+                    <span>Switch to calendar view</span>
+                    <span class="treatment-plan-switch-arrow" aria-hidden="true">›</span>
+                  </button>
+                </div>
+
                 <div class="field dose-duration-field">
                   <span class="field-label">Session timing</span>
                   <div class="session-timing-card" id="sessionDuration" aria-live="polite">
@@ -3461,23 +3836,84 @@
                   </div>
                 </div>
 
-                <div class="field dose-summary-field">
-                  <span class="field-label" id="courseSummaryLabel">Estimated treatment course</span>
-                  <div
-                    class="course-summary-display"
-                    id="treatmentWeeks"
-                    role="status"
-                    aria-live="polite"
-                    aria-labelledby="courseSummaryLabel"
+              </div>
+              </div>
+
+              <div
+                class="treatment-plan-view treatment-calendar-view"
+                id="treatmentCalendarView"
+                data-treatment-plan-view="calendar"
+                hidden
+              >
+                <div class="calendar-return-row">
+                  <button
+                    class="treatment-plan-switch-button calendar-return-button"
+                    id="backToGuidanceBtn"
+                    type="button"
+                    aria-controls="regimenGuidanceView treatmentCalendarView"
                   >
-                    <div class="course-summary-weeks" id="courseSummaryWeeks"></div>
-                    <div class="course-summary-fractions" id="courseSummaryFractions"></div>
-                    <div class="course-summary-boost" id="courseSummaryBoost" hidden></div>
+                    <span class="treatment-plan-switch-arrow" aria-hidden="true">‹</span>
+                    <span>Back to regimen guidance</span>
+                  </button>
+                </div>
+
+                <div class="treatment-calendar-intro">
+                  <div>
+                    <strong>Your estimated treatment calendar</strong>
+                    <p>The highlighted days represent expected treatment visits based on the selected plan.</p>
+                  </div>
+
+                  <label class="calendar-start-field" for="treatmentStartDate">
+                    <span>Estimated start date</span>
+                    <span class="calendar-date-input-wrap">
+                      <input id="treatmentStartDate" type="date" />
+                    </span>
+                  </label>
+                </div>
+
+                <div class="treatment-calendar-summary" aria-live="polite">
+                  <div class="calendar-summary-item">
+                    <span>Visits</span>
+                    <strong id="calendarVisitCount">Not set</strong>
+                  </div>
+                  <div class="calendar-summary-item">
+                    <span>Estimated length</span>
+                    <strong id="calendarCourseLength">Not set</strong>
+                  </div>
+                  <div class="calendar-summary-item">
+                    <span>Estimated finish</span>
+                    <strong id="calendarFinishDate">Not set</strong>
                   </div>
                 </div>
 
+                <div class="treatment-calendar-legend" aria-label="Calendar legend">
+                  <span><i class="calendar-legend-mark treatment"></i>Treatment visit</span>
+                  <span id="calendarBoostLegend" hidden><i class="calendar-legend-mark boost"></i>Boost visit</span>
+                </div>
+
+                <div class="treatment-calendar-months" id="treatmentCalendarMonths"></div>
+
+                <div class="treatment-calendar-note" id="treatmentCalendarNote">
+                  This is an educational estimate. The treating clinic determines actual appointment dates and adjusts for holidays, procedures, and clinical needs.
+                </div>
               </div>
-              <div class="tag-row" id="doseTags"></div>
+              </div>
+
+              <div class="field dose-summary-field treatment-plan-shared-summary">
+                <span class="field-label" id="courseSummaryLabel">Estimated treatment course</span>
+                <div
+                  class="course-summary-display"
+                  id="treatmentWeeks"
+                  role="status"
+                  aria-live="polite"
+                  aria-labelledby="courseSummaryLabel"
+                >
+                  <div class="course-summary-weeks" id="courseSummaryWeeks"></div>
+                  <div class="course-summary-fractions" id="courseSummaryFractions"></div>
+                  <div class="course-summary-boost" id="courseSummaryBoost" hidden></div>
+                </div>
+              </div>
+
             </div>
           </section>
 
@@ -3979,6 +4415,7 @@
       state.page = "workspace";
       state.systemId = system.id;
       state.siteId = system.sites[0].id;
+      treatmentPlanViewIndex = 0;
       setDoseForActiveSite();
       updateRouteHash();
       updateAll();
@@ -3990,6 +4427,7 @@
       if (!site) return;
       state.page = "workspace";
       state.siteId = site.id;
+      treatmentPlanViewIndex = 0;
       setDoseForActiveSite();
       updateRouteHash();
       updateAll();
@@ -6603,9 +7041,422 @@
       field.title = `${formatWeeks(weeks)} with ${formatSessions(fractions)}.`;
     }
 
+
+    const treatmentPlanViews = [
+      { id: "guidance", label: "Regimen guidance", subtitle: "Clinical plan details" },
+      { id: "calendar", label: "Treatment calendar", subtitle: "Patient-friendly schedule" }
+    ];
+
+    let treatmentPlanViewIndex = 0;
+
+    function formatLocalDateInput(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function parseLocalDateInput(value) {
+      if (!value) return null;
+      const parts = value.split("-").map(Number);
+      if (parts.length !== 3 || parts.some(part => !Number.isFinite(part))) return null;
+      return new Date(parts[0], parts[1] - 1, parts[2], 12, 0, 0, 0);
+    }
+
+    function dateKey(date) {
+      return formatLocalDateInput(date);
+    }
+
+    function addCalendarDays(date, days) {
+      const next = new Date(date);
+      next.setDate(next.getDate() + days);
+      return next;
+    }
+
+    function nextWeekday(date) {
+      const next = new Date(date);
+      while (next.getDay() === 0 || next.getDay() === 6) {
+        next.setDate(next.getDate() + 1);
+      }
+      return next;
+    }
+
+    function defaultTreatmentStartDate() {
+      const next = new Date();
+      next.setHours(12, 0, 0, 0);
+      return nextWeekday(next);
+    }
+
+    function getCalendarPlan() {
+      const baseSessions = Math.max(0, Math.round(parseFloat($("fractions")?.value || "0")));
+      const perWeek = Math.max(0, parseFloat($("treatmentsPerWeek")?.value || "0"));
+      let totalSessions = baseSessions;
+      let boostStartsAfter = null;
+      let additionalNote = "";
+
+      const breastBoost = getBreastBoostPlan();
+      if (breastBoost.active && breastBoost.mode === "sequential" && breastBoost.valid) {
+        totalSessions = Math.max(0, Math.round(breastBoost.totalFractions));
+        boostStartsAfter = baseSessions;
+      }
+
+      const prostatePlan = isActiveProstateSite() ? getProstateRadiobiologyPlan() : null;
+      if (prostatePlan?.setting === "postop-nodes" && prostatePlan.secondaryValid) {
+        totalSessions = Math.max(
+          baseSessions,
+          Math.max(0, Math.round(prostatePlan.nodalFractions || 0))
+        );
+      }
+
+      if (prostatePlan?.setting === "brachy-boost") {
+        if (prostatePlan.secondaryType === "hdr-boost" && prostatePlan.secondaryValid) {
+          const count = Math.round(prostatePlan.hdrFractions);
+          additionalNote =
+            `The selected plan also includes ${count} HDR brachytherapy procedure${count === 1 ? "" : "s"}. ` +
+            "Those procedure dates are assigned separately by the treating clinic.";
+        } else if (prostatePlan.secondaryType === "ldr-implant" && prostatePlan.secondaryValid) {
+          additionalNote =
+            "The selected plan also includes a permanent seed-implant procedure. " +
+            "The treating clinic assigns that procedure date separately.";
+        }
+      }
+
+      return {
+        baseSessions,
+        totalSessions,
+        perWeek,
+        boostStartsAfter,
+        additionalNote
+      };
+    }
+
+    function preferredWeekdaysForCount(count, singleDay) {
+      const standard = {
+        0: [],
+        1: [singleDay],
+        2: [2, 4],
+        3: [1, 3, 5],
+        4: [1, 2, 4, 5],
+        5: [1, 2, 3, 4, 5]
+      };
+
+      if (count <= 5) return standard[count] || [];
+
+      const days = [];
+      const base = Math.floor(count / 5);
+      const remainder = count % 5;
+
+      [1, 2, 3, 4, 5].forEach((weekday, index) => {
+        const visits = base + (index < remainder ? 1 : 0);
+        for (let visit = 0; visit < visits; visit += 1) days.push(weekday);
+      });
+
+      return days;
+    }
+
+    function mondayOfWeek(date) {
+      const monday = new Date(date);
+      const weekday = monday.getDay();
+      const offset = weekday === 0 ? -6 : 1 - weekday;
+      monday.setDate(monday.getDate() + offset);
+      monday.setHours(12, 0, 0, 0);
+      return monday;
+    }
+
+    function buildTreatmentSchedule(startDate, totalSessions, perWeek, boostStartsAfter) {
+      if (!(startDate instanceof Date) || !(totalSessions > 0) || !(perWeek > 0)) return [];
+
+      const normalizedStart = nextWeekday(startDate);
+      const schedule = [{
+        date: normalizedStart,
+        sessionNumber: 1,
+        phase: boostStartsAfter && 1 > boostStartsAfter ? "boost" : "treatment"
+      }];
+
+      if (totalSessions === 1) return schedule;
+
+      const startWeek = mondayOfWeek(normalizedStart);
+      const singleDay = normalizedStart.getDay();
+      let weekIndex = 0;
+      let safety = 0;
+
+      while (schedule.length < totalSessions && safety < 520) {
+        const weekStart = addCalendarDays(startWeek, weekIndex * 7);
+        const priorTarget = weekIndex === 0
+          ? 0
+          : Math.max(1, Math.round(weekIndex * perWeek));
+        const cumulativeTarget = Math.max(1, Math.round((weekIndex + 1) * perWeek));
+        const weekCount = Math.max(0, cumulativeTarget - priorTarget);
+        const weekdays = preferredWeekdaysForCount(weekCount, singleDay);
+
+        weekdays.forEach(weekday => {
+          if (schedule.length >= totalSessions) return;
+
+          const sessionDate = addCalendarDays(weekStart, weekday - 1);
+          if (sessionDate < normalizedStart) return;
+          if (dateKey(sessionDate) === dateKey(normalizedStart)) return;
+
+          const sessionNumber = schedule.length + 1;
+          schedule.push({
+            date: sessionDate,
+            sessionNumber,
+            phase: boostStartsAfter && sessionNumber > boostStartsAfter ? "boost" : "treatment"
+          });
+        });
+
+        weekIndex += 1;
+        safety += 1;
+      }
+
+      return schedule;
+    }
+
+    function renderCalendarMonth(monthDate, sessionsByDate) {
+      const year = monthDate.getFullYear();
+      const month = monthDate.getMonth();
+      const firstDay = new Date(year, month, 1, 12);
+      const lastDay = new Date(year, month + 1, 0, 12);
+      const leadingBlanks = firstDay.getDay();
+      const dayCells = [];
+
+      for (let blank = 0; blank < leadingBlanks; blank += 1) {
+        dayCells.push('<div class="calendar-day empty" aria-hidden="true"></div>');
+      }
+
+      for (let day = 1; day <= lastDay.getDate(); day += 1) {
+        const current = new Date(year, month, day, 12);
+        const events = sessionsByDate.get(dateKey(current)) || [];
+        const hasBoost = events.some(event => event.phase === "boost");
+        const classes = [
+          "calendar-day",
+          events.length ? "has-session" : "",
+          hasBoost ? "has-boost" : ""
+        ].filter(Boolean).join(" ");
+
+        let sessionLabel = "";
+        let accessibleLabel = `${current.toLocaleDateString(undefined, {
+          month: "long",
+          day: "numeric",
+          year: "numeric"
+        })}.`;
+
+        if (events.length === 1) {
+          const event = events[0];
+          const phaseText = event.phase === "boost" ? "Boost" : "Session";
+          sessionLabel = `<span class="calendar-session-label">${phaseText} ${event.sessionNumber}</span>`;
+          accessibleLabel += ` Treatment ${phaseText.toLowerCase()} ${event.sessionNumber}.`;
+        } else if (events.length > 1) {
+          const first = events[0].sessionNumber;
+          const last = events[events.length - 1].sessionNumber;
+          sessionLabel = `<span class="calendar-session-label">Sessions ${first}–${last}</span>`;
+          accessibleLabel += ` Treatment sessions ${first} through ${last}.`;
+        }
+
+        dayCells.push(`
+          <div class="${classes}" aria-label="${accessibleLabel}">
+            <span class="calendar-day-number">${day}</span>
+            ${sessionLabel}
+          </div>
+        `);
+      }
+
+      const monthLabel = monthDate.toLocaleDateString(undefined, {
+        month: "long",
+        year: "numeric"
+      });
+
+      return `
+        <section class="treatment-calendar-month" aria-label="${monthLabel}">
+          <h4>${monthLabel}</h4>
+          <div class="treatment-calendar-weekdays" aria-hidden="true">
+            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span>
+            <span>Thu</span><span>Fri</span><span>Sat</span>
+          </div>
+          <div class="treatment-calendar-days">
+            ${dayCells.join("")}
+          </div>
+        </section>
+      `;
+    }
+
+    function updateTreatmentCalendar() {
+      const startInput = $("treatmentStartDate");
+      const monthsContainer = $("treatmentCalendarMonths");
+      const visitCount = $("calendarVisitCount");
+      const courseLength = $("calendarCourseLength");
+      const finishDate = $("calendarFinishDate");
+      const calendarNote = $("treatmentCalendarNote");
+      const boostLegend = $("calendarBoostLegend");
+
+      if (!startInput || !monthsContainer || !visitCount || !courseLength || !finishDate) return;
+
+      if (!startInput.value) {
+        startInput.value = formatLocalDateInput(defaultTreatmentStartDate());
+      }
+
+      const startDate = parseLocalDateInput(startInput.value);
+      const plan = getCalendarPlan();
+      const schedule = buildTreatmentSchedule(
+        startDate,
+        plan.totalSessions,
+        plan.perWeek,
+        plan.boostStartsAfter
+      );
+
+      visitCount.textContent = plan.totalSessions > 0 ? String(plan.totalSessions) : "Not set";
+
+      const estimatedWeeks = plan.totalSessions > 0 && plan.perWeek > 0
+        ? Math.ceil((plan.totalSessions / plan.perWeek) * 10) / 10
+        : 0;
+
+      courseLength.textContent = estimatedWeeks
+        ? `${estimatedWeeks} week${estimatedWeeks === 1 ? "" : "s"}`
+        : "Not set";
+
+      if (!schedule.length) {
+        finishDate.textContent = "Not set";
+        monthsContainer.innerHTML = `
+          <div class="treatment-calendar-note">
+            Enter the number of treatment sessions, sessions per week, and an estimated start date to generate the calendar.
+          </div>
+        `;
+        if (boostLegend) boostLegend.hidden = true;
+        return;
+      }
+
+      const finalDate = schedule[schedule.length - 1].date;
+      finishDate.textContent = finalDate.toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      });
+
+      const sessionsByDate = new Map();
+      schedule.forEach(event => {
+        const key = dateKey(event.date);
+        if (!sessionsByDate.has(key)) sessionsByDate.set(key, []);
+        sessionsByDate.get(key).push(event);
+      });
+
+      const firstMonth = new Date(schedule[0].date.getFullYear(), schedule[0].date.getMonth(), 1, 12);
+      const lastMonth = new Date(finalDate.getFullYear(), finalDate.getMonth(), 1, 12);
+      const months = [];
+      const cursor = new Date(firstMonth);
+
+      while (cursor <= lastMonth) {
+        months.push(new Date(cursor));
+        cursor.setMonth(cursor.getMonth() + 1);
+      }
+
+      monthsContainer.innerHTML = months
+        .map(month => renderCalendarMonth(month, sessionsByDate))
+        .join("");
+
+      if (boostLegend) boostLegend.hidden = !plan.boostStartsAfter;
+
+      if (calendarNote) {
+        const standardNote =
+          "This is an educational estimate. The treating clinic determines actual appointment dates " +
+          "and adjusts for holidays, procedures, and clinical needs.";
+        calendarNote.textContent = plan.additionalNote
+          ? `${plan.additionalNote} ${standardNote}`
+          : standardNote;
+      }
+    }
+
+
+    function syncTreatmentPlanStageHeight({ forceMeasure = false } = {}) {
+      const stage = $("treatmentPlanStage");
+      const guidanceView = $("regimenGuidanceView");
+      const calendarView = $("treatmentCalendarView");
+      const isStacked = window.matchMedia("(max-width: 720px)").matches;
+
+      if (!stage || !guidanceView || !calendarView || isStacked) {
+        if (stage) {
+          stage.style.height = "";
+          stage.classList.remove("is-fixed");
+        }
+        return;
+      }
+
+      const guidanceVisible = !guidanceView.hidden;
+
+      if (guidanceVisible || forceMeasure) {
+        const previousHidden = guidanceView.hidden;
+        const previousVisibility = guidanceView.style.visibility;
+        const previousPosition = guidanceView.style.position;
+        const previousWidth = guidanceView.style.width;
+
+        if (previousHidden) {
+          guidanceView.hidden = false;
+          guidanceView.style.visibility = "hidden";
+          guidanceView.style.position = "absolute";
+          guidanceView.style.width = "100%";
+        }
+
+        stage.style.height = "";
+        stage.classList.remove("is-fixed");
+
+        const measuredHeight = Math.ceil(guidanceView.scrollHeight);
+
+        if (measuredHeight > 0) {
+          stage.dataset.guidanceHeight = String(measuredHeight);
+        }
+
+        if (previousHidden) {
+          guidanceView.hidden = true;
+          guidanceView.style.visibility = previousVisibility;
+          guidanceView.style.position = previousPosition;
+          guidanceView.style.width = previousWidth;
+        }
+      }
+
+      const storedHeight = Math.max(
+        0,
+        parseInt(stage.dataset.guidanceHeight || "0", 10)
+      );
+
+      if (storedHeight > 0) {
+        stage.style.height = `${storedHeight}px`;
+        stage.classList.add("is-fixed");
+      }
+    }
+
+    function setTreatmentPlanView(index) {
+      const total = treatmentPlanViews.length;
+      treatmentPlanViewIndex = (index + total) % total;
+      const current = treatmentPlanViews[treatmentPlanViewIndex];
+
+      const guidanceView = $("regimenGuidanceView");
+      const calendarView = $("treatmentCalendarView");
+      const subtitle = $("treatmentPlanViewSubtitle");
+      const showingCalendar = current.id === "calendar";
+
+      if (showingCalendar) {
+        syncTreatmentPlanStageHeight({ forceMeasure: true });
+      }
+
+      if (guidanceView) guidanceView.hidden = showingCalendar;
+      if (calendarView) calendarView.hidden = !showingCalendar;
+      if (subtitle) subtitle.textContent = current.subtitle;
+
+      if (showingCalendar) updateTreatmentCalendar();
+
+      requestAnimationFrame(() => {
+        syncTreatmentPlanStageHeight();
+        syncWorkspaceColumnHeights();
+      });
+    }
+
+    function navigateTreatmentPlanView(direction) {
+      setTreatmentPlanView(treatmentPlanViewIndex + direction);
+    }
+
     function updateDose() {
       updateSessionDuration();
       updateTreatmentWeeksDisplay();
+      updateTreatmentCalendar();
+      requestAnimationFrame(() => syncTreatmentPlanStageHeight());
       const total = parseFloat($("totalDose").value);
       const fractions = parseFloat($("fractions").value);
       const perWeek = parseFloat($("treatmentsPerWeek").value);
@@ -6616,8 +7467,7 @@
       updateBreastRegimenPanel({ syncCategory: true });
 
       if (!valid) {
-        $("doseTags").innerHTML = "";
-        updateTreatmentCourse();
+          updateTreatmentCourse();
         requestAnimationFrame(syncTreatmentCourseHeight);
         return;
       }
@@ -6857,8 +7707,12 @@
       updateProstateRegimenPanel({ syncCategory: true });
       updateBreastRegimenPanel({ syncCategory: true });
       updateSetupCard();
+      setTreatmentPlanView(treatmentPlanViewIndex);
       renderPage();
-      requestAnimationFrame(syncTreatmentCourseHeight);
+      requestAnimationFrame(() => {
+        syncTreatmentPlanStageHeight({ forceMeasure: treatmentPlanViewIndex === 0 });
+        syncTreatmentCourseHeight();
+      });
     }
 
     ["totalDose", "fractions", "treatmentsPerWeek", "technique"].forEach(id => $(id).addEventListener("input", () => {
@@ -6869,6 +7723,19 @@
         updateTimeline();
       }
     }));
+
+    if ($("switchToCalendarBtn")) {
+      $("switchToCalendarBtn").addEventListener("click", () => setTreatmentPlanView(1));
+    }
+
+    if ($("backToGuidanceBtn")) {
+      $("backToGuidanceBtn").addEventListener("click", () => setTreatmentPlanView(0));
+    }
+
+    if ($("treatmentStartDate")) {
+      $("treatmentStartDate").addEventListener("change", updateTreatmentCalendar);
+      $("treatmentStartDate").addEventListener("input", updateTreatmentCalendar);
+    }
     function navigateSetupSlide(direction) {
       const technique = $("technique").value;
       const setup = setupSlidesByTechnique[technique] || setupSlidesByTechnique["IMRT/VMAT"];
@@ -7023,6 +7890,7 @@ const workspaceMainColumn = document.querySelector(".workspace > .main-column");
       updateRouteHash({ replace: true });
     }
     updateAll();
+    setTreatmentPlanView(0);
   </script>
 
   <script>
