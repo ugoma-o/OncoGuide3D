@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>OncoVis3D</title>
-  <!-- Build: single Treatment Plan header button toggles calendar and guidance -->
+  <!-- Build: 30–60 minute appointment duration in Estimated treatment course -->
   <!-- Build: patient-facing-no-bed-eqd2-2026-07-25 -->
   <meta name="description" content="A clinical tool for showing patients anatomy, tumor locations, radiation treatment concepts, dose schedules, and expected symptoms over time." />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2218%22%20fill%3D%22%232f7f88%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2253%25%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%20font-family%3D%22Inter%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2225%22%20font-weight%3D%22900%22%20fill%3D%22white%22%3EOG%3C%2Ftext%3E%3C%2Fsvg%3E" />
@@ -3362,24 +3362,9 @@
       font-size: 0.94rem;
       line-height: 1.42;
     }
-.session-timing-total {
-      grid-column: 1 / -1;
-      margin-top: 2px;
-      padding: 8px 0 0;
-      border-top: 1px solid var(--line);
-      color: var(--primary-dark);
-      font-size: 1.22rem;
-      line-height: 1.15;
-      font-weight: 950;
-      text-align: center;
-    }
-
-    @media (max-width: 720px) {
+@media (max-width: 720px) {
       .session-timing-card {
         grid-template-columns: 1fr;
-      }
-.session-timing-total {
-        grid-column: 1;
       }
     }
 </style>
@@ -3848,7 +3833,6 @@
                         <span id="sessionDeliveryText">The radiation itself often takes only a few minutes.</span>
                       </div>
                     </div>
-                    <div class="session-timing-total" id="sessionDurationTotal">About 15–30 minutes total</div>
                   </div>
                 </div>
 
@@ -6873,32 +6857,25 @@
     function getSessionTimingForTechnique(technique) {
       const timings = {
         "IMRT/VMAT": {
-          total: "About 15–30 minutes total",
           delivery: "The radiation itself often takes only a few minutes."
         },
         "3D conformal radiation": {
-          total: "About 15–30 minutes total",
           delivery: "The radiation itself often takes only a few minutes."
         },
         "SBRT/SABR": {
-          total: "About 30–60 minutes total",
           delivery: "Delivery can take longer because of repeated imaging and precise alignment."
         },
         "SRS": {
-          total: "About 30–90 minutes total",
           delivery: "Delivery time varies by target number, machine, and treatment plan."
         },
         "Protons": {
-          total: "About 20–45 minutes total",
           delivery: "The beam portion is usually shorter than the preparation and alignment time."
         },
         "Brachytherapy": {
-          total: "Timing varies by procedure",
           delivery: "The source-delivery portion may be brief, but preparation and recovery can take longer."
         }
       };
       return timings[technique] || {
-        total: "Timing varies by treatment",
         delivery: "Most session time is spent on preparation, positioning, and imaging."
       };
     }
@@ -6907,9 +6884,6 @@
       const timing = getSessionTimingForTechnique(
         $("technique")?.value || "IMRT/VMAT"
       );
-      if ($("sessionDurationTotal")) {
-        $("sessionDurationTotal").textContent = timing.total;
-      }
       if ($("sessionDeliveryText")) {
         $("sessionDeliveryText").textContent = timing.delivery;
       }
@@ -6925,8 +6899,7 @@
 
       const fractions = parseFloat($("fractions")?.value || "");
       const perWeek = parseFloat($("treatmentsPerWeek")?.value || "");
-      const technique = $("technique")?.value || "IMRT/VMAT";
-      const sessionDuration = getSessionTimingForTechnique(technique).total;
+      const appointmentDuration = "30–60 mins per appointment";
 
       const clearSummary = () => {
         weeksElement.textContent = "";
@@ -6960,7 +6933,7 @@
       if (prostatePlan?.setting === "pelvic-nodes") {
         const weeks = fractions / perWeek;
         weeksElement.textContent = formatWeeks(weeks);
-        fractionsElement.textContent = `${formatSessions(fractions)} • ${sessionDuration}`;
+        fractionsElement.textContent = `${formatSessions(fractions)} • ${appointmentDuration}`;
         boostElement.textContent = prostatePlan.secondaryValid
           ? "The prostate and pelvic lymph nodes are treated during the same visits."
           : "Pelvic lymph-node schedule incomplete.";
@@ -6973,7 +6946,7 @@
         const totalVisits = Math.max(fractions, prostatePlan.nodalFractions || 0);
         const weeks = totalVisits / perWeek;
         weeksElement.textContent = formatWeeks(weeks);
-        fractionsElement.textContent = `${formatSessions(totalVisits)} • ${sessionDuration}`;
+        fractionsElement.textContent = `${formatSessions(totalVisits)} • ${appointmentDuration}`;
         boostElement.textContent = prostatePlan.secondaryValid
           ? "Pelvic lymph-node treatment finishes first; prostate-bed treatment then continues."
           : "Postoperative pelvic lymph-node schedule incomplete.";
@@ -6985,7 +6958,7 @@
       if (prostatePlan?.setting === "brachy-boost") {
         const weeks = fractions / perWeek;
         weeksElement.textContent = `${formatWeeks(weeks)} of external-beam treatment`;
-        fractionsElement.textContent = `${formatSessions(fractions)} • ${sessionDuration}`;
+        fractionsElement.textContent = `${formatSessions(fractions)} • ${appointmentDuration}`;
 
         if (prostatePlan.secondaryType === "hdr-boost") {
           boostElement.textContent = prostatePlan.secondaryValid
@@ -7005,7 +6978,7 @@
       if (boostPlan.active && boostPlan.mode === "sequential" && boostPlan.valid) {
         const weeks = boostPlan.totalFractions / perWeek;
         weeksElement.textContent = formatWeeks(weeks);
-        fractionsElement.textContent = `${formatSessions(boostPlan.totalFractions)} • ${sessionDuration}`;
+        fractionsElement.textContent = `${formatSessions(boostPlan.totalFractions)} • ${appointmentDuration}`;
         boostElement.textContent =
           `Includes ${fmt(boostPlan.boostFractions)} additional tumor-bed boost session` +
           `${boostPlan.boostFractions === 1 ? "" : "s"}.`;
@@ -7016,7 +6989,7 @@
 
       const weeks = fractions / perWeek;
       weeksElement.textContent = formatWeeks(weeks);
-      fractionsElement.textContent = `${formatSessions(fractions)} • ${sessionDuration}`;
+      fractionsElement.textContent = `${formatSessions(fractions)} • ${appointmentDuration}`;
       boostElement.textContent = "";
       boostElement.hidden = true;
 
