@@ -1658,6 +1658,25 @@
       text-decoration: none;
     }
 
+    .breast-regimen-source .basis-type {
+      color: var(--primary-dark);
+      font-weight: 900;
+    }
+
+    .breast-regimen-source .basis-links {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 5px 9px;
+      margin-left: 4px;
+    }
+
+    .breast-regimen-source .boost-source-note {
+      display: block;
+      margin-top: 7px;
+      padding-top: 7px;
+      border-top: 1px solid var(--line);
+    }
+
     .prostate-regimen-disclaimer {
       margin: 0;
       color: var(--muted);
@@ -6066,8 +6085,20 @@
           { id: "wbi-boost", label: "Whole breast plus tumor-bed boost" },
           { id: "other", label: "Custom or other" }
         ],
-        sourceLabel: "ASTRO whole-breast guideline and ASTRO breast education",
+        sourceLabel: "2018 ASTRO whole-breast irradiation guideline",
         sourceUrl: "https://www.astro.org/provider-resources/guidelines/whole-breast-irradiation-gl",
+        evidenceLabel: "ASTRO guideline framework",
+        evidenceDetail: "The 2018 ASTRO guideline identifies 40 Gy in 15 fractions and 42.5 Gy in 16 fractions as preferred moderately hypofractionated whole-breast schedules. The 26 Gy in 5 fraction schedule is supported by the later FAST-Forward phase III trial and therefore should not be attributed to the 2018 guideline.",
+        sources: [
+          {
+            label: "2018 ASTRO whole-breast guideline",
+            url: "https://www.astro.org/provider-resources/guidelines/whole-breast-irradiation-gl"
+          },
+          {
+            label: "FAST-Forward",
+            url: "https://pubmed.ncbi.nlm.nih.gov/32580883/"
+          }
+        ],
         presets: [
           {
             id: "wbi-40-15",
@@ -6079,7 +6110,19 @@
             treatmentsPerWeek: 5,
             technique: "3D conformal radiation",
             tone: "ok",
-            summary: "Preferred ASTRO whole-breast hypofractionation example."
+            summary: "ASTRO-preferred moderate hypofractionation; START-B phase III-supported.",
+            evidenceLabel: "Guideline-preferred and phase III trial-supported",
+            evidenceDetail: "ASTRO lists 40 Gy in 15 fractions as a preferred whole-breast schedule. START-B directly compared 40 Gy in 15 fractions with 50 Gy in 25 fractions.",
+            sources: [
+              {
+                label: "2018 ASTRO whole-breast guideline",
+                url: "https://www.astro.org/provider-resources/guidelines/whole-breast-irradiation-gl"
+              },
+              {
+                label: "START-B",
+                url: "https://pubmed.ncbi.nlm.nih.gov/18355913/"
+              }
+            ]
           },
           {
             id: "wbi-42.5-16",
@@ -6091,19 +6134,39 @@
             treatmentsPerWeek: 5,
             technique: "3D conformal radiation",
             tone: "ok",
-            summary: "Preferred ASTRO whole-breast hypofractionation example."
+            summary: "ASTRO-preferred moderate hypofractionation; Canadian randomized trial-supported.",
+            evidenceLabel: "Guideline-preferred and randomized trial-supported",
+            evidenceDetail: "ASTRO lists 42.5 Gy in 16 fractions as a preferred whole-breast schedule. The Canadian randomized trial reported long-term outcomes for this regimen versus 50 Gy in 25 fractions.",
+            sources: [
+              {
+                label: "2018 ASTRO whole-breast guideline",
+                url: "https://www.astro.org/provider-resources/guidelines/whole-breast-irradiation-gl"
+              },
+              {
+                label: "Canadian hypofractionation trial",
+                url: "https://pubmed.ncbi.nlm.nih.gov/20147717/"
+              }
+            ]
           },
           {
             id: "wbi-26-5",
             settings: ["wbi", "wbi-boost"],
             category: "ultra",
-            label: "26 Gy in 5 fractions",
+            label: "26 Gy in 5 daily fractions over 1 week",
             totalDose: 26,
             fractions: 5,
             treatmentsPerWeek: 5,
             technique: "3D conformal radiation",
-            tone: "info",
-            summary: "Current ultrahypofractionated whole-breast example."
+            tone: "ok",
+            summary: "FAST-Forward phase III-supported ultrahypofractionation.",
+            evidenceLabel: "Phase III trial-supported",
+            evidenceDetail: "FAST-Forward found 26 Gy in 5 fractions over 1 week noninferior to 40 Gy in 15 fractions for local control, with similar 5-year normal-tissue effects. This regimen postdates the 2018 ASTRO whole-breast guideline.",
+            sources: [
+              {
+                label: "FAST-Forward",
+                url: "https://pubmed.ncbi.nlm.nih.gov/32580883/"
+              }
+            ]
           },
           {
             id: "wbi-50-25",
@@ -6115,7 +6178,19 @@
             treatmentsPerWeek: 5,
             technique: "3D conformal radiation",
             tone: "info",
-            summary: "Conventional whole-breast example; hypofractionation is generally preferred when appropriate."
+            summary: "Conventional whole-breast schedule; moderate hypofractionation is generally preferred.",
+            evidenceLabel: "Conventional comparator and guideline-recognized option",
+            evidenceDetail: "50 Gy in 25 fractions is the conventional comparator used in major hypofractionation trials. ASTRO generally prefers moderate hypofractionation for appropriate whole-breast treatment.",
+            sources: [
+              {
+                label: "2018 ASTRO whole-breast guideline",
+                url: "https://www.astro.org/provider-resources/guidelines/whole-breast-irradiation-gl"
+              },
+              {
+                label: "START-B",
+                url: "https://pubmed.ncbi.nlm.nih.gov/18355913/"
+              }
+            ]
           }
         ]
       },
@@ -6127,18 +6202,46 @@
         ],
         sourceLabel: "2024 ASTRO partial-breast irradiation guideline",
         sourceUrl: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/pbi-guideline-replacement",
+        evidenceLabel: "2024 ASTRO PBI guideline framework",
+        evidenceDetail: "ASTRO recommends evidence-based external-beam and brachytherapy PBI techniques for appropriately selected patients. External-beam PBI should use daily or every-other-day schedules rather than twice-daily external-beam treatment.",
+        sources: [
+          {
+            label: "2024 ASTRO PBI guideline",
+            url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/pbi-guideline-replacement"
+          },
+          {
+            label: "Guideline publication",
+            url: "https://pubmed.ncbi.nlm.nih.gov/37977261/"
+          },
+          {
+            label: "Published erratum",
+            url: "https://pubmed.ncbi.nlm.nih.gov/39487013/"
+          }
+        ],
         presets: [
           {
             id: "pbi-30-5",
             settings: ["external"],
             category: "ultra",
-            label: "30 Gy in 5 nonconsecutive daily fractions within 2 weeks",
+            label: "30 Gy in 5 once-daily fractions on nonconsecutive days within 2 weeks",
             totalDose: 30,
             fractions: 5,
             treatmentsPerWeek: 2.5,
             technique: "3D conformal radiation",
             tone: "ok",
-            summary: "ASTRO-recommended external beam PBI schedule."
+            summary: "ASTRO-recommended external-beam PBI schedule; Florence phase III-supported.",
+            evidenceLabel: "Guideline-recommended and phase III trial-supported",
+            evidenceDetail: "ASTRO recommends 30 Gy in 5 once-daily fractions delivered on nonconsecutive days within 2 weeks. The Florence phase III trial evaluated 30 Gy in 5 once-daily fractions.",
+            sources: [
+              {
+                label: "2024 ASTRO PBI guideline",
+                url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/pbi-guideline-replacement"
+              },
+              {
+                label: "APBI-IMRT Florence trial",
+                url: "https://pubmed.ncbi.nlm.nih.gov/32840419/"
+              }
+            ]
           },
           {
             id: "pbi-40.05-15",
@@ -6150,43 +6253,91 @@
             treatmentsPerWeek: 5,
             technique: "3D conformal radiation",
             tone: "ok",
-            summary: "ASTRO-recommended external beam PBI schedule."
+            summary: "ASTRO-recommended once-daily external-beam PBI schedule.",
+            evidenceLabel: "Guideline-recommended; IMPORT LOW framework-supported",
+            evidenceDetail: "ASTRO recommends 40.05 Gy in 15 daily fractions. IMPORT LOW used the closely corresponding 40 Gy in 15 fraction partial-breast schedule and provides randomized long-term evidence for this treatment framework.",
+            sources: [
+              {
+                label: "2024 ASTRO PBI guideline",
+                url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/pbi-guideline-replacement"
+              },
+              {
+                label: "IMPORT LOW 10-year results",
+                url: "https://pubmed.ncbi.nlm.nih.gov/40516558/"
+              }
+            ]
           },
           {
             id: "pbi-hdr-30.1-7",
             settings: ["hdr"],
             category: "brachy",
-            label: "30.1 Gy in 7 HDR fractions",
+            label: "30.1 Gy in 7 HDR fractions over 5 days",
             totalDose: 30.1,
             fractions: 7,
             treatmentsPerWeek: 7,
             technique: "Brachytherapy",
             tone: "ok",
-            summary: "ASTRO-recommended HDR PBI example."
+            summary: "GEC-ESTRO phase III-supported multicatheter HDR PBI schedule.",
+            evidenceLabel: "Randomized phase III multicatheter brachytherapy schedule",
+            evidenceDetail: "The GEC-ESTRO phase III trial delivered multicatheter HDR PBI as 30.1 Gy in 7 fractions or 32 Gy in 8 fractions over 5 days and reported 10-year noninferiority results.",
+            sources: [
+              {
+                label: "2024 ASTRO PBI guideline",
+                url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/pbi-guideline-replacement"
+              },
+              {
+                label: "GEC-ESTRO 10-year phase III results",
+                url: "https://pubmed.ncbi.nlm.nih.gov/36738756/"
+              }
+            ]
           },
           {
             id: "pbi-hdr-32-8",
             settings: ["hdr"],
             category: "brachy",
-            label: "32 Gy in 8 HDR fractions",
+            label: "32 Gy in 8 HDR fractions over 5 days",
             totalDose: 32,
             fractions: 8,
             treatmentsPerWeek: 8,
             technique: "Brachytherapy",
             tone: "ok",
-            summary: "ASTRO-recommended HDR PBI example."
+            summary: "GEC-ESTRO phase III-supported multicatheter HDR PBI schedule.",
+            evidenceLabel: "Randomized phase III multicatheter brachytherapy schedule",
+            evidenceDetail: "The GEC-ESTRO phase III trial delivered multicatheter HDR PBI as 30.1 Gy in 7 fractions or 32 Gy in 8 fractions over 5 days and reported 10-year noninferiority results.",
+            sources: [
+              {
+                label: "2024 ASTRO PBI guideline",
+                url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/pbi-guideline-replacement"
+              },
+              {
+                label: "GEC-ESTRO 10-year phase III results",
+                url: "https://pubmed.ncbi.nlm.nih.gov/36738756/"
+              }
+            ]
           },
           {
             id: "pbi-hdr-34-10",
             settings: ["hdr"],
             category: "brachy",
-            label: "34 Gy in 10 HDR fractions, typically twice daily",
+            label: "34 Gy in 10 HDR fractions, typically twice daily over 5 days",
             totalDose: 34,
             fractions: 10,
             treatmentsPerWeek: 10,
             technique: "Brachytherapy",
-            tone: "ok",
-            summary: "ASTRO-recommended HDR PBI example."
+            tone: "info",
+            summary: "NSABP B-39/RTOG 0413 protocol-supported HDR PBI schedule.",
+            evidenceLabel: "Large randomized trial protocol-supported schedule",
+            evidenceDetail: "NSABP B-39/RTOG 0413 used 34 Gy in 10 fractions for brachytherapy PBI. The trial did not meet its prespecified equivalence criterion for the pooled APBI techniques, so this schedule is identified as protocol-supported rather than labeled ASTRO-preferred.",
+            sources: [
+              {
+                label: "2024 ASTRO PBI guideline",
+                url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/pbi-guideline-replacement"
+              },
+              {
+                label: "NSABP B-39/RTOG 0413",
+                url: "https://pubmed.ncbi.nlm.nih.gov/31813636/"
+              }
+            ]
           }
         ]
       },
@@ -6197,8 +6348,16 @@
           { id: "chest-wall-only", label: "Chest wall only in a selected case" },
           { id: "other", label: "Custom or other" }
         ],
-        sourceLabel: "2025 ASTRO/ASCO/SSO postmastectomy radiation guideline",
+        sourceLabel: "2025 ASTRO/ASCO/SSO postmastectomy radiation therapy guideline",
         sourceUrl: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/postmastectomy-radiation-therapy",
+        evidenceLabel: "2025 multisociety PMRT guideline",
+        evidenceDetail: "The guideline defines moderate hypofractionation most frequently as 2.66 to 2.67 Gy per fraction for 15 to 16 fractions and conventional fractionation as 1.8 to 2.0 Gy per fraction for 25 to 28 fractions. Moderate hypofractionation is preferred for most PMRT.",
+        sources: [
+          {
+            label: "2025 ASTRO/ASCO/SSO PMRT guideline",
+            url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/postmastectomy-radiation-therapy"
+          }
+        ],
         presets: [
           {
             id: "pmrt-40-15",
@@ -6210,7 +6369,15 @@
             treatmentsPerWeek: 5,
             technique: "3D conformal radiation",
             tone: "ok",
-            summary: "Moderately hypofractionated PMRT example."
+            summary: "2025 PMRT guideline-range moderate hypofractionation example.",
+            evidenceLabel: "Guideline-range moderate hypofractionation",
+            evidenceDetail: "40 Gy in 15 fractions falls within the 2025 guideline's 40 to 42.56 Gy in 15 to 16 fraction moderate-hypofractionation range.",
+            sources: [
+              {
+                label: "2025 ASTRO/ASCO/SSO PMRT guideline",
+                url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/postmastectomy-radiation-therapy"
+              }
+            ]
           },
           {
             id: "pmrt-42.56-16",
@@ -6222,7 +6389,15 @@
             treatmentsPerWeek: 5,
             technique: "3D conformal radiation",
             tone: "ok",
-            summary: "Moderately hypofractionated PMRT example."
+            summary: "2025 PMRT guideline-range moderate hypofractionation example.",
+            evidenceLabel: "Guideline-range moderate hypofractionation",
+            evidenceDetail: "42.56 Gy in 16 fractions is the upper end of the 2025 guideline's commonly used 40 to 42.56 Gy in 15 to 16 fraction range.",
+            sources: [
+              {
+                label: "2025 ASTRO/ASCO/SSO PMRT guideline",
+                url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/postmastectomy-radiation-therapy"
+              }
+            ]
           },
           {
             id: "pmrt-50-25",
@@ -6234,7 +6409,15 @@
             treatmentsPerWeek: 5,
             technique: "3D conformal radiation",
             tone: "info",
-            summary: "Conventional PMRT example."
+            summary: "2025 PMRT guideline-range conventional fractionation example.",
+            evidenceLabel: "Guideline-range conventional fractionation",
+            evidenceDetail: "50 Gy in 25 fractions falls within the guideline's 50 to 50.4 Gy in 25 to 28 fraction conventional range. Without reconstruction, conventional fractionation is generally reserved for rare circumstances; with reconstruction, it remains acceptable although moderate hypofractionation is preferred.",
+            sources: [
+              {
+                label: "2025 ASTRO/ASCO/SSO PMRT guideline",
+                url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/postmastectomy-radiation-therapy"
+              }
+            ]
           },
           {
             id: "pmrt-50.4-28",
@@ -6246,7 +6429,15 @@
             treatmentsPerWeek: 5,
             technique: "3D conformal radiation",
             tone: "info",
-            summary: "Conventional PMRT example."
+            summary: "2025 PMRT guideline-range conventional fractionation example.",
+            evidenceLabel: "Guideline-range conventional fractionation",
+            evidenceDetail: "50.4 Gy in 28 fractions is within the guideline's commonly used conventional range. Its appropriateness depends on reconstruction status and clinical circumstances.",
+            sources: [
+              {
+                label: "2025 ASTRO/ASCO/SSO PMRT guideline",
+                url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/postmastectomy-radiation-therapy"
+              }
+            ]
           }
         ]
       },
@@ -6257,8 +6448,20 @@
           { id: "nodes-custom", label: "Regional nodes or custom multi-volume plan" },
           { id: "other", label: "Custom or other" }
         ],
-        sourceLabel: "2025 ASTRO/ASCO/SSO postmastectomy radiation guideline",
+        sourceLabel: "2025 ASTRO/ASCO/SSO PMRT guideline and 2026 HypoG-01 trial",
         sourceUrl: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/postmastectomy-radiation-therapy",
+        evidenceLabel: "Guideline and locoregional phase III evidence",
+        evidenceDetail: "The 2025 PMRT guideline supports 40 to 42.56 Gy in 15 to 16 fractions or 50 to 50.4 Gy in 25 to 28 fractions for chest wall and regional lymphatics. HypoG-01 directly compared 40 Gy in 15 fractions with 50 Gy in 25 fractions for locoregional breast or chest-wall plus nodal irradiation.",
+        sources: [
+          {
+            label: "2025 ASTRO/ASCO/SSO PMRT guideline",
+            url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/postmastectomy-radiation-therapy"
+          },
+          {
+            label: "HypoG-01 phase III trial",
+            url: "https://pubmed.ncbi.nlm.nih.gov/41794436/"
+          }
+        ],
         presets: [
           {
             id: "rni-40-15",
@@ -6270,7 +6473,19 @@
             treatmentsPerWeek: 5,
             technique: "3D conformal radiation",
             tone: "ok",
-            summary: "Moderately hypofractionated breast/chest wall plus nodal example."
+            summary: "Guideline-supported and HypoG-01 phase III-supported locoregional regimen.",
+            evidenceLabel: "Guideline-supported and phase III trial-supported",
+            evidenceDetail: "40 Gy in 15 fractions is within the 2025 PMRT guideline range and was the hypofractionated locoregional regimen evaluated in HypoG-01.",
+            sources: [
+              {
+                label: "2025 ASTRO/ASCO/SSO PMRT guideline",
+                url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/postmastectomy-radiation-therapy"
+              },
+              {
+                label: "HypoG-01 phase III trial",
+                url: "https://pubmed.ncbi.nlm.nih.gov/41794436/"
+              }
+            ]
           },
           {
             id: "rni-42.56-16",
@@ -6282,7 +6497,15 @@
             treatmentsPerWeek: 5,
             technique: "3D conformal radiation",
             tone: "ok",
-            summary: "Moderately hypofractionated breast/chest wall plus nodal example."
+            summary: "2025 PMRT guideline-range locoregional hypofractionation example.",
+            evidenceLabel: "Guideline-range locoregional hypofractionation",
+            evidenceDetail: "42.56 Gy in 16 fractions falls within the 2025 PMRT guideline's commonly used 40 to 42.56 Gy in 15 to 16 fraction range for chest wall and regional lymphatics.",
+            sources: [
+              {
+                label: "2025 ASTRO/ASCO/SSO PMRT guideline",
+                url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/postmastectomy-radiation-therapy"
+              }
+            ]
           },
           {
             id: "rni-50-25",
@@ -6294,7 +6517,19 @@
             treatmentsPerWeek: 5,
             technique: "3D conformal radiation",
             tone: "info",
-            summary: "Conventional breast/chest wall plus nodal example."
+            summary: "Guideline-range conventional locoregional regimen and HypoG-01 comparator.",
+            evidenceLabel: "Guideline-range and phase III comparator",
+            evidenceDetail: "50 Gy in 25 fractions is within the guideline's conventional locoregional range and served as the conventional comparator in HypoG-01.",
+            sources: [
+              {
+                label: "2025 ASTRO/ASCO/SSO PMRT guideline",
+                url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/postmastectomy-radiation-therapy"
+              },
+              {
+                label: "HypoG-01 phase III trial",
+                url: "https://pubmed.ncbi.nlm.nih.gov/41794436/"
+              }
+            ]
           },
           {
             id: "rni-50.4-28",
@@ -6306,7 +6541,15 @@
             treatmentsPerWeek: 5,
             technique: "3D conformal radiation",
             tone: "info",
-            summary: "Conventional breast/chest wall plus nodal example."
+            summary: "2025 PMRT guideline-range conventional locoregional example.",
+            evidenceLabel: "Guideline-range conventional locoregional fractionation",
+            evidenceDetail: "50.4 Gy in 28 fractions falls within the 2025 PMRT guideline's 50 to 50.4 Gy in 25 to 28 fraction conventional range.",
+            sources: [
+              {
+                label: "2025 ASTRO/ASCO/SSO PMRT guideline",
+                url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/postmastectomy-radiation-therapy"
+              }
+            ]
           }
         ]
       }
@@ -6509,6 +6752,100 @@
       return { tone, title, message };
     }
 
+
+    function breastSourceLinksHtml(sources = []) {
+      const unique = [];
+      const seen = new Set();
+
+      for (const source of sources) {
+        if (!source?.url || !source?.label || seen.has(source.url)) continue;
+        seen.add(source.url);
+        unique.push(source);
+      }
+
+      if (!unique.length) return "";
+      return `<span class="basis-links">${unique.map(source =>
+        `<a href="${source.url}" target="_blank" rel="noopener noreferrer">${source.label}</a>`
+      ).join("")}</span>`;
+    }
+
+    function renderBreastRegimenSource(config, preset, totalDose, fractions, technique) {
+      const source = $("breastRegimenSource");
+      if (!source || !config) return;
+
+      const basis = preset || config;
+      const evidenceLabel = basis.evidenceLabel || config.evidenceLabel || "Clinical source";
+      const evidenceDetail = basis.evidenceDetail || config.evidenceDetail || "";
+      const sources = basis.sources?.length ? basis.sources : config.sources || [];
+      const links = breastSourceLinksHtml(sources);
+
+      let html = `
+        <b>Evidence basis:</b>
+        <span class="basis-type">${evidenceLabel}</span>
+        ${evidenceDetail ? `— ${evidenceDetail}` : ""}
+        ${links}
+      `;
+
+      if (
+        state.siteId === "whole-breast" &&
+        $("breastTreatmentSetting")?.value === "wbi-boost"
+      ) {
+        const boostPlan = getBreastBoostPlan();
+
+        if (boostPlan.mode === "sequential") {
+          html += `
+            <span class="boost-source-note">
+              <b>Boost source:</b>
+              The sequential boost fields are editable. The default 10 Gy in 4 fraction example is not presented as a universal guideline-mandated dose. ASTRO addresses boost indications and dose-fractionation, while the final prescription remains patient- and protocol-specific.
+              ${breastSourceLinksHtml([
+                {
+                  label: "2018 ASTRO whole-breast guideline",
+                  url: "https://www.astro.org/provider-resources/guidelines/whole-breast-irradiation-gl"
+                }
+              ])}
+            </span>
+          `;
+        } else if (
+          boostPlan.valid &&
+          nearlyEqual(boostPlan.baseDose, 40) &&
+          nearlyEqual(boostPlan.baseFractions, 15, 0.01) &&
+          nearlyEqual(boostPlan.sibTotalDose, 48)
+        ) {
+          html += `
+            <span class="boost-source-note">
+              <b>SIB source:</b>
+              The exact 40 Gy in 15 fraction whole-breast course with a concurrent boost to 48 Gy in 15 fractions was evaluated in the phase III NRG/RTOG 1005 trial.
+              ${breastSourceLinksHtml([
+                {
+                  label: "NRG/RTOG 1005",
+                  url: "https://pubmed.ncbi.nlm.nih.gov/42114027/"
+                }
+              ])}
+            </span>
+          `;
+        } else {
+          html += `
+            <span class="boost-source-note">
+              <b>SIB source:</b>
+              This is a custom integrated-boost combination. NRG/RTOG 1005 and IMPORT HIGH support specific 15-fraction SIB approaches, but the displayed dose combination should not be treated as trial-matched unless its dose levels and target volumes are identical to the cited regimen.
+              ${breastSourceLinksHtml([
+                {
+                  label: "NRG/RTOG 1005",
+                  url: "https://pubmed.ncbi.nlm.nih.gov/42114027/"
+                },
+                {
+                  label: "IMPORT HIGH",
+                  url: "https://pubmed.ncbi.nlm.nih.gov/37302395/"
+                }
+              ])}
+            </span>
+          `;
+        }
+      }
+
+      source.innerHTML = html;
+    }
+
     function updateBreastRegimenPanel({ syncCategory = true } = {}) {
       const panel = $("breastRegimenPanel");
       if (!panel) return;
@@ -6544,12 +6881,14 @@
       populateBreastPresetOptions();
 
       const matchedPreset = currentBreastPreset(totalDose, fractions, technique);
-      if (
+      const supportedPreset = (
         matchedPreset &&
         matchedPreset.settings.includes(settingSelect.value) &&
         matchedPreset.category === categorySelect.value
-      ) {
-        presetSelect.value = matchedPreset.id;
+      ) ? matchedPreset : null;
+
+      if (supportedPreset) {
+        presetSelect.value = supportedPreset.id;
       } else if (presetSelect.value && !config.presets.some(preset =>
         preset.id === presetSelect.value &&
         preset.settings.includes(settingSelect.value) &&
@@ -6559,8 +6898,8 @@
       }
 
       const assessment = getBreastRegimenAssessment(totalDose, fractions, technique);
-      const quietStatus = matchedPreset
-        ? { tone: "ok", text: "Guidance support" }
+      const quietStatus = supportedPreset
+        ? { tone: supportedPreset.tone === "info" ? "info" : "ok", text: "Evidence-linked preset" }
         : assessment.tone === "warning"
           ? { tone: "warning", text: "Review custom regimen" }
           : { tone: "info", text: "Custom regimen" };
@@ -6568,7 +6907,7 @@
       status.className = `regimen-quiet-status ${quietStatus.tone}`;
       status.textContent = quietStatus.text;
       status.removeAttribute("title");
-      source.innerHTML = `<b>Clinical source:</b> <a href="${config.sourceUrl}" target="_blank" rel="noopener noreferrer">${config.sourceLabel}</a>.`;
+      renderBreastRegimenSource(config, supportedPreset, totalDose, fractions, technique);
     }
 
     function applyBreastRegimenPreset() {
