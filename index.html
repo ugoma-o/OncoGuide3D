@@ -7,6 +7,7 @@
   <!-- Build: 30–60 minute appointment duration in Estimated treatment course -->
   <!-- Build: patient-facing-no-bed-eqd2-2026-07-25 -->
   <!-- Build: guideline-source-precedence-and-nonconsecutive-cadence-2026-07-31 -->
+  <!-- Build: thoracic-thymic-heme-mediastinal-reorganization-2026-07-31 -->
   <meta name="description" content="A clinical tool for showing patients anatomy, tumor locations, radiation treatment concepts, dose schedules, and expected symptoms over time." />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2218%22%20fill%3D%22%232f7f88%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2253%25%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%20font-family%3D%22Inter%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2225%22%20font-weight%3D%22900%22%20fill%3D%22white%22%3EOG%3C%2Ftext%3E%3C%2Fsvg%3E" />
   <link rel="manifest" href="./manifest.webmanifest" />
@@ -3459,6 +3460,8 @@
               <a href="https://www.astro.org/provider-resources/guidelines/whole-breast-irradiation-gl" target="_blank" rel="noopener noreferrer">ASTRO whole-breast irradiation guideline</a>
               <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/pbi-guideline-replacement" target="_blank" rel="noopener noreferrer">ASTRO partial-breast irradiation guideline</a>
               <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/postmastectomy-radiation-therapy" target="_blank" rel="noopener noreferrer">ASTRO/ASCO/SSO postmastectomy guideline</a>
+              <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8085511/" target="_blank" rel="noopener noreferrer">Thymic epithelial tumor radiotherapy guideline</a>
+              <a href="https://pubmed.ncbi.nlm.nih.gov/23790512/" target="_blank" rel="noopener noreferrer">ILROG Hodgkin lymphoma field and dose guideline</a>
             </article>
 
             <article class="reference-card">
@@ -4091,16 +4094,27 @@
         ]
       },
       {
-        id: "thoracic", icon: "icons/thoracic.png", name: "Thoracic", subtitle: "Lung, esophagus, mediastinum", defaultDose: [60, 30],
-        purpose: "Thoracic radiation treats tumors in the chest while limiting dose to the lungs, heart, esophagus, spinal cord, and brachial plexus.",
-        expectation: "Simulation may include 4D-CT and breathing-motion management, depending on tumor location.",
+        id: "thoracic", icon: "icons/thoracic.png", name: "Thoracic", subtitle: "Lung, esophagus, thymus", defaultDose: [60, 30],
+        purpose: "Thoracic radiation treats tumors in the chest while limiting dose to the lungs, heart, esophagus, spinal cord, brachial plexus, trachea, and great vessels.",
+        expectation: "Simulation may include 4D-CT, respiratory motion assessment, breath hold, and daily image guidance depending on tumor location and treatment technique.",
         support: ["Nutrition support for esophagitis risk", "Cough and dyspnea monitoring", "Skin care across entry and exit regions", "Smoking cessation support when relevant"],
-        position: "Usually supine with arms raised, using customized support and breath-hold coaching when needed.",
+        position: "Usually supine with arms raised, using customized upper-body support and respiratory-motion coaching when needed.",
         sites: [
-          { id: "nsclc", name: "Non-small cell lung cancer", hint: "Central or peripheral lung", tags: ["lung", "IMRT", "SBRT"], dose: [60, 30] },
-          { id: "sclc", name: "Small cell lung cancer", hint: "Thorax and PCI discussion", tags: ["chemoRT", "thorax"], dose: [45, 30] },
-          { id: "esophagus", name: "Esophageal cancer", hint: "Swallowing symptoms", tags: ["GI", "thorax", "chemoRT"], dose: [50.4, 28] },
-          { id: "mediastinum", name: "Mediastinal lymphoma", hint: "Heart and breast sparing", tags: ["lymphoma", "ISRT"], dose: [30, 15] }
+          { id: "nsclc", name: "Non-small cell lung cancer", hint: "Central or peripheral lung", tags: ["lung", "IMRT", "SBRT"], dose: [60, 30], defaultPosition: "supine-arms-up" },
+          { id: "sclc", name: "Small cell lung cancer", hint: "Thorax and PCI discussion", tags: ["chemoRT", "thorax"], dose: [45, 30], defaultPosition: "supine-arms-up" },
+          { id: "esophagus", name: "Esophageal cancer", hint: "Swallowing symptoms", tags: ["GI", "thorax", "chemoRT"], dose: [50.4, 28], defaultPosition: "supine-arms-up" },
+          {
+            id: "thymic-tumors",
+            name: "Thymic tumors",
+            hint: "Thymoma and thymic carcinoma",
+            tags: ["thymus", "mediastinum", "postoperative"],
+            dose: [54, 30],
+            defaultPosition: "supine-arms-up",
+            purpose: "Radiation may be used after surgery, as definitive treatment when surgery is not feasible, or for selected recurrent thymic tumors while protecting nearby mediastinal organs.",
+            expectation: "Planning maps the thymic bed or visible tumor and nearby lungs, heart, esophagus, spinal cord, trachea, and great vessels. Respiratory motion assessment or breath hold may be used when helpful.",
+            support: ["Cough and shortness-of-breath monitoring", "Nutrition support if swallowing irritation develops", "Fatigue and skin-care counseling", "Coordination with thoracic surgery and medical oncology"],
+            position: "Usually supine with arms raised using customized upper-body support. Breath hold or 4D-CT may be used depending on target motion and anatomy."
+          }
         ],
         timeline: [
           ["Week 1", "Treatment is painless. Baseline cough, swallowing, and breathing symptoms are documented."],
@@ -4199,16 +4213,27 @@
         ]
       },
       {
-        id: "heme", icon: "icons/heme.png", name: "Heme/Lymphatic", subtitle: "Lymphoma, myeloma, marrow", defaultDose: [30, 15],
+        id: "heme", icon: "icons/heme.png", name: "Heme/Lymphatic", subtitle: "Lymphoma, mediastinum, myeloma", defaultDose: [30, 15],
         purpose: "Radiation for hematologic malignancies usually targets involved sites or focal symptomatic disease while limiting normal-tissue and marrow exposure.",
-        expectation: "Treatment fields are often limited and coordinated with systemic therapy and response imaging.",
+        expectation: "Treatment fields are often limited and coordinated with systemic therapy, pathology, and response imaging.",
         support: ["Fatigue counseling", "Site-specific skin or mucosal care", "Blood count monitoring when marrow exposure is relevant", "Pain flare counseling for bony lesions"],
-        position: "Positioning depends on the treated site, with immobilization chosen for comfort and reproducibility.",
+        position: "Positioning depends on the treated site, with immobilization chosen for comfort, reproducibility, and organ-at-risk sparing.",
         sites: [
           { id: "hodgkin", name: "Hodgkin lymphoma", hint: "Involved-site RT", tags: ["ISRT", "PET"], dose: [30, 15] },
           { id: "nhl", name: "Non-Hodgkin lymphoma", hint: "Indolent or aggressive", tags: ["ISRT", "palliation"], dose: [30, 15] },
-          { id: "plasmacytoma", name: "Plasmacytoma", hint: "Bone or soft tissue", tags: ["myeloma", "bone"], dose: [45, 25] },
-          { id: "tbi", name: "TBI concept", hint: "Transplant conditioning", tags: ["marrow", "specialized"], dose: [12, 6] }
+          {
+            id: "mediastinal-lymphoma",
+            name: "Mediastinal lymphoma",
+            hint: "Hodgkin or primary mediastinal B-cell lymphoma",
+            tags: ["ISRT", "PET", "DIBH"],
+            dose: [30, 15],
+            defaultPosition: "supine-arms-up",
+            purpose: "Involved-site radiation may treat selected mediastinal lymphoma or residual disease while limiting dose to the heart, lungs, breasts, thyroid, and esophagus.",
+            expectation: "Planning incorporates the original disease distribution, response imaging, systemic therapy, and current anatomy. Deep inspiration breath hold, IMRT/VMAT, or proton therapy may be considered when they improve normal-tissue sparing.",
+            support: ["Fatigue counseling and activity pacing", "Nutrition support if swallowing irritation develops", "Cough and shortness-of-breath monitoring", "Long-term cardiac, pulmonary, thyroid, and second-cancer risk counseling when relevant"],
+            position: "Usually supine with arms raised using customized upper-body support. Deep inspiration breath hold may be used to reduce heart and lung exposure when feasible."
+          },
+          { id: "plasmacytoma", name: "Plasmacytoma", hint: "Bone or soft tissue", tags: ["myeloma", "bone"], dose: [45, 25] }
         ],
         timeline: [
           ["Week 1", "Baseline symptoms and systemic therapy timing are reviewed."],
@@ -4267,6 +4292,10 @@
     };
 
     const savedEmbedLinks = JSON.parse(localStorage.getItem("OncoVis3DEmbedLinks") || localStorage.getItem("oncoviewEmbedLinks") || "{}");
+
+    if (savedEmbedLinks["thoracic:mediastinum"] && !savedEmbedLinks["heme:mediastinal-lymphoma"]) {
+      savedEmbedLinks["heme:mediastinal-lymphoma"] = savedEmbedLinks["thoracic:mediastinum"];
+    }
 
     const state = {
       page: "home",
@@ -4374,6 +4403,14 @@
 
       if (first === "workspace") {
         state.page = "workspace";
+
+        if (second === "thoracic" && third === "mediastinum") {
+          state.systemId = "heme";
+          state.siteId = "mediastinal-lymphoma";
+          setDoseForActiveSite();
+          return true;
+        }
+
         const system = systems.find(item => item.id === second);
 
         if (system) {
@@ -4389,6 +4426,14 @@
       }
 
       // Backward-compatible support for older links like #gu/prostate.
+      if (first === "thoracic" && second === "mediastinum") {
+        state.page = "workspace";
+        state.systemId = "heme";
+        state.siteId = "mediastinal-lymphoma";
+        setDoseForActiveSite();
+        return true;
+      }
+
       const legacySystem = systems.find(item => item.id === first);
       if (legacySystem) {
         state.page = "workspace";
@@ -4558,7 +4603,8 @@
 
     function getSelectedPatientPositionKey() {
       const key = patientPositionSelectionKey();
-      const selected = patientPositionSelections[key] || "supine";
+      const siteDefault = activeSite()?.defaultPosition || "supine";
+      const selected = patientPositionSelections[key] || siteDefault;
       return patientPositionLibrary[selected] ? selected : "supine";
     }
 
@@ -4716,6 +4762,18 @@
     };
 
     const timelineOverrides = {
+      "thoracic:thymic-tumors": [
+        { phase: "Preparation", time: "Simulation and planning", title: "Mediastinal anatomy and prior surgery", summary: "Planning reviews the surgical bed or visible thymic tumor and nearby lungs, heart, esophagus, trachea, spinal cord, and great vessels.", examples: ["Breath hold or 4D-CT may be used when respiratory motion or organ sparing warrants it.", "Treatment intent and dose depend on resection status, stage, histology, and multidisciplinary review."] },
+        { phase: "Early", time: "First 1 to 2 weeks", title: "Often mild at first", summary: "Patients do not see or feel the beam. Fatigue, mild cough, skin sensitivity, or swallowing irritation may begin depending on the treated volume.", examples: ["Continue nutrition, hydration, and activity as tolerated."] },
+        { phase: "Peak acute", time: "Later treatment to several weeks after", title: "Chest irritation can increase", summary: "Fatigue, esophagitis, cough, and skin reaction may become more noticeable near the end of treatment or shortly afterward.", examples: ["Call for poor intake, dehydration, fever, chest pain, or new shortness of breath."] },
+        { phase: "Late", time: "Months to years", title: "Thoracic organ monitoring", summary: "Late effects depend on dose to the lungs, heart, esophagus, spinal cord, and other mediastinal structures.", examples: ["New cough, fever, or dyspnea weeks to months after treatment requires evaluation for pneumonitis or another cause."] }
+      ],
+      "heme:mediastinal-lymphoma": [
+        { phase: "Preparation", time: "Before RT", title: "Response-adapted involved-site planning", summary: "The treatment team reviews original disease extent, systemic therapy, response imaging, and current anatomy to define the involved site.", examples: ["Deep inspiration breath hold, IMRT/VMAT, or proton therapy may be considered to reduce heart, lung, breast, thyroid, and esophageal exposure."] },
+        { phase: "Early", time: "Week 1", title: "Setup and baseline symptoms", summary: "Patients do not see or feel the beam. Breath-hold coaching, fatigue, cough, swallowing, and chest symptoms are reviewed.", examples: ["Most patients have limited symptoms early in a short involved-site course."] },
+        { phase: "Peak acute", time: "During RT to several weeks after", title: "Fatigue and mediastinal irritation", summary: "Fatigue, mild skin reaction, cough, or esophagitis can occur when the corresponding structures are in the treatment field.", examples: ["Report poor intake, dehydration, fever, chest pain, or new shortness of breath."] },
+        { phase: "Late", time: "Months to years", title: "Long-term normal-tissue awareness", summary: "Long-term follow-up considers cardiac, pulmonary, thyroid, breast, and second-malignancy risks according to age, sex, systemic therapy, field, and dose.", examples: ["Modern involved-site fields and organ-sparing techniques are used to reduce these risks whenever feasible."] }
+      ],
       "gu:bladder": [
         { phase: "Preparation", time: "Before and week 1", title: "TURBT, chemoRT, and bladder baseline", summary: "Bladder-preservation counseling emphasizes maximal TURBT when feasible, concurrent chemotherapy, reproducible pelvic setup, and planned cystoscopic reassessment.", examples: ["Document baseline dysuria, hematuria, frequency, urgency, continence, renal function, and bowel pattern."] },
         { phase: "Peak acute", time: "During chemoRT", title: "Cystitis, bowel irritation, and fatigue", summary: "Frequency, urgency, dysuria, hematuria, pelvic discomfort, loose stools, and fatigue can build during treatment.", examples: ["Escalate for urinary retention, fever, clots, heavy bleeding, dehydration, or uncontrolled pain."] },
@@ -4908,16 +4966,21 @@
     function updateDetails() {
       const system = activeSystem();
       const site = activeSite();
+      const purpose = site.purpose || system.purpose;
+      const expectation = site.expectation || system.expectation;
+      const position = site.position || system.position;
+      const supportiveCare = Array.isArray(site.support) ? site.support : system.support;
+
       $("selectedTitle").textContent = system.name;
       $("selectedSubtitle").textContent = system.subtitle;
       $("siteHeading").textContent = `${system.name} disease sites`;
-      $("radiationPurpose").textContent = system.purpose;
-      $("expectationText").textContent = system.expectation;
-      $("positioningText").textContent = system.position;
-      $("supportiveCare").innerHTML = system.support.map(item => `<li>${item}</li>`).join("");
+      $("radiationPurpose").textContent = purpose;
+      $("expectationText").textContent = expectation;
+      $("positioningText").textContent = position;
+      $("supportiveCare").innerHTML = supportiveCare.map(item => `<li>${item}</li>`).join("");
       updateTimeline();
       const selectedPosition = getSelectedPatientPosition();
-      $("printSummary").textContent = `${system.name}: ${site.name}. Patient position: ${selectedPosition.label}. ${system.purpose} Expected course: ${system.expectation}`;
+      $("printSummary").textContent = `${system.name}: ${site.name}. Patient position: ${selectedPosition.label}. ${purpose} Expected course: ${expectation}`;
     }
 
     function updateTreatmentCourse() {
