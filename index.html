@@ -6,6 +6,7 @@
   <title>OncoVis3D</title>
   <!-- Build: 30–60 minute appointment duration in Estimated treatment course -->
   <!-- Build: patient-facing-no-bed-eqd2-2026-07-25 -->
+  <!-- Build: guideline-source-precedence-and-nonconsecutive-cadence-2026-07-31 -->
   <meta name="description" content="A clinical tool for showing patients anatomy, tumor locations, radiation treatment concepts, dose schedules, and expected symptoms over time." />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2218%22%20fill%3D%22%232f7f88%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2253%25%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%20font-family%3D%22Inter%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2225%22%20font-weight%3D%22900%22%20fill%3D%22white%22%3EOG%3C%2Ftext%3E%3C%2Fsvg%3E" />
   <link rel="manifest" href="./manifest.webmanifest" />
@@ -5050,18 +5051,23 @@
         id: "sbrt-36.25-5",
         setting: "intact",
         category: "ultra",
-        label: "36.25 Gy in 5 fractions",
+        label: "36.25 Gy in 5 fractions, nonconsecutive",
         totalDose: 36.25,
         fractions: 5,
-        treatmentsPerWeek: 5,
+        nonconsecutive: true,
+        treatmentsPerWeek: 2.5,
         technique: "SBRT/SABR",
-        summary: "Five-fraction ultrahypofractionation example.",
+        summary: "Guideline-supported five-fraction ultrahypofractionation example with a nonconsecutive default cadence.",
         basisType: "ASTRO/ASCO/AUA guideline-supported",
-        basisDetail: "Ultrahypofractionation is supported for appropriately selected patients; exact dose and delivery cadence remain protocol-specific.",
+        basisDetail: "The ASTRO/ASCO/AUA guideline provides the primary ultrahypofractionation framework. OncoVis3D defaults to 2.5 sessions per week to represent five nonconsecutive fractions over approximately 2 weeks; the treating protocol determines the exact cadence.",
         sources: [
           {
             label: "ASTRO/ASCO/AUA hypofractionation guideline",
             url: "https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-hypofractionation-for-localized-prostate-cancer"
+          },
+          {
+            label: "Randomized nonconsecutive-cadence trial",
+            url: "https://pubmed.ncbi.nlm.nih.gov/37001763/"
           }
         ]
       },
@@ -5069,18 +5075,27 @@
         id: "sbrt-40-5",
         setting: "intact",
         category: "ultra",
-        label: "40 Gy in 5 fractions",
+        label: "40 Gy in 5 fractions, nonconsecutive",
         totalDose: 40,
         fractions: 5,
-        treatmentsPerWeek: 5,
+        nonconsecutive: true,
+        treatmentsPerWeek: 2.5,
         technique: "SBRT/SABR",
-        summary: "Dose-escalated five-fraction SBRT example.",
-        basisType: "Evidence-supported SBRT example",
-        basisDetail: "A commonly used five-fraction dose level that should be tied to an institutional protocol and modern image-guided SBRT workflow.",
+        summary: "Prospective five-fraction SBRT example with a nonconsecutive default cadence.",
+        basisType: "ASTRO framework with prospective trial support",
+        basisDetail: "The ASTRO/ASCO/AUA guideline is displayed first as the governing ultrahypofractionation framework. The exact 40 Gy in 5 fraction regimen is supported by prospective multicenter evidence. OncoVis3D defaults to 2.5 sessions per week for a nonconsecutive schedule; the treating protocol determines the exact cadence.",
         sources: [
           {
-            label: "ASTRO hypofractionation guideline framework",
+            label: "ASTRO/ASCO/AUA hypofractionation guideline",
             url: "https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-hypofractionation-for-localized-prostate-cancer"
+          },
+          {
+            label: "Prospective multicenter 40 Gy in 5 fractions trial",
+            url: "https://pubmed.ncbi.nlm.nih.gov/30191864/"
+          },
+          {
+            label: "PATRIOT randomized cadence trial",
+            url: "https://pubmed.ncbi.nlm.nih.gov/29551231/"
           }
         ]
       },
@@ -6039,6 +6054,11 @@
       renderProstateGuidelineBasis(matchedPreset);
     }
 
+    function presetSessionsPerWeek(preset) {
+      if (!preset) return "";
+      return preset.nonconsecutive ? 2.5 : preset.treatmentsPerWeek;
+    }
+
     function applyProstateRegimenPreset() {
       const select = $("prostateRegimenPreset");
       if (!select || !select.value) return;
@@ -6048,7 +6068,7 @@
 
       $("totalDose").value = preset.totalDose;
       $("fractions").value = preset.fractions;
-      $("treatmentsPerWeek").value = preset.treatmentsPerWeek;
+      $("treatmentsPerWeek").value = presetSessionsPerWeek(preset);
       $("technique").value = preset.technique;
       $("prostateFractionationCategory").value = preset.category;
 
@@ -6226,6 +6246,7 @@
             label: "30 Gy in 5 once-daily fractions on nonconsecutive days within 2 weeks",
             totalDose: 30,
             fractions: 5,
+            nonconsecutive: true,
             treatmentsPerWeek: 2.5,
             technique: "3D conformal radiation",
             tone: "ok",
@@ -6920,7 +6941,7 @@
 
       $("totalDose").value = preset.totalDose;
       $("fractions").value = preset.fractions;
-      $("treatmentsPerWeek").value = preset.treatmentsPerWeek;
+      $("treatmentsPerWeek").value = presetSessionsPerWeek(preset);
       $("technique").value = preset.technique;
 
       updateDose();
