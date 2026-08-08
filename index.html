@@ -7,6 +7,7 @@
   <!-- Build: 30–60 minute appointment duration in Estimated treatment course -->
   <!-- Build: patient-facing-no-bed-eqd2-2026-07-25 -->
   <!-- Build: guideline-source-precedence-and-nonconsecutive-cadence-2026-07-31 -->
+  <!-- Build: thoracic-nsclc-sclc-regimen-guidance-2026-08-08 -->
   <!-- Build: print-static-model-preview-no-open-model-button-2026-08-08 -->
   <!-- Build: thoracic-thymic-heme-mediastinal-reorganization-2026-07-31 -->
   <meta name="description" content="A clinical tool for showing patients anatomy, tumor locations, radiation treatment concepts, dose schedules, and expected symptoms over time." />
@@ -1685,6 +1686,26 @@
       color: var(--muted);
       font-size: 0.76rem;
       line-height: 1.35;
+    }
+
+    .lung-regimen-note {
+      padding: 10px 12px;
+      border: 1px solid rgba(47, 127, 136, 0.22);
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.58);
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.42;
+    }
+
+    .lung-regimen-note.warning {
+      border-color: rgba(173, 92, 0, 0.28);
+      background: rgba(255, 247, 237, 0.90);
+      color: #6f3b00;
+    }
+
+    .lung-regimen-note b {
+      color: var(--ink);
     }
 
     @media (max-width: 620px) {
@@ -3515,6 +3536,10 @@
               <a href="https://www.astro.org/provider-resources/guidelines/whole-breast-irradiation-gl" target="_blank" rel="noopener noreferrer">ASTRO whole-breast irradiation guideline</a>
               <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/pbi-guideline-replacement" target="_blank" rel="noopener noreferrer">ASTRO partial-breast irradiation guideline</a>
               <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/postmastectomy-radiation-therapy" target="_blank" rel="noopener noreferrer">ASTRO/ASCO/SSO postmastectomy guideline</a>
+              <a href="https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-sbrt-for-early-stage-nsclc" target="_blank" rel="noopener noreferrer">ASTRO early-stage NSCLC SBRT guideline</a>
+              <a href="https://ascopubs.org/doi/10.1200/JCO.21.02528" target="_blank" rel="noopener noreferrer">ASCO stage III NSCLC guideline</a>
+              <a href="https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-palliative-radiation-therapy-for-non-small-cell-lung-cancer" target="_blank" rel="noopener noreferrer">ASTRO palliative thoracic NSCLC guideline</a>
+              <a href="https://www.astro.org/provider-resources/guidelines/small-cell-lung-cancer-guideline" target="_blank" rel="noopener noreferrer">ASTRO small cell lung cancer guideline</a>
               <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8085511/" target="_blank" rel="noopener noreferrer">Thymic epithelial tumor radiotherapy guideline</a>
               <a href="https://pubmed.ncbi.nlm.nih.gov/23790512/" target="_blank" rel="noopener noreferrer">ILROG Hodgkin lymphoma field and dose guideline</a>
             </article>
@@ -3882,6 +3907,45 @@
                 <p class="prostate-regimen-disclaimer regimen-disclaimer-quiet">Educational decision support only. Final regimen selection remains individualized.</p>
               </div>
 
+
+              <div class="prostate-regimen-panel lung-regimen-panel" id="lungRegimenPanel" hidden>
+                <div class="prostate-regimen-head">
+                  <div>
+                    <strong>Lung regimen guidance</strong>
+                    <p>Choose the lung-cancer treatment setting and an evidence-linked radiation regimen, or enter a custom prescription below.</p>
+                  </div>
+                  <span class="tag" id="lungRegimenTag">Lung only</span>
+                </div>
+
+                <div class="prostate-regimen-grid">
+                  <div class="field">
+                    <label for="lungTreatmentSetting">Treatment setting</label>
+                    <select id="lungTreatmentSetting"></select>
+                  </div>
+
+                  <div class="field">
+                    <label for="lungFractionationCategory">Fractionation category</label>
+                    <select id="lungFractionationCategory"></select>
+                  </div>
+
+                  <div class="field prostate-preset-field">
+                    <label for="lungRegimenPreset">Common regimen</label>
+                    <select id="lungRegimenPreset"></select>
+                  </div>
+                </div>
+
+                <div class="lung-regimen-note" id="lungRegimenNote" aria-live="polite"></div>
+
+                <div class="regimen-quiet-meta">
+                  <span class="regimen-quiet-status info" id="lungRegimenStatus" aria-live="polite"></span>
+                  <details class="regimen-source-disclosure">
+                    <summary>Source</summary>
+                    <div class="breast-regimen-source prostate-regimen-source regimen-source-detail" id="lungRegimenSource"></div>
+                  </details>
+                </div>
+                <p class="prostate-regimen-disclaimer regimen-disclaimer-quiet">Educational decision support only. Final regimen selection remains individualized to tumor location, stage, organ-at-risk constraints, systemic therapy, and institutional protocol.</p>
+              </div>
+
               <input id="totalDose" type="hidden" value="50" />
 
               <div class="dose-grid">
@@ -4163,8 +4227,34 @@
         support: ["Nutrition support for esophagitis risk", "Cough and dyspnea monitoring", "Skin care across entry and exit regions", "Smoking cessation support when relevant"],
         position: "Usually supine with arms raised, using customized upper-body support and respiratory-motion coaching when needed.",
         sites: [
-          { id: "nsclc", name: "Non-small cell lung cancer", hint: "Central or peripheral lung", tags: ["lung", "IMRT", "SBRT"], dose: [60, 30], defaultPosition: "supine-arms-up" },
-          { id: "sclc", name: "Small cell lung cancer", hint: "Thorax and PCI discussion", tags: ["chemoRT", "thorax"], dose: [45, 30], defaultPosition: "supine-arms-up" },
+          {
+            id: "nsclc",
+            name: "Non-small cell lung cancer",
+            hint: "Early-stage SBRT, locally advanced treatment, or palliation",
+            tags: ["lung", "IMRT", "SBRT"],
+            dose: [60, 30],
+            defaultTreatmentsPerWeek: 5,
+            defaultTechnique: "IMRT/VMAT",
+            defaultPosition: "supine-arms-up",
+            purpose: "Radiation for non-small cell lung cancer may be used as definitive SBRT for selected early-stage disease, as part of definitive chemoradiation for locally advanced disease, or to relieve thoracic symptoms when cure-directed treatment is not appropriate.",
+            expectation: "Planning commonly uses PET/CT review, 4D-CT or another respiratory-motion assessment, and daily image guidance. Early-stage SBRT uses a few highly focused treatments, while stage III chemoradiation is generally delivered once daily over several weeks.",
+            support: ["Monitor cough, shortness of breath, oxygen needs, fever, and chest pain", "Nutrition and swallowing support when the esophagus receives clinically meaningful dose", "Smoking-cessation support when relevant", "Teach patients to report new cough, fever, or dyspnea after treatment because pneumonitis requires evaluation"],
+            position: "Usually supine with both arms raised using reproducible upper-body immobilization. 4D-CT, an internal target volume, breath hold, gating, or another motion-management strategy may be used according to tumor motion and anatomy."
+          },
+          {
+            id: "sclc",
+            name: "Small cell lung cancer",
+            hint: "Limited-stage chemoradiation, selected early-stage SBRT, or thoracic consolidation",
+            tags: ["chemoRT", "thorax", "BID"],
+            dose: [45, 30],
+            defaultTreatmentsPerWeek: 10,
+            defaultTechnique: "IMRT/VMAT",
+            defaultPosition: "supine-arms-up",
+            purpose: "Thoracic radiation is a core component of treatment for limited-stage small cell lung cancer and may also be used for selected node-negative early-stage disease or carefully selected extensive-stage patients with residual thoracic disease.",
+            expectation: "Limited-stage thoracic radiation is coordinated with systemic therapy. The guideline-standard accelerated course uses two radiation sessions on each treatment weekday, separated by at least 6 hours; once-daily alternatives are available when twice-daily treatment is not feasible.",
+            support: ["Nutrition, hydration, and swallowing support during concurrent chemoradiation", "Monitor cough, dyspnea, fever, chest pain, and oxygen needs", "Coordinate blood-count and systemic-therapy monitoring with medical oncology", "Brain MRI surveillance and prophylactic cranial irradiation discussions are individualized by stage, response, age, comorbidity, and current evidence"],
+            position: "Usually supine with both arms raised using reproducible upper-body immobilization. Respiratory motion is assessed with 4D-CT or another motion-management approach, and daily image guidance is typically used."
+          },
           { id: "esophagus", name: "Esophageal cancer", hint: "Swallowing symptoms", tags: ["GI", "thorax", "chemoRT"], dose: [50.4, 28], defaultPosition: "supine-arms-up" },
           {
             id: "thymic-tumors",
@@ -4418,6 +4508,12 @@
       if (!site?.dose) return;
       if ($("totalDose")) $("totalDose").value = site.dose[0];
       if ($("fractions")) $("fractions").value = site.dose[1];
+      if ($("treatmentsPerWeek") && site.defaultTreatmentsPerWeek !== undefined) {
+        $("treatmentsPerWeek").value = site.defaultTreatmentsPerWeek;
+      }
+      if ($("technique") && site.defaultTechnique) {
+        $("technique").value = site.defaultTechnique;
+      }
     }
 
     function updateWorkspaceVisibility() {
@@ -4901,6 +4997,24 @@
     };
 
     const timelineOverrides = {
+      "thoracic:nsclc:SBRT/SABR": [
+        { phase: "Preparation", time: "Simulation and planning", title: "Motion-managed stereotactic planning", summary: "SBRT planning defines the lung target with respiratory-motion assessment and strict review of nearby bronchial tree, chest wall, esophagus, heart, spinal cord, and major vessels.", examples: ["Peripheral and central tumors may require different fractionation because central organs can limit dose per treatment.", "Daily image guidance is essential for each stereotactic treatment."] },
+        { phase: "Acute", time: "Treatment week to several weeks after", title: "Often mild short-course symptoms", summary: "Many patients have little immediate toxicity. Fatigue, cough, transient chest discomfort, or chest-wall soreness can occur depending on tumor location.", examples: ["Report fever, worsening shortness of breath, hemoptysis, or severe chest pain promptly."] },
+        { phase: "Recovery", time: "Weeks to 3 months", title: "Most acute effects settle", summary: "Fatigue and local irritation generally improve, although imaging changes around the treated tumor can evolve for months.", examples: ["Follow-up CT changes after SBRT may represent treatment effect and are interpreted over time."] },
+        { phase: "Late", time: "About 1 to 6 months and beyond", title: "Pneumonitis and site-specific late effects", summary: "Radiation pneumonitis can present with new cough, fever, or dyspnea. Later risks depend on tumor location and nearby structures.", examples: ["Chest-wall pain or rib fracture risk is greater for lesions close to the ribs.", "Central or ultracentral targets require special attention to airway, esophagus, and vessel toxicity."] }
+      ],
+      "thoracic:nsclc": [
+        { phase: "Preparation", time: "Before RT", title: "Stage, motion, and systemic-therapy coordination", summary: "Planning integrates diagnostic imaging, respiratory motion, target volumes, and doses to lung, heart, esophagus, spinal cord, and other nearby organs.", examples: ["For unresectable stage III disease, radiation is commonly coordinated with concurrent platinum-based chemotherapy when the patient can tolerate it."] },
+        { phase: "Early", time: "Weeks 1 to 2", title: "Often mild initially", summary: "Treatment itself is painless. Fatigue, cough, appetite change, or mild swallowing irritation may begin.", examples: ["Maintain hydration, nutrition, and pulmonary medications as directed."] },
+        { phase: "Peak acute", time: "Weeks 3 to 6 and shortly after", title: "Esophagitis, fatigue, and cough can build", summary: "Swallowing pain, fatigue, cough, skin reaction, and reduced intake may increase during a multi-week thoracic course, especially with concurrent systemic therapy.", examples: ["Call for inability to maintain hydration, fever, new oxygen requirement, hemoptysis, or worsening dyspnea."] },
+        { phase: "Late", time: "1 to 6 months and beyond", title: "Pneumonitis and long-term thoracic effects", summary: "New cough, fever, or shortness of breath after radiation requires evaluation for pneumonitis or another pulmonary cause. Later risks depend on heart, lung, esophagus, airway, cord, and plexus dose.", examples: ["Surveillance imaging and systemic-therapy follow-up are coordinated with the oncology team."] }
+      ],
+      "thoracic:sclc": [
+        { phase: "Preparation", time: "Before and early in systemic therapy", title: "Concurrent treatment planning", summary: "Limited-stage treatment coordinates thoracic radiation with systemic therapy, respiratory-motion assessment, daily image guidance, and involved-field target definition.", examples: ["The standard twice-daily course requires two treatment visits on each treatment weekday with adequate separation between fractions."] },
+        { phase: "Acute", time: "During thoracic chemoradiation", title: "Esophagitis, fatigue, and blood-count effects", summary: "Fatigue, swallowing pain, cough, appetite change, and treatment-related cytopenias may accumulate during concurrent therapy.", examples: ["Nutrition, hydration, and blood-count monitoring are especially important during combined-modality treatment."] },
+        { phase: "Recovery", time: "Weeks to a few months after thoracic RT", title: "Acute chest effects improve", summary: "Swallowing irritation and fatigue generally improve after treatment, while pulmonary symptoms and systemic-therapy recovery continue to be monitored.", examples: ["New fever, cough, or dyspnea requires evaluation rather than being assumed to be a normal recovery effect."] },
+        { phase: "Follow-up", time: "Months and beyond", title: "Thoracic and brain surveillance", summary: "Follow-up addresses thoracic response, pneumonitis risk, systemic disease, and brain-metastasis surveillance. PCI or MRI-surveillance decisions are individualized.", examples: ["Long-term thoracic risks depend on heart, lung, esophagus, airway, spinal cord, and systemic-therapy exposure."] }
+      ],
       "thoracic:thymic-tumors": [
         { phase: "Preparation", time: "Simulation and planning", title: "Mediastinal anatomy and prior surgery", summary: "Planning reviews the surgical bed or visible thymic tumor and nearby lungs, heart, esophagus, trachea, spinal cord, and great vessels.", examples: ["Breath hold or 4D-CT may be used when respiratory motion or organ sparing warrants it.", "Treatment intent and dose depend on resection status, stage, histology, and multidisciplinary review."] },
         { phase: "Early", time: "First 1 to 2 weeks", title: "Often mild at first", summary: "Patients do not see or feel the beam. Fatigue, mild cough, skin sensitivity, or swallowing irritation may begin depending on the treated volume.", examples: ["Continue nutrition, hydration, and activity as tolerated."] },
@@ -5155,6 +5269,20 @@
           $('courseTreatmentText').textContent = `The course includes ${boostPlan.baseFractions} whole-breast treatments followed by ${boostPlan.boostFractions} tumor-bed boost treatments, for ${boostPlan.totalFractions} total visits.`;
         } else if (boostPlan.active && boostPlan.mode === "sib" && boostPlan.valid) {
           $('courseTreatmentText').textContent = `Each of the ${boostPlan.baseFractions} sessions delivers the whole-breast dose and a higher integrated tumor-bed dose during the same visit.`;
+        } else if (isActiveLungRegimenSite()) {
+          const lungPreset = getSupportedLungPreset();
+          const lungSetting = $("lungTreatmentSetting")?.value || "";
+          if (lungPreset?.twiceDaily) {
+            $('courseTreatmentText').textContent = `The ${lungPreset.fractions}-fraction course is delivered as two treatment sessions per weekday, with at least 6 hours between the two daily fractions.`;
+          } else if (technique === "SBRT/SABR") {
+            $('courseTreatmentText').textContent = `The lung target is treated with ${fractions} highly focused stereotactic sessions using respiratory-motion management and daily image guidance.`;
+          } else if (state.siteId === "nsclc" && lungSetting === "stage3-concurrent") {
+            $('courseTreatmentText').textContent = `Thoracic radiation is delivered once daily over ${fmt(fractions / perWeek)} weeks and is typically coordinated with concurrent systemic therapy for appropriate patients.`;
+          } else if (state.siteId === "sclc" && lungSetting === "limited-qd") {
+            $('courseTreatmentText').textContent = `Thoracic radiation is delivered once daily and coordinated with systemic therapy; this is an alternative when the twice-daily standard is not feasible.`;
+          } else {
+            $('courseTreatmentText').textContent = `Thoracic radiation follows the selected ${fractions}-session schedule with daily image guidance and site-appropriate respiratory-motion management.`;
+          }
         } else {
           $('courseTreatmentText').textContent = isBrachytherapy
             ? `Radiation is delivered with applicators or sources placed near the target.`
@@ -7153,6 +7281,673 @@
     }
 
 
+
+    const lungRegimenConfigs = {
+      nsclc: {
+        tag: "NSCLC",
+        defaultSetting: "stage3-concurrent",
+        categories: [
+          { id: "conventional", label: "Conventional fractionation" },
+          { id: "hypofractionated", label: "Hypofractionated definitive RT" },
+          { id: "sbrt", label: "SBRT / SABR" },
+          { id: "palliative", label: "Palliative thoracic RT" },
+          { id: "custom", label: "Custom or other" }
+        ],
+        settings: [
+          {
+            id: "early-peripheral",
+            label: "Early-stage peripheral tumor, SBRT",
+            defaultCategory: "sbrt",
+            evidenceLabel: "ASTRO early-stage NSCLC SBRT guideline",
+            evidenceDetail: "SBRT is the definitive radiation framework for appropriately selected medically inoperable early-stage NSCLC. Peripheral tumors can use highly ablative short-course schedules when organ-at-risk constraints are met.",
+            sources: [
+              { label: "ASTRO early-stage NSCLC SBRT guideline", url: "https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-sbrt-for-early-stage-nsclc" }
+            ]
+          },
+          {
+            id: "early-central",
+            label: "Early-stage central tumor, risk-adapted SBRT",
+            defaultCategory: "sbrt",
+            evidenceLabel: "ASTRO central-tumor SBRT guidance",
+            evidenceDetail: "ASTRO advises against 3-fraction SBRT for central lung tumors. Four- or five-fraction approaches may be used with careful attention to proximal airway, esophagus, heart, great vessels, and other critical structures.",
+            sources: [
+              { label: "ASTRO early-stage NSCLC SBRT guideline", url: "https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-sbrt-for-early-stage-nsclc" },
+              { label: "NRG/RTOG 0813", url: "https://pubmed.ncbi.nlm.nih.gov/30943123/" }
+            ]
+          },
+          {
+            id: "stage3-concurrent",
+            label: "Unresectable stage III, concurrent chemoradiation",
+            defaultCategory: "conventional",
+            evidenceLabel: "ASCO stage III NSCLC guideline",
+            evidenceDetail: "For medically or surgically inoperable stage III NSCLC with good performance status, concurrent chemoradiation is preferred and the guideline-recommended radiation dose is 60 Gy.",
+            sources: [
+              { label: "ASCO stage III NSCLC guideline", url: "https://ascopubs.org/doi/10.1200/JCO.21.02528" },
+              { label: "ASTRO thoracic guideline index / summary", url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines" }
+            ]
+          },
+          {
+            id: "stage3-rt-alone",
+            label: "Stage II/III, definitive RT without concurrent chemotherapy",
+            defaultCategory: "conventional",
+            evidenceLabel: "ASCO stage III NSCLC guideline",
+            evidenceDetail: "When concurrent chemotherapy cannot be given, standard fractionation remains appropriate; selected patients may be considered for modest hypofractionation, with careful attention to tumor location and normal-tissue constraints.",
+            sources: [
+              { label: "ASCO stage III NSCLC guideline", url: "https://ascopubs.org/doi/10.1200/JCO.21.02528" },
+              { label: "60 Gy in 15 vs 30 fraction randomized trial", url: "https://pubmed.ncbi.nlm.nih.gov/34383006/" }
+            ]
+          },
+          {
+            id: "palliative",
+            label: "Palliative thoracic radiation",
+            defaultCategory: "palliative",
+            evidenceLabel: "ASTRO palliative thoracic NSCLC guideline",
+            evidenceDetail: "Palliative thoracic dose and fractionation are selected according to symptoms, performance status, expected survival, treatment goals, and convenience. Both 30 Gy in 10 fractions and shorter schedules are guideline-supported in appropriate settings.",
+            sources: [
+              { label: "ASTRO palliative thoracic NSCLC guideline", url: "https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-palliative-radiation-therapy-for-non-small-cell-lung-cancer" },
+              { label: "Guideline evidence review", url: "https://pubmed.ncbi.nlm.nih.gov/25740118/" }
+            ]
+          },
+          {
+            id: "other",
+            label: "Custom or other",
+            defaultCategory: "custom",
+            evidenceLabel: "Custom NSCLC regimen",
+            evidenceDetail: "No preset-specific evidence label is assigned. Confirm the prescription against the applicable stage, tumor location, current guideline, protocol, and institutional constraints.",
+            sources: [
+              { label: "ASTRO clinical practice guidelines", url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines" }
+            ]
+          }
+        ],
+        presets: [
+          {
+            id: "nsclc-peripheral-54-3",
+            settings: ["early-peripheral"],
+            category: "sbrt",
+            label: "54 Gy in 3 nonconsecutive fractions",
+            totalDose: 54,
+            fractions: 3,
+            treatmentsPerWeek: 2.5,
+            nonconsecutive: true,
+            technique: "SBRT/SABR",
+            tone: "ok",
+            evidenceLabel: "ASTRO framework with RTOG 0236 prospective evidence",
+            evidenceDetail: "54 Gy in 3 fractions is a seminal prospective regimen for peripheral, medically inoperable early-stage NSCLC. The fractions are nonconsecutive; OncoVis3D defaults to 2.5 sessions per week to represent spaced treatment days.",
+            sources: [
+              { label: "ASTRO early-stage NSCLC SBRT guideline", url: "https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-sbrt-for-early-stage-nsclc" },
+              { label: "RTOG 0236", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC2907644/" }
+            ]
+          },
+          {
+            id: "nsclc-peripheral-48-4",
+            settings: ["early-peripheral"],
+            category: "sbrt",
+            label: "48 Gy in 4 consecutive daily fractions",
+            totalDose: 48,
+            fractions: 4,
+            treatmentsPerWeek: 5,
+            technique: "SBRT/SABR",
+            tone: "ok",
+            evidenceLabel: "ASTRO framework with randomized phase II evidence",
+            evidenceDetail: "48 Gy in 4 consecutive daily fractions is a prospectively studied peripheral stage I NSCLC SBRT regimen in NRG/RTOG 0915.",
+            sources: [
+              { label: "ASTRO early-stage NSCLC SBRT guideline", url: "https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-sbrt-for-early-stage-nsclc" },
+              { label: "NRG/RTOG 0915", url: "https://pubmed.ncbi.nlm.nih.gov/26530743/" }
+            ]
+          },
+          {
+            id: "nsclc-central-50-5",
+            settings: ["early-central"],
+            category: "sbrt",
+            label: "50 Gy in 5 nonconsecutive fractions",
+            totalDose: 50,
+            fractions: 5,
+            treatmentsPerWeek: 2.5,
+            nonconsecutive: true,
+            technique: "SBRT/SABR",
+            tone: "ok",
+            evidenceLabel: "ASTRO risk-adapted central-tumor framework with NRG/RTOG 0813 support",
+            evidenceDetail: "This is a common risk-adapted five-fraction central-lung SBRT example. NRG/RTOG 0813 evaluated 50 to 60 Gy in 5 fractions over 1.5 to 2 weeks; final dose depends on proximity to critical structures and protocol constraints.",
+            sources: [
+              { label: "ASTRO early-stage NSCLC SBRT guideline", url: "https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-sbrt-for-early-stage-nsclc" },
+              { label: "NRG/RTOG 0813", url: "https://pubmed.ncbi.nlm.nih.gov/30943123/" }
+            ]
+          },
+          {
+            id: "nsclc-stage3-60-30",
+            settings: ["stage3-concurrent"],
+            category: "conventional",
+            label: "60 Gy in 30 fractions",
+            totalDose: 60,
+            fractions: 30,
+            treatmentsPerWeek: 5,
+            technique: "IMRT/VMAT",
+            tone: "ok",
+            evidenceLabel: "ASCO guideline-standard definitive dose",
+            evidenceDetail: "ASCO strongly recommends 60 Gy for stage III NSCLC treated with concurrent chemoradiation. Systemic-therapy selection and consolidation therapy are managed separately from this radiation prescription module.",
+            sources: [
+              { label: "ASCO stage III NSCLC guideline", url: "https://ascopubs.org/doi/10.1200/JCO.21.02528" },
+              { label: "ASTRO thoracic guideline index / summary", url: "https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines" }
+            ]
+          },
+          {
+            id: "nsclc-rtalone-60-30",
+            settings: ["stage3-rt-alone"],
+            category: "conventional",
+            label: "60 Gy in 30 fractions",
+            totalDose: 60,
+            fractions: 30,
+            treatmentsPerWeek: 5,
+            technique: "IMRT/VMAT",
+            tone: "ok",
+            evidenceLabel: "ASCO guideline-supported definitive RT-alone example",
+            evidenceDetail: "60 Gy in 30 fractions is a standard definitive radiation-alone example when concurrent chemotherapy cannot be delivered. Sequential chemotherapy should still be considered when appropriate.",
+            sources: [
+              { label: "ASCO stage III NSCLC guideline", url: "https://ascopubs.org/doi/10.1200/JCO.21.02528" }
+            ]
+          },
+          {
+            id: "nsclc-rtalone-60-15",
+            settings: ["stage3-rt-alone"],
+            category: "hypofractionated",
+            label: "60 Gy in 15 fractions, selected patients",
+            totalDose: 60,
+            fractions: 15,
+            treatmentsPerWeek: 5,
+            technique: "IMRT/VMAT",
+            tone: "info",
+            evidenceLabel: "ASCO-permitted modest hypofractionation with randomized trial evidence",
+            evidenceDetail: "ASCO permits modest hypofractionation for selected stage III patients receiving definitive RT without chemotherapy. A randomized trial of 60 Gy in 15 versus 30 fractions did not show superior survival, so this is a selected-patient option rather than a preferred replacement for standard chemoradiation.",
+            sources: [
+              { label: "ASCO stage III NSCLC guideline", url: "https://ascopubs.org/doi/10.1200/JCO.21.02528" },
+              { label: "60 Gy in 15 vs 30 fraction randomized trial", url: "https://pubmed.ncbi.nlm.nih.gov/34383006/" }
+            ]
+          },
+          {
+            id: "nsclc-pall-30-10",
+            settings: ["palliative"],
+            category: "palliative",
+            label: "30 Gy in 10 fractions",
+            totalDose: 30,
+            fractions: 10,
+            treatmentsPerWeek: 5,
+            technique: "3D conformal radiation",
+            tone: "ok",
+            evidenceLabel: "ASTRO palliative thoracic guideline-supported",
+            evidenceDetail: "30 Gy in 10 fractions is a guideline-supported higher-dose palliative thoracic schedule that may modestly improve survival or symptom score in patients with good performance status, with greater esophageal toxicity than shorter schedules.",
+            sources: [
+              { label: "ASTRO palliative thoracic NSCLC guideline", url: "https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-palliative-radiation-therapy-for-non-small-cell-lung-cancer" },
+              { label: "Guideline evidence review", url: "https://pubmed.ncbi.nlm.nih.gov/25740118/" }
+            ]
+          },
+          {
+            id: "nsclc-pall-20-5",
+            settings: ["palliative"],
+            category: "palliative",
+            label: "20 Gy in 5 fractions",
+            totalDose: 20,
+            fractions: 5,
+            treatmentsPerWeek: 5,
+            technique: "3D conformal radiation",
+            tone: "ok",
+            evidenceLabel: "ASTRO palliative thoracic guideline-supported short course",
+            evidenceDetail: "20 Gy in 5 fractions is a guideline-supported shorter palliative thoracic schedule that provides symptom relief with fewer treatment visits.",
+            sources: [
+              { label: "ASTRO palliative thoracic NSCLC guideline", url: "https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-palliative-radiation-therapy-for-non-small-cell-lung-cancer" },
+              { label: "Guideline evidence review", url: "https://pubmed.ncbi.nlm.nih.gov/25740118/" }
+            ]
+          },
+          {
+            id: "nsclc-pall-17-2",
+            settings: ["palliative"],
+            category: "palliative",
+            label: "17 Gy in 2 weekly fractions",
+            totalDose: 17,
+            fractions: 2,
+            treatmentsPerWeek: 1,
+            technique: "3D conformal radiation",
+            tone: "ok",
+            evidenceLabel: "ASTRO palliative thoracic guideline-supported short course",
+            evidenceDetail: "17 Gy in 2 weekly fractions is specifically listed among shorter palliative thoracic schedules that can provide symptom relief with few treatment visits.",
+            sources: [
+              { label: "ASTRO palliative thoracic NSCLC guideline", url: "https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-palliative-radiation-therapy-for-non-small-cell-lung-cancer" },
+              { label: "Guideline evidence review", url: "https://pubmed.ncbi.nlm.nih.gov/25740118/" }
+            ]
+          },
+          {
+            id: "nsclc-pall-10-1",
+            settings: ["palliative"],
+            category: "palliative",
+            label: "10 Gy in 1 fraction",
+            totalDose: 10,
+            fractions: 1,
+            treatmentsPerWeek: 1,
+            technique: "3D conformal radiation",
+            tone: "ok",
+            evidenceLabel: "ASTRO palliative thoracic guideline-supported single fraction",
+            evidenceDetail: "10 Gy in 1 fraction is a guideline-supported single-fraction palliative thoracic option for appropriately selected patients prioritizing a very short course.",
+            sources: [
+              { label: "ASTRO palliative thoracic NSCLC guideline", url: "https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-palliative-radiation-therapy-for-non-small-cell-lung-cancer" },
+              { label: "Guideline evidence review", url: "https://pubmed.ncbi.nlm.nih.gov/25740118/" }
+            ]
+          }
+        ]
+      },
+      sclc: {
+        tag: "SCLC",
+        defaultSetting: "limited-bid",
+        categories: [
+          { id: "hyperfractionated", label: "Accelerated hyperfractionation, twice daily" },
+          { id: "conventional", label: "Once-daily definitive fractionation" },
+          { id: "sbrt", label: "SBRT / SABR" },
+          { id: "consolidation", label: "Extensive-stage thoracic consolidation" },
+          { id: "custom", label: "Custom or other" }
+        ],
+        settings: [
+          {
+            id: "limited-bid",
+            label: "Limited-stage concurrent chemoradiation, twice daily",
+            defaultCategory: "hyperfractionated",
+            evidenceLabel: "ASTRO SCLC guideline standard",
+            evidenceDetail: "ASTRO strongly recommends 45 Gy in 30 twice-daily fractions for limited-stage SCLC. The two daily fractions should be separated by at least 6 hours, and thoracic RT should begin early in the systemic-therapy course when feasible.",
+            sources: [
+              { label: "ASTRO SCLC guideline", url: "https://www.astro.org/provider-resources/guidelines/small-cell-lung-cancer-guideline" },
+              { label: "Turrisi / Intergroup 0096", url: "https://pubmed.ncbi.nlm.nih.gov/9920950/" }
+            ]
+          },
+          {
+            id: "limited-qd",
+            label: "Limited-stage concurrent chemoradiation, once daily",
+            defaultCategory: "conventional",
+            evidenceLabel: "ASTRO SCLC guideline alternative",
+            evidenceDetail: "When twice-daily treatment is not feasible, ASTRO supports once-daily thoracic radiation in the 60 to 70 Gy range. Phase III trials of 66 Gy and 70 Gy once daily did not establish superiority over 45 Gy twice daily.",
+            sources: [
+              { label: "ASTRO SCLC guideline", url: "https://www.astro.org/provider-resources/guidelines/small-cell-lung-cancer-guideline" },
+              { label: "CONVERT", url: "https://pubmed.ncbi.nlm.nih.gov/28642008/" },
+              { label: "CALGB 30610 / RTOG 0538", url: "https://pubmed.ncbi.nlm.nih.gov/36623230/" }
+            ]
+          },
+          {
+            id: "early-node-negative",
+            label: "Stage I-II node-negative, medically inoperable",
+            defaultCategory: "sbrt",
+            evidenceLabel: "ASTRO SCLC guideline with lung-SBRT framework",
+            evidenceDetail: "ASTRO supports SBRT or conventional radiation for selected medically inoperable stage I-II node-negative SCLC after appropriate nodal staging. The exact SBRT prescription follows lung SBRT principles rather than a single SCLC-specific preferred dose.",
+            sources: [
+              { label: "ASTRO SCLC guideline", url: "https://www.astro.org/provider-resources/guidelines/small-cell-lung-cancer-guideline" },
+              { label: "ASTRO early-stage NSCLC SBRT guideline", url: "https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-sbrt-for-early-stage-nsclc" }
+            ]
+          },
+          {
+            id: "extensive-consolidation",
+            label: "Extensive-stage residual thoracic disease after systemic therapy",
+            defaultCategory: "consolidation",
+            evidenceLabel: "ASTRO conditional recommendation with evolving 2026 evidence",
+            evidenceDetail: "ASTRO conditionally supports thoracic consolidation for selected extensive-stage SCLC with response to systemic therapy and residual thoracic disease. In the modern immunotherapy era, the 2026 TREASURE randomized phase II trial found no survival benefit and greater toxicity from adding 30 Gy in 10 fractions to atezolizumab maintenance in an unselected population, so patient selection is especially important.",
+            sources: [
+              { label: "ASTRO SCLC guideline", url: "https://www.astro.org/provider-resources/guidelines/small-cell-lung-cancer-guideline" },
+              { label: "TREASURE 2026", url: "https://pubmed.ncbi.nlm.nih.gov/42424047/" }
+            ]
+          },
+          {
+            id: "other",
+            label: "Custom or other",
+            defaultCategory: "custom",
+            evidenceLabel: "Custom SCLC regimen",
+            evidenceDetail: "No preset-specific evidence label is assigned. Confirm the prescription against stage, systemic-therapy timing, current guideline recommendations, and institutional protocol.",
+            sources: [
+              { label: "ASTRO SCLC guideline", url: "https://www.astro.org/provider-resources/guidelines/small-cell-lung-cancer-guideline" }
+            ]
+          }
+        ],
+        presets: [
+          {
+            id: "sclc-ls-45-30-bid",
+            settings: ["limited-bid"],
+            category: "hyperfractionated",
+            label: "45 Gy in 30 fractions, twice daily",
+            totalDose: 45,
+            fractions: 30,
+            treatmentsPerWeek: 10,
+            twiceDaily: true,
+            technique: "IMRT/VMAT",
+            tone: "ok",
+            evidenceLabel: "ASTRO guideline-standard with randomized phase III evidence",
+            evidenceDetail: "45 Gy in 30 fractions at 1.5 Gy twice daily remains the guideline-standard accelerated thoracic regimen for limited-stage SCLC. OncoVis3D sets 10 sessions per week, representing two fractions each weekday, with at least 6 hours between daily fractions.",
+            sources: [
+              { label: "ASTRO SCLC guideline", url: "https://www.astro.org/provider-resources/guidelines/small-cell-lung-cancer-guideline" },
+              { label: "Turrisi / Intergroup 0096", url: "https://pubmed.ncbi.nlm.nih.gov/9920950/" },
+              { label: "CONVERT", url: "https://pubmed.ncbi.nlm.nih.gov/28642008/" }
+            ]
+          },
+          {
+            id: "sclc-ls-66-33-qd",
+            settings: ["limited-qd"],
+            category: "conventional",
+            label: "66 Gy in 33 once-daily fractions",
+            totalDose: 66,
+            fractions: 33,
+            treatmentsPerWeek: 5,
+            technique: "IMRT/VMAT",
+            tone: "ok",
+            evidenceLabel: "ASTRO-supported once-daily alternative with CONVERT phase III evidence",
+            evidenceDetail: "66 Gy in 33 once-daily fractions was the once-daily arm of CONVERT. It was not superior to 45 Gy twice daily, but remains an evidence-supported alternative when BID treatment is not feasible.",
+            sources: [
+              { label: "ASTRO SCLC guideline", url: "https://www.astro.org/provider-resources/guidelines/small-cell-lung-cancer-guideline" },
+              { label: "CONVERT", url: "https://pubmed.ncbi.nlm.nih.gov/28642008/" }
+            ]
+          },
+          {
+            id: "sclc-ls-70-35-qd",
+            settings: ["limited-qd"],
+            category: "conventional",
+            label: "70 Gy in 35 once-daily fractions",
+            totalDose: 70,
+            fractions: 35,
+            treatmentsPerWeek: 5,
+            technique: "IMRT/VMAT",
+            tone: "ok",
+            evidenceLabel: "ASTRO-supported once-daily alternative with phase III evidence",
+            evidenceDetail: "70 Gy in 35 once-daily fractions was evaluated against 45 Gy twice daily in CALGB 30610/RTOG 0538. Once-daily 70 Gy did not improve overall survival, so 45 Gy twice daily remains the reference standard.",
+            sources: [
+              { label: "ASTRO SCLC guideline", url: "https://www.astro.org/provider-resources/guidelines/small-cell-lung-cancer-guideline" },
+              { label: "CALGB 30610 / RTOG 0538", url: "https://pubmed.ncbi.nlm.nih.gov/36623230/" }
+            ]
+          },
+          {
+            id: "sclc-early-50-5",
+            settings: ["early-node-negative"],
+            category: "sbrt",
+            label: "50 Gy in 5 nonconsecutive fractions, selected example",
+            totalDose: 50,
+            fractions: 5,
+            treatmentsPerWeek: 2.5,
+            nonconsecutive: true,
+            technique: "SBRT/SABR",
+            tone: "info",
+            evidenceLabel: "ASTRO SCLC indication with lung-SBRT dose framework",
+            evidenceDetail: "ASTRO supports SBRT for selected medically inoperable, node-negative stage I-II SCLC. The displayed 50 Gy in 5 fraction schedule is a representative lung-SBRT example, not an SCLC-specific preferred trial dose; the exact prescription depends on location and normal-tissue constraints.",
+            sources: [
+              { label: "ASTRO SCLC guideline", url: "https://www.astro.org/provider-resources/guidelines/small-cell-lung-cancer-guideline" },
+              { label: "ASTRO early-stage NSCLC SBRT guideline", url: "https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-sbrt-for-early-stage-nsclc" }
+            ]
+          },
+          {
+            id: "sclc-es-30-10",
+            settings: ["extensive-consolidation"],
+            category: "consolidation",
+            label: "30 Gy in 10 fractions, selected consolidation",
+            totalDose: 30,
+            fractions: 10,
+            treatmentsPerWeek: 5,
+            technique: "IMRT/VMAT",
+            tone: "warning",
+            evidenceLabel: "ASTRO conditional framework; role evolving after TREASURE 2026",
+            evidenceDetail: "30 Gy in 10 fractions is the guideline-based historical consolidative schedule for selected extensive-stage SCLC with residual thoracic disease. TREASURE 2026 found no survival benefit and increased toxicity when this regimen was added to atezolizumab maintenance in an unselected post-chemoimmunotherapy population.",
+            sources: [
+              { label: "ASTRO SCLC guideline", url: "https://www.astro.org/provider-resources/guidelines/small-cell-lung-cancer-guideline" },
+              { label: "TREASURE 2026", url: "https://pubmed.ncbi.nlm.nih.gov/42424047/" }
+            ]
+          },
+          {
+            id: "sclc-es-45-15",
+            settings: ["extensive-consolidation"],
+            category: "consolidation",
+            label: "45 Gy in 15 fractions, selected fit patients",
+            totalDose: 45,
+            fractions: 15,
+            treatmentsPerWeek: 5,
+            technique: "IMRT/VMAT",
+            tone: "warning",
+            evidenceLabel: "Selected higher-dose consolidation option; not routine",
+            evidenceDetail: "ASTRO-era guidance allowed consideration of higher-dose thoracic consolidation such as 45 Gy in 15 fractions for carefully selected fit patients expected to have prolonged survival. The immunotherapy-era benefit remains uncertain and should not be presented as routine.",
+            sources: [
+              { label: "ASTRO SCLC guideline", url: "https://www.astro.org/provider-resources/guidelines/small-cell-lung-cancer-guideline" },
+              { label: "TREASURE 2026", url: "https://pubmed.ncbi.nlm.nih.gov/42424047/" }
+            ]
+          }
+        ]
+      }
+    };
+
+    let lungRegimenSiteId = null;
+
+    function isActiveLungRegimenSite() {
+      return state.systemId === "thoracic" && ["nsclc", "sclc"].includes(state.siteId);
+    }
+
+    function activeLungRegimenConfig() {
+      return isActiveLungRegimenSite() ? lungRegimenConfigs[state.siteId] : null;
+    }
+
+    function currentLungSettingConfig() {
+      const config = activeLungRegimenConfig();
+      const setting = $("lungTreatmentSetting")?.value || config?.defaultSetting || "other";
+      return config?.settings.find(item => item.id === setting) || null;
+    }
+
+    function classifyLungFractionation(totalDose, fractions, technique = $("technique")?.value || "") {
+      const setting = $("lungTreatmentSetting")?.value || "";
+      const dosePerFraction = totalDose > 0 && fractions > 0 ? totalDose / fractions : NaN;
+
+      if (setting === "palliative") return { id: "palliative", label: "Palliative thoracic RT", dosePerFraction };
+      if (setting === "extensive-consolidation") return { id: "consolidation", label: "Thoracic consolidation", dosePerFraction };
+      if (setting === "limited-bid") return { id: "hyperfractionated", label: "Accelerated hyperfractionation", dosePerFraction };
+      if (["early-peripheral", "early-central", "early-node-negative"].includes(setting)) return { id: "sbrt", label: "SBRT / SABR", dosePerFraction };
+      if (["stage3-concurrent", "limited-qd"].includes(setting)) return { id: "conventional", label: "Conventional fractionation", dosePerFraction };
+      if (setting === "stage3-rt-alone") {
+        if (dosePerFraction > 2.05 && dosePerFraction <= 4.01) return { id: "hypofractionated", label: "Hypofractionated definitive RT", dosePerFraction };
+        if (dosePerFraction > 0 && dosePerFraction <= 2.05) return { id: "conventional", label: "Conventional fractionation", dosePerFraction };
+      }
+      if (setting === "other") return { id: "custom", label: "Custom fractionation", dosePerFraction };
+      if (technique === "SBRT/SABR" || dosePerFraction >= 5) return { id: "sbrt", label: "SBRT / SABR", dosePerFraction };
+      if (dosePerFraction > 2.05 && dosePerFraction < 5) return { id: "hypofractionated", label: "Hypofractionated definitive RT", dosePerFraction };
+      if (dosePerFraction > 0 && dosePerFraction <= 2.05) return { id: "conventional", label: "Conventional fractionation", dosePerFraction };
+      return { id: "custom", label: "Custom fractionation", dosePerFraction };
+    }
+
+    function populateLungSettingOptions({ reset = false } = {}) {
+      const select = $("lungTreatmentSetting");
+      const config = activeLungRegimenConfig();
+      if (!select || !config) return;
+      const previous = reset ? "" : select.value;
+      select.innerHTML = config.settings.map(setting => `<option value="${setting.id}">${setting.label}</option>`).join("");
+      select.value = config.settings.some(setting => setting.id === previous) ? previous : config.defaultSetting;
+    }
+
+    function populateLungCategoryOptions({ reset = false } = {}) {
+      const select = $("lungFractionationCategory");
+      const config = activeLungRegimenConfig();
+      if (!select || !config) return;
+      const previous = reset ? "" : select.value;
+      select.innerHTML = config.categories.map(category => `<option value="${category.id}">${category.label}</option>`).join("");
+      if (config.categories.some(category => category.id === previous)) {
+        select.value = previous;
+      } else {
+        const setting = currentLungSettingConfig();
+        select.value = setting?.defaultCategory || config.categories[0]?.id || "custom";
+      }
+    }
+
+    function populateLungPresetOptions({ preserveSelection = true } = {}) {
+      const select = $("lungRegimenPreset");
+      const config = activeLungRegimenConfig();
+      const setting = $("lungTreatmentSetting")?.value || "";
+      const category = $("lungFractionationCategory")?.value || "";
+      if (!select || !config) return;
+
+      const previous = preserveSelection ? select.value : "";
+      const matches = config.presets.filter(preset =>
+        preset.settings.includes(setting) && preset.category === category
+      );
+
+      if (!matches.length) {
+        select.disabled = true;
+        select.innerHTML = `<option value="">No built-in preset for this setting/category</option>`;
+        return;
+      }
+
+      select.disabled = false;
+      select.innerHTML = `<option value="">Choose a common regimen...</option>` + matches.map(preset =>
+        `<option value="${preset.id}">${preset.label}</option>`
+      ).join("");
+      if (matches.some(preset => preset.id === previous)) select.value = previous;
+    }
+
+    function currentLungPreset(totalDose, fractions, technique, perWeek) {
+      const config = activeLungRegimenConfig();
+      if (!config) return null;
+      return config.presets.find(preset =>
+        nearlyEqual(totalDose, preset.totalDose) &&
+        nearlyEqual(fractions, preset.fractions, 0.01) &&
+        technique === preset.technique &&
+        nearlyEqual(perWeek, presetSessionsPerWeek(preset), 0.11)
+      ) || null;
+    }
+
+    function getSupportedLungPreset() {
+      if (!isActiveLungRegimenSite()) return null;
+      const totalDose = parseFloat($("totalDose")?.value || "");
+      const fractions = parseFloat($("fractions")?.value || "");
+      const technique = $("technique")?.value || "";
+      const perWeek = parseFloat($("treatmentsPerWeek")?.value || "");
+      const setting = $("lungTreatmentSetting")?.value || "";
+      const category = $("lungFractionationCategory")?.value || "";
+      const matched = currentLungPreset(totalDose, fractions, technique, perWeek);
+      return matched && matched.settings.includes(setting) && matched.category === category ? matched : null;
+    }
+
+    function renderLungRegimenSource(preset = null) {
+      const source = $("lungRegimenSource");
+      const setting = currentLungSettingConfig();
+      if (!source || !setting) return;
+      const basis = preset || setting;
+      const links = breastSourceLinksHtml(basis.sources || setting.sources || []);
+      source.innerHTML = `
+        <b>Evidence basis:</b>
+        <span class="basis-type">${basis.evidenceLabel || "Clinical source"}</span>
+        ${basis.evidenceDetail ? `— ${basis.evidenceDetail}` : ""}
+        ${links}
+      `;
+    }
+
+    function updateLungRegimenNote() {
+      const note = $("lungRegimenNote");
+      if (!note || !isActiveLungRegimenSite()) return;
+      const setting = $("lungTreatmentSetting")?.value || "";
+      const supported = getSupportedLungPreset();
+      let tone = "info";
+      let html = "";
+
+      if (state.siteId === "nsclc" && setting === "early-central") {
+        tone = "warning";
+        html = `<b>Central-tumor caution:</b> Three-fraction SBRT is not recommended for central lung tumors. Use risk-adapted fractionation and verify airway, esophagus, heart, great-vessel, and other critical-organ constraints.`;
+      } else if (state.siteId === "nsclc" && setting === "stage3-concurrent") {
+        html = `<b>Definitive stage III:</b> 60 Gy in 30 fractions is the guideline-standard radiation dose with concurrent systemic therapy for appropriate patients. This module displays the radiation course only; systemic-therapy selection remains separate.`;
+      } else if (state.siteId === "nsclc" && setting === "stage3-rt-alone") {
+        html = `<b>RT without concurrent chemotherapy:</b> Standard fractionation remains appropriate. Modest hypofractionation is a selected-patient option and requires careful review of tumor location, performance status, and normal-tissue constraints.`;
+      } else if (state.siteId === "nsclc" && setting === "palliative") {
+        html = `<b>Palliative treatment:</b> Fractionation is individualized to symptom burden, performance status, expected survival, logistics, and treatment goals. Shorter schedules reduce treatment visits.`;
+      } else if (state.siteId === "sclc" && setting === "limited-bid") {
+        html = `<b>Twice-daily schedule:</b> Two radiation sessions are delivered on each treatment weekday, with at least 6 hours between fractions. The 45 Gy in 30 fraction preset automatically enters 10 sessions per week.`;
+      } else if (state.siteId === "sclc" && setting === "limited-qd") {
+        html = `<b>Once-daily alternative:</b> 66 Gy in 33 or 70 Gy in 35 fractions are evidence-supported alternatives when BID treatment is not feasible, but neither has demonstrated superiority over the 45 Gy twice-daily reference standard.`;
+      } else if (state.siteId === "sclc" && setting === "early-node-negative") {
+        html = `<b>Selected early-stage disease:</b> SBRT may be used for medically inoperable stage I-II node-negative SCLC after appropriate nodal staging. The exact SBRT dose is location- and protocol-dependent, and systemic chemotherapy is generally considered if medically tolerated.`;
+      } else if (state.siteId === "sclc" && setting === "extensive-consolidation") {
+        tone = "warning";
+        html = `<b>Evolving evidence:</b> ASTRO's thoracic-consolidation recommendation is conditional. TREASURE 2026 found no survival benefit and greater toxicity when 30 Gy in 10 fractions was added to atezolizumab maintenance in an unselected post-chemoimmunotherapy population. Use requires careful patient selection.`;
+      } else {
+        html = `<b>Custom lung regimen:</b> Confirm the treatment setting, target location, current guideline, organ-at-risk constraints, and institutional protocol.`;
+      }
+
+      if (supported?.twiceDaily) {
+        html += ` The calendar displays two treatment sessions on each weekday.`;
+      }
+      note.className = `lung-regimen-note ${tone === "warning" ? "warning" : ""}`.trim();
+      note.innerHTML = html;
+    }
+
+    function updateLungRegimenPanel({ syncCategory = true } = {}) {
+      const panel = $("lungRegimenPanel");
+      if (!panel) return;
+      const active = isActiveLungRegimenSite();
+      panel.hidden = !active;
+      if (!active) return;
+
+      const config = activeLungRegimenConfig();
+      const siteChanged = lungRegimenSiteId !== state.siteId;
+      if (siteChanged) {
+        lungRegimenSiteId = state.siteId;
+        populateLungSettingOptions({ reset: true });
+        populateLungCategoryOptions({ reset: true });
+      }
+
+      const totalDose = parseFloat($("totalDose")?.value || "");
+      const fractions = parseFloat($("fractions")?.value || "");
+      const perWeek = parseFloat($("treatmentsPerWeek")?.value || "");
+      const technique = $("technique")?.value || "";
+      const categorySelect = $("lungFractionationCategory");
+      const presetSelect = $("lungRegimenPreset");
+      const status = $("lungRegimenStatus");
+      const tag = $("lungRegimenTag");
+      if (!config || !categorySelect || !presetSelect || !status) return;
+      if (tag) tag.textContent = config.tag;
+
+      if (syncCategory) {
+        const classification = classifyLungFractionation(totalDose, fractions, technique);
+        if (config.categories.some(item => item.id === classification.id)) {
+          categorySelect.value = classification.id;
+        }
+      }
+
+      populateLungPresetOptions();
+      const setting = $("lungTreatmentSetting")?.value || "";
+      const category = categorySelect.value;
+      const matched = currentLungPreset(totalDose, fractions, technique, perWeek);
+      const supported = matched && matched.settings.includes(setting) && matched.category === category ? matched : null;
+
+      if (supported) {
+        presetSelect.value = supported.id;
+      } else if (presetSelect.value && !config.presets.some(preset =>
+        preset.id === presetSelect.value && preset.settings.includes(setting) && preset.category === category
+      )) {
+        presetSelect.value = "";
+      }
+
+      const warning = (
+        (state.siteId === "nsclc" && setting === "early-central" && fractions > 0 && fractions <= 3) ||
+        (state.siteId === "sclc" && setting === "limited-bid" && perWeek > 0 && !nearlyEqual(perWeek, 10, 0.11)) ||
+        (state.siteId === "sclc" && setting === "extensive-consolidation")
+      );
+
+      status.className = `regimen-quiet-status ${supported ? (supported.tone === "warning" ? "warning" : "ok") : warning ? "warning" : "info"}`;
+      status.textContent = supported ? (supported.tone === "warning" ? "Evidence-linked; review context" : "Evidence-linked preset") : warning ? "Review regimen context" : "Custom regimen";
+      renderLungRegimenSource(supported);
+      updateLungRegimenNote();
+    }
+
+    function applyLungRegimenPreset() {
+      const select = $("lungRegimenPreset");
+      const config = activeLungRegimenConfig();
+      if (!select || !select.value || !config) return;
+      const preset = config.presets.find(item => item.id === select.value);
+      if (!preset) return;
+
+      $("totalDose").value = preset.totalDose;
+      $("fractions").value = preset.fractions;
+      $("treatmentsPerWeek").value = presetSessionsPerWeek(preset);
+      $("technique").value = preset.technique;
+      $("lungFractionationCategory").value = preset.category;
+
+      updateDose();
+      updateTreatmentCourse();
+      setupSlideIndex = 0;
+      updateSetupCard();
+      updateTimeline();
+      requestAnimationFrame(syncWorkspaceColumnHeights);
+    }
+
     function isBreastBoostSelected() {
       return (
         state.systemId === "breast" &&
@@ -7645,6 +8440,17 @@
         }
       }
 
+      const lungPreset = getSupportedLungPreset();
+      if (lungPreset?.twiceDaily) {
+        additionalNote =
+          "This SCLC course uses two radiation sessions on each treatment weekday. " +
+          "The two daily fractions should be separated by at least 6 hours according to the treating protocol.";
+      } else if (lungPreset?.nonconsecutive) {
+        additionalNote =
+          "This lung SBRT preset uses a nonconsecutive default cadence. " +
+          "The treating clinic determines the exact treatment days based on protocol and organ-at-risk considerations.";
+      }
+
       return {
         baseSessions,
         totalSessions,
@@ -7703,6 +8509,7 @@
       const singleDay = normalizedStart.getDay();
       let weekIndex = 0;
       let safety = 0;
+      let startDateCandidateSeen = false;
 
       while (schedule.length < totalSessions && safety < 520) {
         const weekStart = addCalendarDays(startWeek, weekIndex * 7);
@@ -7718,7 +8525,10 @@
 
           const sessionDate = addCalendarDays(weekStart, weekday - 1);
           if (sessionDate < normalizedStart) return;
-          if (dateKey(sessionDate) === dateKey(normalizedStart)) return;
+          if (dateKey(sessionDate) === dateKey(normalizedStart) && !startDateCandidateSeen) {
+            startDateCandidateSeen = true;
+            return;
+          }
 
           const sessionNumber = schedule.length + 1;
           schedule.push({
@@ -7995,6 +8805,7 @@
 
       updateProstateRegimenPanel({ syncCategory: true });
       updateBreastRegimenPanel({ syncCategory: true });
+      updateLungRegimenPanel({ syncCategory: true });
 
       if (!valid) {
           updateTreatmentCourse();
@@ -8012,6 +8823,9 @@
       } else if (isActiveBreastSite()) {
         const breastClass = classifyBreastFractionation(total, fractions, technique);
         descriptors.push(breastClass.label);
+      } else if (isActiveLungRegimenSite()) {
+        const lungClass = classifyLungFractionation(total, fractions, technique);
+        descriptors.push(lungClass.label);
       } else {
         if (fractions <= 5) descriptors.push("short course");
         if (dosePerFraction >= 5) descriptors.push("high dose per visit");
@@ -8228,6 +9042,7 @@
       updateDose();
       updateProstateRegimenPanel({ syncCategory: true });
       updateBreastRegimenPanel({ syncCategory: true });
+      updateLungRegimenPanel({ syncCategory: true });
       updateSetupCard();
       setTreatmentPlanView(treatmentPlanViewIndex);
       renderPage();
@@ -8384,6 +9199,20 @@
         requestAnimationFrame(syncWorkspaceColumnHeights);
       });
     }
+    if ($("lungTreatmentSetting")) $("lungTreatmentSetting").addEventListener("change", () => {
+      const setting = currentLungSettingConfig();
+      populateLungCategoryOptions({ reset: true });
+      if (setting && $("lungFractionationCategory")) $("lungFractionationCategory").value = setting.defaultCategory;
+      populateLungPresetOptions({ preserveSelection: false });
+      updateLungRegimenPanel({ syncCategory: false });
+      updateTreatmentCourse();
+      requestAnimationFrame(syncWorkspaceColumnHeights);
+    });
+    if ($("lungFractionationCategory")) $("lungFractionationCategory").addEventListener("change", () => {
+      populateLungPresetOptions({ preserveSelection: false });
+      updateLungRegimenPanel({ syncCategory: false });
+    });
+    if ($("lungRegimenPreset")) $("lungRegimenPreset").addEventListener("change", applyLungRegimenPreset);
     if ($("noteTemplateSelect")) $("noteTemplateSelect").addEventListener("change", e => { if (e.target.value) insertClinicianNoteTemplate(); });
     window.addEventListener("resize", () => {
       updateViewer();
