@@ -7,6 +7,7 @@
   <!-- Build: 30–60 minute appointment duration in Estimated treatment course -->
   <!-- Build: patient-facing-no-bed-eqd2-2026-07-25 -->
   <!-- Build: guideline-source-precedence-and-nonconsecutive-cadence-2026-07-31 -->
+  <!-- Build: lung-involved-node-explanation-no-N-selector-2026-08-08 -->
   <!-- Build: thoracic-nsclc-sclc-regimen-guidance-2026-08-08 -->
   <!-- Build: print-static-model-preview-no-open-model-button-2026-08-08 -->
   <!-- Build: thoracic-thymic-heme-mediastinal-reorganization-2026-07-31 -->
@@ -7843,15 +7844,15 @@
         tone = "warning";
         html = `<b>Central-tumor caution:</b> Three-fraction SBRT is not recommended for central lung tumors. Use risk-adapted fractionation and verify airway, esophagus, heart, great-vessel, and other critical-organ constraints.`;
       } else if (state.siteId === "nsclc" && setting === "stage3-concurrent") {
-        html = `<b>Definitive stage III:</b> 60 Gy in 30 fractions is the guideline-standard radiation dose with concurrent systemic therapy for appropriate patients. This module displays the radiation course only; systemic-therapy selection remains separate.`;
+        html = `<b>Definitive stage III:</b> 60 Gy in 30 fractions is the guideline-standard radiation dose with concurrent systemic therapy for appropriate patients. <b>Involved lymph nodes:</b> When cancer is present in nearby chest lymph nodes, those known involved nodes are generally included in the radiation treatment area with the primary lung tumor; clinically uninvolved nodal regions are not routinely treated electively. Nodal location changes the treatment volume and planning considerations, but does not by itself determine the number of fractions. This module displays the radiation course only; systemic-therapy selection remains separate.`;
       } else if (state.siteId === "nsclc" && setting === "stage3-rt-alone") {
-        html = `<b>RT without concurrent chemotherapy:</b> Standard fractionation remains appropriate. Modest hypofractionation is a selected-patient option and requires careful review of tumor location, performance status, and normal-tissue constraints.`;
+        html = `<b>RT without concurrent chemotherapy:</b> Standard fractionation remains appropriate. Modest hypofractionation is a selected-patient option and requires careful review of tumor location, performance status, and normal-tissue constraints. <b>Involved lymph nodes:</b> Known involved hilar or mediastinal nodes are generally included with the primary tumor, while clinically uninvolved nodal regions are not routinely treated electively. Nodal location affects the target volume rather than automatically changing fraction number.`;
       } else if (state.siteId === "nsclc" && setting === "palliative") {
         html = `<b>Palliative treatment:</b> Fractionation is individualized to symptom burden, performance status, expected survival, logistics, and treatment goals. Shorter schedules reduce treatment visits.`;
       } else if (state.siteId === "sclc" && setting === "limited-bid") {
-        html = `<b>Twice-daily schedule:</b> Two radiation sessions are delivered on each treatment weekday, with at least 6 hours between fractions. The 45 Gy in 30 fraction preset automatically enters 10 sessions per week.`;
+        html = `<b>Twice-daily schedule:</b> Two radiation sessions are delivered on each treatment weekday, with at least 6 hours between fractions. The 45 Gy in 30 fraction preset automatically enters 10 sessions per week. <b>Involved lymph nodes:</b> Limited-stage thoracic treatment generally includes the primary tumor and known involved nodal disease rather than routinely treating clinically uninvolved nodal stations.`;
       } else if (state.siteId === "sclc" && setting === "limited-qd") {
-        html = `<b>Once-daily alternative:</b> 66 Gy in 33 or 70 Gy in 35 fractions are evidence-supported alternatives when BID treatment is not feasible, but neither has demonstrated superiority over the 45 Gy twice-daily reference standard.`;
+        html = `<b>Once-daily alternative:</b> 66 Gy in 33 or 70 Gy in 35 fractions are evidence-supported alternatives when BID treatment is not feasible, but neither has demonstrated superiority over the 45 Gy twice-daily reference standard. <b>Involved lymph nodes:</b> Limited-stage thoracic treatment generally includes the primary tumor and known involved nodal disease rather than routinely treating clinically uninvolved nodal stations.`;
       } else if (state.siteId === "sclc" && setting === "early-node-negative") {
         html = `<b>Selected early-stage disease:</b> SBRT may be used for medically inoperable stage I-II node-negative SCLC after appropriate nodal staging. The exact SBRT dose is location- and protocol-dependent, and systemic chemotherapy is generally considered if medically tolerated.`;
       } else if (state.siteId === "sclc" && setting === "extensive-consolidation") {
