@@ -7,6 +7,7 @@
   <!-- Build: 30–60 minute appointment duration in Estimated treatment course -->
   <!-- Build: patient-facing-no-bed-eqd2-2026-07-25 -->
   <!-- Build: guideline-source-precedence-and-nonconsecutive-cadence-2026-07-31 -->
+  <!-- Build: print-current-biodigital-snapshot-2026-08-08 -->
   <!-- Build: collapsible-about-references-and-right-aligned-regimen-sources-2026-08-08 -->
   <!-- Build: lung-involved-node-explanation-no-N-selector-2026-08-08 -->
   <!-- Build: thoracic-nsclc-sclc-regimen-guidance-2026-08-08 -->
@@ -4202,7 +4203,7 @@
           <textarea id="clinicianNotes" rows="5" placeholder="Example: Review left parietal lesion location, explain mask setup, discuss fatigue and skin care."></textarea>
         </div>
         <div class="workspace-print-row">
-          <button class="btn primary small" onclick="window.print()" type="button">Print summary</button>
+          <button class="btn primary small" id="printSummaryBtn" type="button">Print summary</button>
         </div>
 
       </section>
@@ -4270,6 +4271,8 @@
     </footer>
   </div>
 
+
+  <script src="https://developer.biodigital.com/builds/api/human-api-3.0.0.min.js"></script>
 
   <script>
     const systems = [
@@ -4522,8 +4525,16 @@
        and place it at the matching path. The prostate entry below looks for
        images/print-models/prostate.png first and falls back to a built-in schematic. */
     const printModelImageLinks = {
-      "gu:prostate": "images/print-models/prostate.png"
+      "gu:prostate": "images/print-models/prostate.png",
+      "thoracic:nsclc": "images/print-models/lung.png",
+      "thoracic:sclc": "images/print-models/lung.png"
     };
+
+    /* The printed summary can use a fresh snapshot of the currently displayed
+       BioDigital scene. This is captured through BioDigital's Viewer API
+       immediately before printing. Static images above remain a fallback. */
+    let printModelSnapshotKey = "";
+    let printModelSnapshotSrc = "";
 
     const prostatePrintFallbackSvg = `
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 650" role="img" aria-label="Simplified sagittal male pelvic anatomy">
@@ -4825,6 +4836,19 @@
       const key = embedKey(system.id, site.id);
       const preferredImage = printModelImageLinks[key] || "";
 
+      if (printModelSnapshotKey === key && printModelSnapshotSrc) {
+        container.classList.remove("image-missing");
+        image.onload = () => container.classList.remove("image-missing");
+        image.onerror = () => {
+          printModelSnapshotKey = "";
+          printModelSnapshotSrc = "";
+          updatePrintModelStatic();
+        };
+        image.alt = `${site.name} BioDigital anatomy snapshot for printed summary`;
+        image.src = printModelSnapshotSrc;
+        return;
+      }
+
       container.classList.add("image-missing");
       image.removeAttribute("src");
       image.alt = `${site.name} static anatomy model for printed summary`;
@@ -4850,12 +4874,95 @@
       }
     }
 
+    function captureBioDigitalPrintSnapshot({ timeoutMs = 3500 } = {}) {
+      return new Promise(resolve => {
+        const system = activeSystem();
+        const site = activeSite();
+        const frame = $("modelFrame");
+        const container = $("printModelStatic");
+        const image = $("printModelImage");
+        if (!system || !site || !frame || frame.hidden || !frame.src || !container || !image || typeof window.HumanAPI !== "function") {
+          resolve(false);
+          return;
+        }
+
+        const key = embedKey(system.id, site.id);
+        let settled = false;
+        const finish = success => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timer);
+          resolve(success);
+        };
+        const timer = setTimeout(() => finish(false), timeoutMs);
+
+        try {
+          const human = new window.HumanAPI("modelFrame");
+          human.send("ui.snapshot", {
+            width: 1600,
+            height: 1200,
+            openInTab: false
+          }, imgSrc => {
+            if (!imgSrc || typeof imgSrc !== "string") {
+              finish(false);
+              return;
+            }
+
+            const preload = new Image();
+            preload.onload = () => {
+              printModelSnapshotKey = key;
+              printModelSnapshotSrc = imgSrc;
+              container.classList.remove("image-missing");
+              image.alt = `${site.name} BioDigital anatomy snapshot for printed summary`;
+              image.src = imgSrc;
+              finish(true);
+            };
+            preload.onerror = () => finish(false);
+            preload.src = imgSrc;
+          });
+        } catch (error) {
+          console.warn("BioDigital print snapshot unavailable; using static print fallback.", error);
+          finish(false);
+        }
+      });
+    }
+
+    async function printWorkspaceSummary() {
+      const button = $("printSummaryBtn");
+      const originalLabel = button?.textContent || "Print summary";
+      if (button) {
+        button.disabled = true;
+        button.textContent = "Preparing print…";
+      }
+
+      /* Reset the prior scene capture so each print reflects the current camera/model state. */
+      printModelSnapshotKey = "";
+      printModelSnapshotSrc = "";
+      updatePrintModelStatic();
+
+      try {
+        await captureBioDigitalPrintSnapshot();
+      } finally {
+        updatePrintModelStatic();
+        if (button) {
+          button.disabled = false;
+          button.textContent = originalLabel;
+        }
+      }
+
+      window.print();
+    }
+
     function updateViewer() {
       const system = activeSystem();
       const site = activeSite();
       const key = embedKey(system.id, site.id);
       const url = sanitizeUrl(state.embedLinks[key]);
       const frame = $("modelFrame");
+      if (printModelSnapshotKey && printModelSnapshotKey !== key) {
+        printModelSnapshotKey = "";
+        printModelSnapshotSrc = "";
+      }
       const empty = $("emptyViewer");
       $("emptyIcon").innerHTML = `<img src="${system.icon}" alt="" class="empty-system-icon" />`;
       $("emptyTitle").textContent = `${site.name} model`;
@@ -9165,6 +9272,9 @@
         patientPositionSelections[patientPositionSelectionKey()] = selected;
         updateSetupCard();
       });
+    }
+    if ($("printSummaryBtn")) {
+      $("printSummaryBtn").addEventListener("click", printWorkspaceSummary);
     }
     window.addEventListener("beforeprint", updatePrintModelStatic);
 
