@@ -7,6 +7,7 @@
   <!-- Build: 30–60 minute appointment duration in Estimated treatment course -->
   <!-- Build: patient-facing-no-bed-eqd2-2026-07-25 -->
   <!-- Build: guideline-source-precedence-and-nonconsecutive-cadence-2026-07-31 -->
+  <!-- Build: collapsible-about-references-and-right-aligned-regimen-sources-2026-08-08 -->
   <!-- Build: lung-involved-node-explanation-no-N-selector-2026-08-08 -->
   <!-- Build: thoracic-nsclc-sclc-regimen-guidance-2026-08-08 -->
   <!-- Build: print-static-model-preview-no-open-model-button-2026-08-08 -->
@@ -374,6 +375,60 @@
       font-size: 0.88rem;
       border-top: 1px solid var(--line);
       padding-top: 12px;
+    }
+
+    .about-reference-disclosure {
+      margin-top: 14px;
+    }
+
+    .about-reference-disclosure > summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.64);
+      color: var(--primary-dark);
+      font-size: 0.88rem;
+      font-weight: 850;
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+    }
+
+    .about-reference-disclosure > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .about-reference-disclosure > summary::after {
+      content: "+";
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      font-size: 1rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .about-reference-disclosure[open] > summary::after {
+      content: "−";
+    }
+
+    .about-reference-disclosure[open] > summary {
+      background: rgba(255, 255, 255, 0.82);
+      border-color: rgba(47, 127, 136, 0.30);
+    }
+
+    .about-reference-disclosure .reference-grid {
+      margin-top: 12px;
     }
 
     .home-clinical-note {
@@ -3375,7 +3430,14 @@
     }
 
     .regimen-source-disclosure[open] {
-      flex-basis: 100%;
+      flex: 0 1 520px;
+      max-width: 100%;
+      margin-left: auto;
+      text-align: right;
+    }
+
+    .regimen-source-disclosure[open] .regimen-source-detail {
+      text-align: left;
     }
 
     .regimen-source-detail {
@@ -3405,11 +3467,15 @@
 
     @media (max-width: 620px) {
       .regimen-quiet-meta {
-        justify-content: flex-start;
+        justify-content: flex-end;
       }
 
       .regimen-disclaimer-quiet {
-        text-align: left;
+        text-align: right;
+      }
+
+      .regimen-source-disclosure[open] {
+        width: min(100%, 520px);
       }
     }
 .session-timing-card {
@@ -3511,56 +3577,60 @@
           <h2>Content sources and references</h2>
           <p>OncoVis3D content is synthesized for clinical education from public patient-education materials, disease-site treatment summaries, radiation oncology guidelines, clinician review, and institution-specific practice patterns. It is intended to support clinician-led discussion, not to function as a standalone guideline or treatment-planning system.</p>
 
-          <div class="reference-grid">
-            <article class="reference-card">
-              <strong>Radiation therapy education</strong>
-              <p>General explanations of what radiation therapy is, what patients may experience before, during, and after treatment, and common treatment concepts.</p>
-              <a href="https://www.rtanswers.org/patient-education" target="_blank" rel="noopener noreferrer">ASTRO RTAnswers patient education</a>
-              <a href="https://www.cancer.gov/about-cancer/treatment/types/radiation-therapy" target="_blank" rel="noopener noreferrer">NCI Radiation Therapy for Cancer</a>
-            </article>
+          <details class="about-reference-disclosure">
+            <summary>View sources and reference links</summary>
 
-            <article class="reference-card">
-              <strong>Disease-site frameworks</strong>
-              <p>Diagnosis, staging, treatment paradigms, and site-specific management concepts are cross-checked against public cancer treatment summaries and clinician review.</p>
-              <a href="https://www.cancer.gov/publications/pdq/information-summaries/adult-treatment" target="_blank" rel="noopener noreferrer">NCI PDQ adult treatment summaries</a>
-              <a href="https://www.cancer.gov/publications/pdq/information-summaries/pediatric-treatment" target="_blank" rel="noopener noreferrer">NCI PDQ pediatric treatment summaries</a>
-            </article>
+            <div class="reference-grid">
+              <article class="reference-card">
+                <strong>Radiation therapy education</strong>
+                <p>General explanations of radiation therapy, treatment expectations, and common patient-facing treatment concepts.</p>
+                <a href="https://www.rtanswers.org/patient-education" target="_blank" rel="noopener noreferrer">ASTRO RTAnswers patient education</a>
+                <a href="https://www.cancer.gov/about-cancer/treatment/types/radiation-therapy" target="_blank" rel="noopener noreferrer">NCI Radiation Therapy for Cancer</a>
+              </article>
 
-            <article class="reference-card">
-              <strong>Radiation oncology guidelines</strong>
-              <p>Disease-site regimen modules use educational categories and common examples from society guidelines, consensus statements, and pivotal trials. The source type is displayed beside each matched preset.</p>
-              <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines" target="_blank" rel="noopener noreferrer">ASTRO clinical practice guidelines</a>
-              <a href="https://www.astro.org/provider-resources/guidelines/clinically-localized-prostate-cancer" target="_blank" rel="noopener noreferrer">AUA/ASTRO localized prostate guideline</a>
-              <a href="https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-hypofractionation-for-localized-prostate-cancer" target="_blank" rel="noopener noreferrer">ASTRO/ASCO/AUA prostate hypofractionation guideline</a>
-              <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/salvage-therapy-guideline" target="_blank" rel="noopener noreferrer">AUA/ASTRO/SUO salvage therapy guideline</a>
-              <a href="https://pubmed.ncbi.nlm.nih.gov/40707306/" target="_blank" rel="noopener noreferrer">HDR prostate brachytherapy boost consensus</a>
-              <a href="https://www.astro.org/provider-resources/guidelines/whole-breast-irradiation-gl" target="_blank" rel="noopener noreferrer">ASTRO whole-breast irradiation guideline</a>
-              <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/pbi-guideline-replacement" target="_blank" rel="noopener noreferrer">ASTRO partial-breast irradiation guideline</a>
-              <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/postmastectomy-radiation-therapy" target="_blank" rel="noopener noreferrer">ASTRO/ASCO/SSO postmastectomy guideline</a>
-              <a href="https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-sbrt-for-early-stage-nsclc" target="_blank" rel="noopener noreferrer">ASTRO early-stage NSCLC SBRT guideline</a>
-              <a href="https://ascopubs.org/doi/10.1200/JCO.21.02528" target="_blank" rel="noopener noreferrer">ASCO stage III NSCLC guideline</a>
-              <a href="https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-palliative-radiation-therapy-for-non-small-cell-lung-cancer" target="_blank" rel="noopener noreferrer">ASTRO palliative thoracic NSCLC guideline</a>
-              <a href="https://www.astro.org/provider-resources/guidelines/small-cell-lung-cancer-guideline" target="_blank" rel="noopener noreferrer">ASTRO small cell lung cancer guideline</a>
-              <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8085511/" target="_blank" rel="noopener noreferrer">Thymic epithelial tumor radiotherapy guideline</a>
-              <a href="https://pubmed.ncbi.nlm.nih.gov/23790512/" target="_blank" rel="noopener noreferrer">ILROG Hodgkin lymphoma field and dose guideline</a>
-            </article>
+              <article class="reference-card">
+                <strong>Disease-site frameworks</strong>
+                <p>Diagnosis, staging, treatment paradigms, and site-specific management concepts are cross-checked against public cancer-treatment summaries and clinician review.</p>
+                <a href="https://www.cancer.gov/publications/pdq/information-summaries/adult-treatment" target="_blank" rel="noopener noreferrer">NCI PDQ adult treatment summaries</a>
+                <a href="https://www.cancer.gov/publications/pdq/information-summaries/pediatric-treatment" target="_blank" rel="noopener noreferrer">NCI PDQ pediatric treatment summaries</a>
+              </article>
 
-            <article class="reference-card">
-              <strong>3D anatomy and model visualization</strong>
-              <p>Interactive anatomy and disease models are displayed through linked BioDigital Human model URLs when available for the selected disease site.</p>
-              <a href="https://www.biodigital.com/product/the-biodigital-human" target="_blank" rel="noopener noreferrer">BioDigital Human platform</a>
-              <a href="https://support.biodigital.com/hc/en-us/articles/33541326533399-What-is-the-BioDigital-library" target="_blank" rel="noopener noreferrer">BioDigital model library</a>
-            </article>
+              <article class="reference-card">
+                <strong>Radiation oncology guidelines</strong>
+                <p>Disease-site regimen modules use society guidelines, consensus statements, and pivotal trials. Regimen-specific evidence is also shown directly in each treatment-plan <b>Source</b> disclosure.</p>
+                <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines" target="_blank" rel="noopener noreferrer">ASTRO clinical practice guidelines</a>
+                <a href="https://www.astro.org/provider-resources/guidelines/clinically-localized-prostate-cancer" target="_blank" rel="noopener noreferrer">AUA/ASTRO localized prostate guideline</a>
+                <a href="https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-hypofractionation-for-localized-prostate-cancer" target="_blank" rel="noopener noreferrer">ASTRO/ASCO/AUA prostate hypofractionation guideline</a>
+                <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/salvage-therapy-guideline" target="_blank" rel="noopener noreferrer">AUA/ASTRO/SUO salvage therapy guideline</a>
+                <a href="https://pubmed.ncbi.nlm.nih.gov/40707306/" target="_blank" rel="noopener noreferrer">HDR prostate brachytherapy boost consensus</a>
+                <a href="https://www.astro.org/provider-resources/guidelines/whole-breast-irradiation-gl" target="_blank" rel="noopener noreferrer">ASTRO whole-breast irradiation guideline</a>
+                <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/pbi-guideline-replacement" target="_blank" rel="noopener noreferrer">ASTRO partial-breast irradiation guideline</a>
+                <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/postmastectomy-radiation-therapy" target="_blank" rel="noopener noreferrer">ASTRO/ASCO/SSO postmastectomy guideline</a>
+                <a href="https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-sbrt-for-early-stage-nsclc" target="_blank" rel="noopener noreferrer">ASTRO early-stage NSCLC SBRT guideline</a>
+                <a href="https://ascopubs.org/doi/10.1200/JCO.21.02528" target="_blank" rel="noopener noreferrer">ASCO stage III NSCLC guideline</a>
+                <a href="https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-palliative-radiation-therapy-for-non-small-cell-lung-cancer" target="_blank" rel="noopener noreferrer">ASTRO palliative thoracic NSCLC guideline</a>
+                <a href="https://www.astro.org/provider-resources/guidelines/small-cell-lung-cancer-guideline" target="_blank" rel="noopener noreferrer">ASTRO small cell lung cancer guideline</a>
+                <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8085511/" target="_blank" rel="noopener noreferrer">Thymic epithelial tumor radiotherapy guideline</a>
+                <a href="https://pubmed.ncbi.nlm.nih.gov/23790512/" target="_blank" rel="noopener noreferrer">ILROG Hodgkin lymphoma field and dose guideline</a>
+              </article>
 
-            <article class="reference-card">
-              <strong>Clinical calibration</strong>
-              <p>Dose, fractionation, organ-at-risk counseling, setup instructions, supportive care, and toxicity expectations should be adapted to physician judgment, institutional protocols, treatment plan review, and patient-specific factors.</p>
-            </article>
-          </div>
+              <article class="reference-card">
+                <strong>3D anatomy and model visualization</strong>
+                <p>Interactive anatomy and disease visualization is provided through BioDigital Human embeds within the clinical workspace.</p>
+                <a href="https://www.biodigital.com/product/the-biodigital-human" target="_blank" rel="noopener noreferrer">BioDigital Human platform</a>
+                <a href="https://support.biodigital.com/hc/en-us/articles/33541326533399-What-is-the-BioDigital-library" target="_blank" rel="noopener noreferrer">BioDigital model library</a>
+              </article>
 
-          <div class="reference-note">
-            <b>Important:</b> References listed identify the types of sources used to build and review the educational framework. OncoVis3D does not reproduce complete guideline text and should be updated as guidelines, institutional standards, and treatment techniques evolve.
-          </div>
+              <article class="reference-card">
+                <strong>Clinical calibration</strong>
+                <p>Dose, fractionation, organ-at-risk counseling, setup instructions, supportive care, and toxicity expectations should be adapted to physician judgment, institutional protocols, treatment-plan review, and patient-specific factors.</p>
+              </article>
+            </div>
+
+            <div class="reference-note">
+              <b>Important:</b> References identify the source framework used to build and review the educational content. OncoVis3D does not reproduce complete guideline text and should be updated as guidelines, institutional standards, and treatment techniques evolve.
+            </div>
+          </details>
         </section>
         <section class="notice home-clinical-note" aria-label="Clinical use note">
           <b>Clinical use note:</b> OncoVis3D is for education, shared decision support, and clinical demonstration workflows. It does not replace physician judgment, consent documentation, contouring, treatment planning, quality assurance, or institution-specific patient instructions.
