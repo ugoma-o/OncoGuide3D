@@ -7,6 +7,7 @@
   <!-- Build: 30–60 minute appointment duration in Estimated treatment course -->
   <!-- Build: patient-facing-no-bed-eqd2-2026-07-25 -->
   <!-- Build: guideline-source-precedence-and-nonconsecutive-cadence-2026-07-31 -->
+  <!-- Build: print-static-model-preview-no-open-model-button-2026-08-08 -->
   <!-- Build: thoracic-thymic-heme-mediastinal-reorganization-2026-07-31 -->
   <meta name="description" content="A clinical tool for showing patients anatomy, tumor locations, radiation treatment concepts, dose schedules, and expected symptoms over time." />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2218%22%20fill%3D%22%232f7f88%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2253%25%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%20font-family%3D%22Inter%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2225%22%20font-weight%3D%22900%22%20fill%3D%22white%22%3EOG%3C%2Ftext%3E%3C%2Fsvg%3E" />
@@ -2897,6 +2898,40 @@
       color: var(--muted);
     }
 
+    /* Static model preview used only in printed summaries.
+       The live BioDigital iframe remains interactive on screen, while print uses
+       a stable image to avoid WebGL/iframe print-state resets. */
+    .print-model-static {
+      display: none;
+    }
+
+    .print-model-static img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      background: #f5f8fa;
+    }
+
+    .print-model-fallback {
+      display: none;
+      width: 100%;
+      height: 100%;
+      place-items: center;
+      text-align: center;
+      padding: 30px;
+      background: #f5f8fa;
+      color: var(--muted);
+    }
+
+    .print-model-fallback strong {
+      display: block;
+      color: var(--ink);
+      font-size: 1.25rem;
+      margin-bottom: 6px;
+    }
+
     @media print {
       body { background: #fff; }
       .topbar, .panel, .nav-actions, .admin-panel, .footer { display: none !important; }
@@ -2907,7 +2942,7 @@
       .side-column { display: block; }
       .print-only { display: block; }
 
-      /* Keep the embedded anatomy viewer visible in the printed summary. */
+      /* Print a stable static image instead of the live cross-origin WebGL iframe. */
       .viewer-frame-wrap {
         display: block !important;
         position: relative !important;
@@ -2919,19 +2954,39 @@
         overflow: hidden !important;
         border: 1px solid #bbb !important;
         border-radius: 12px !important;
-        background: #f1f5f7 !important;
+        background: #f5f8fa !important;
         break-inside: avoid !important;
         page-break-inside: avoid !important;
       }
 
-      iframe.model-frame {
+      iframe.model-frame,
+      .empty-viewer,
+      .mobile-viewer-launch {
+        display: none !important;
+      }
+
+      .print-model-static {
+        display: block !important;
+        position: absolute !important;
+        inset: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: #f5f8fa !important;
+      }
+
+      .print-model-static img {
         display: block !important;
         width: 100% !important;
         height: 100% !important;
-        border: 0 !important;
+        object-fit: contain !important;
+        object-position: center !important;
       }
 
-      .empty-viewer {
+      .print-model-static.image-missing img {
+        display: none !important;
+      }
+
+      .print-model-static.image-missing .print-model-fallback {
         display: grid !important;
       }
 
@@ -3532,7 +3587,6 @@
               <h2 id="selectedTitle">Central nervous system</h2>
               <p id="selectedSubtitle">Brain tumors, skull base tumors, spinal tumors, metastases</p>
             </div>
-            <button class="btn small" id="openModelBtn" type="button">Open model</button>
           </div>
 
           <div class="viewer-frame-wrap" id="viewerWrap">
@@ -3544,6 +3598,15 @@
               </div>
             </div>
             <iframe class="model-frame" id="modelFrame" title="Embedded 3D anatomy model" allow="fullscreen; xr-spatial-tracking; accelerometer; gyroscope; autoplay; encrypted-media; clipboard-read; clipboard-write" allowfullscreen loading="eager" referrerpolicy="strict-origin-when-cross-origin" scrolling="no" hidden></iframe>
+            <div class="print-model-static image-missing" id="printModelStatic" aria-hidden="true">
+              <img id="printModelImage" alt="Static anatomy model for printed summary" />
+              <div class="print-model-fallback" id="printModelFallback">
+                <div>
+                  <strong id="printModelFallbackTitle">Anatomy model</strong>
+                  <span id="printModelFallbackText">Interactive 3D model available in the digital version.</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="viewer-bottom-buffer" id="viewerBottomBuffer" aria-hidden="true"></div>
@@ -4291,6 +4354,43 @@
       "breast:regional-nodes": "https://human.biodigital.com/view?id=production%2FfemaleAdult%2Fbreast_cancer_v02&lang=en&ref=share"
     };
 
+    /* Optional site-specific still images for printed summaries.
+       For the exact BioDigital view, export a licensed still image from BioDigital
+       and place it at the matching path. The prostate entry below looks for
+       images/print-models/prostate.png first and falls back to a built-in schematic. */
+    const printModelImageLinks = {
+      "gu:prostate": "images/print-models/prostate.png"
+    };
+
+    const prostatePrintFallbackSvg = `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 650" role="img" aria-label="Simplified sagittal male pelvic anatomy">
+        <defs>
+          <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#f8fbfc"/>
+            <stop offset="1" stop-color="#e6f0f3"/>
+          </linearGradient>
+        </defs>
+        <rect width="900" height="650" rx="36" fill="url(#bg)"/>
+        <text x="450" y="62" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#1c2a32">Prostate anatomy</text>
+        <text x="450" y="96" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#5c6f78">Simplified static orientation for printed summaries</text>
+        <path d="M381 173 C343 206 337 279 377 314 C414 347 486 343 520 307 C555 270 548 207 512 176 C478 147 414 146 381 173Z" fill="#8fd0d6" stroke="#2f7f88" stroke-width="5"/>
+        <text x="449" y="244" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#163f45">Bladder</text>
+        <path d="M445 316 C446 342 446 357 446 375" stroke="#2f7f88" stroke-width="16" stroke-linecap="round"/>
+        <path d="M396 379 C416 353 480 353 503 381 C519 402 511 442 486 458 C457 476 414 469 394 443 C378 422 380 399 396 379Z" fill="#7764d8" fill-opacity="0.88" stroke="#5443aa" stroke-width="5"/>
+        <text x="449" y="419" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="white">Prostate</text>
+        <path d="M449 461 C448 502 449 538 450 579" stroke="#485762" stroke-width="12" stroke-linecap="round"/>
+        <text x="474" y="545" font-family="Arial, sans-serif" font-size="18" fill="#5c6f78">Urethra</text>
+        <path d="M597 186 C662 252 669 427 592 505" fill="none" stroke="#cf9a7f" stroke-width="34" stroke-linecap="round" opacity="0.78"/>
+        <text x="662" y="355" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#805a48">Rectum</text>
+        <path d="M331 371 C300 404 286 459 300 514" fill="none" stroke="#9eb7bf" stroke-width="22" stroke-linecap="round"/>
+        <text x="244" y="456" font-family="Arial, sans-serif" font-size="18" fill="#5c6f78">Pubic region</text>
+        <line x1="502" y1="396" x2="608" y2="373" stroke="#5443aa" stroke-width="3"/>
+        <circle cx="502" cy="396" r="6" fill="#5443aa"/>
+        <text x="620" y="376" font-family="Arial, sans-serif" font-size="18" fill="#5443aa">Prostate gland below bladder</text>
+      </svg>`;
+
+    const prostatePrintFallbackDataUrl = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(prostatePrintFallbackSvg)}`;
+
     const savedEmbedLinks = JSON.parse(localStorage.getItem("OncoVis3DEmbedLinks") || localStorage.getItem("oncoviewEmbedLinks") || "{}");
 
     if (savedEmbedLinks["thoracic:mediastinum"] && !savedEmbedLinks["heme:mediastinal-lymphoma"]) {
@@ -4544,6 +4644,43 @@
       return url;
     }
 
+    function updatePrintModelStatic() {
+      const system = activeSystem();
+      const site = activeSite();
+      const container = $("printModelStatic");
+      const image = $("printModelImage");
+      const fallbackTitle = $("printModelFallbackTitle");
+      const fallbackText = $("printModelFallbackText");
+      if (!system || !site || !container || !image) return;
+
+      const key = embedKey(system.id, site.id);
+      const preferredImage = printModelImageLinks[key] || "";
+
+      container.classList.add("image-missing");
+      image.removeAttribute("src");
+      image.alt = `${site.name} static anatomy model for printed summary`;
+      if (fallbackTitle) fallbackTitle.textContent = `${site.name} anatomy model`;
+      if (fallbackText) fallbackText.textContent = "Interactive 3D model available in the digital version.";
+
+      const useBuiltInFallback = () => {
+        if (key !== "gu:prostate") {
+          container.classList.add("image-missing");
+          return;
+        }
+        image.onload = () => container.classList.remove("image-missing");
+        image.onerror = () => container.classList.add("image-missing");
+        image.src = prostatePrintFallbackDataUrl;
+      };
+
+      if (preferredImage) {
+        image.onload = () => container.classList.remove("image-missing");
+        image.onerror = useBuiltInFallback;
+        image.src = preferredImage;
+      } else {
+        useBuiltInFallback();
+      }
+    }
+
     function updateViewer() {
       const system = activeSystem();
       const site = activeSite();
@@ -4568,6 +4705,8 @@
         frame.removeAttribute("src");
         empty.style.display = "grid";
       }
+
+      updatePrintModelStatic();
     }
 
 
@@ -7937,13 +8076,6 @@
       updateAll();
     }
 
-    function openCurrentModel() {
-      const key = embedKey(state.systemId, state.siteId);
-      const url = sanitizeUrl(state.embedLinks[key]);
-      if (url) window.open(url, "_blank", "noopener,noreferrer");
-    }
-
-
     const clinicianNoteTemplates = [
       {
         id: "skin-aquaphor",
@@ -8146,6 +8278,8 @@
         updateSetupCard();
       });
     }
+    window.addEventListener("beforeprint", updatePrintModelStatic);
+
     $("searchInput").addEventListener("input", e => {
       renderSystems(e.target.value);
       requestAnimationFrame(updateOrganScrollButtons);
@@ -8161,7 +8295,6 @@
     if ($("closeModalBtn")) $("closeModalBtn").addEventListener("click", closeEmbedModal);
     if ($("saveLinksBtn")) $("saveLinksBtn").addEventListener("click", saveEmbedLinks);
     if ($("clearLinksBtn")) $("clearLinksBtn").addEventListener("click", clearEmbedLinks);
-    $("openModelBtn").addEventListener("click", openCurrentModel);
     if ($("prostateTreatmentSetting")) $("prostateTreatmentSetting").addEventListener("change", () => {
       updateProstateSecondaryDoseControls();
       updateProstateRegimenPanel({ syncCategory: true });
