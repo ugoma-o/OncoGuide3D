@@ -7,6 +7,7 @@
   <!-- Build: 30–60 minute appointment duration in Estimated treatment course -->
   <!-- Build: patient-facing-no-bed-eqd2-2026-07-25 -->
   <!-- Build: guideline-source-precedence-and-nonconsecutive-cadence-2026-07-31 -->
+  <!-- Build: organ-order-breast-gu-thoracic-2026-08-08 -->
   <!-- Build: print-current-biodigital-snapshot-2026-08-08 -->
   <!-- Build: collapsible-about-references-and-right-aligned-regimen-sources-2026-08-08 -->
   <!-- Build: lung-involved-node-explanation-no-N-selector-2026-08-08 -->
@@ -4269,21 +4270,39 @@
   <script>
     const systems = [
       {
-        id: "cns", icon: "icons/neurologic.png", name: "Neurologic", subtitle: "Brain, spine, skull base", defaultDose: [60, 30],
-        purpose: "Radiation may be used after surgery, definitively, or for palliation to treat tumor while protecting nearby critical structures.",
-        expectation: "A custom mask or immobilization device is often used. Treatment is painless, brief, and planned with high precision.",
-        support: ["Steroids only when clinically indicated for edema", "Antiemetics if nausea develops", "Fatigue counseling and sleep/activity pacing", "Skin and scalp care when hair-bearing scalp receives dose"],
-        position: "Usually supine with a custom mask. SRS may use frameless stereotactic immobilization.",
+        id: "breast", icon: "icons/breast.png", name: "Breast", subtitle: "Breast, chest wall, nodes", defaultDose: [40.05, 15],
+        purpose: "Breast radiation lowers local recurrence risk and may treat the breast, chest wall, or regional nodes.",
+        expectation: "Simulation maps the treatment area. Left-sided treatment may use deep inspiration breath hold to reduce heart dose.",
+        support: ["Gentle skin care and moisturizer per clinic protocol", "Supportive bra or soft clothing", "Fatigue pacing", "Shoulder range-of-motion encouragement when appropriate"],
+        position: "Usually supine on a breast board with one or both arms raised. Prone setup or breath hold may be used selectively.",
         sites: [
-          { id: "gbm", name: "Glioblastoma", hint: "Brain parenchyma", tags: ["brain", "mask", "IMRT"], dose: [60, 30] },
-          { id: "brain-mets", name: "Brain metastases", hint: "SRS or whole brain RT", tags: ["SRS", "WBRT", "mask"], dose: [20, 1] },
-          { id: "meningioma", name: "Meningioma/skull base", hint: "Cranial nerves and venous sinuses", tags: ["skull base", "protons", "IMRT"], dose: [54, 30] },
-          { id: "spine", name: "Spine tumor/metastasis", hint: "Cord and cauda equina", tags: ["spine", "SBRT", "palliation"], dose: [30, 10] }
+          { id: "whole-breast", name: "Whole breast", hint: "Lumpectomy setting", tags: ["hypofractionation", "boost"], dose: [40.05, 15] },
+          { id: "pbi", name: "Partial breast", hint: "Selected early-stage cases", tags: ["APBI", "short course"], dose: [30, 5] },
+          { id: "chest-wall", name: "Chest wall", hint: "Post-mastectomy", tags: ["PMRT", "bolus"], dose: [50, 25] },
+          { id: "regional-nodes", name: "Regional nodes", hint: "Axillary, SCV, IMN", tags: ["nodes", "DIBH"], dose: [50, 25] }
         ],
         timeline: [
-          ["Week 1", "Most patients feel little during the treatment itself. Some notice anxiety from immobilization or mild fatigue."],
-          ["Weeks 2 to 4", "Fatigue, scalp irritation, localized hair loss, nausea, or headache can occur depending on the treated region."],
-          ["Months later", "Site-specific late effects are reviewed individually, including neurocognitive, endocrine, auditory, visual, or spinal cord risks when relevant."]
+          ["Week 1", "Most patients notice little initially beyond setup time and mild fatigue."],
+          ["Weeks 2 to 4", "Skin redness, tanning, itching, breast/chest wall tenderness, and fatigue may increase."],
+          ["After RT", "Skin reaction usually peaks shortly after treatment and then improves. Fibrosis, cosmetic change, edema, or rare lung/heart effects are discussed based on the plan."]
+        ]
+      },
+      {
+        id: "gu", icon: "icons/genitourinary.png", name: "Genitourinary", subtitle: "Prostate, bladder, kidney/adrenal, testis", defaultDose: [70, 28],
+        purpose: "GU radiation may treat prostate, bladder, testicular, kidney, adrenal, nodal, or metastatic disease while limiting dose to nearby bowel, urinary, renal, and sexual structures.",
+        expectation: "Simulation emphasizes reproducible anatomy. Pelvic treatment may require bladder and rectal preparation, while kidney or adrenal SBRT may require respiratory motion management.",
+        support: ["Bladder filling and bowel routine coaching", "Baseline urinary, bowel, sexual, and fertility assessment", "Alpha blocker discussion for prostate-related obstructive symptoms", "Hydration guidance and bowel/antidiarrheal support when appropriate", "ADT, chemotherapy, sperm banking, and fertility counseling when relevant"],
+        position: "Most GU treatments are supine. Pelvic cases use leg support and daily image guidance; kidney or adrenal SBRT may use arms-up setup and motion management.",
+        sites: [
+          { id: "prostate", name: "Prostate cancer", hint: "Definitive, postoperative/salvage, nodal, SBRT, or brachytherapy discussion", tags: ["IGRT", "ADT", "SBRT"], dose: [70, 28] },
+          { id: "bladder", name: "Bladder cancer", hint: "Bladder preservation after maximal TURBT with concurrent chemoradiation", tags: ["TMT", "chemoRT", "cystoscopy"], dose: [64, 32] },
+          { id: "testis", name: "Testicular seminoma", hint: "Selected seminoma nodal RT; routine stage I adjuvant RT is generally avoided", tags: ["PA nodes", "fertility", "late effects"], dose: [30, 15] },
+          { id: "kidney", name: "Kidney/adrenal lesion", hint: "SBRT for selected primary RCC, adrenal lesion, oligometastasis, or palliation", tags: ["SBRT", "motion", "renal dose"], dose: [40, 5] }
+        ],
+        timeline: [
+          ["Week 1", "Treatment is painless. Baseline urinary, bowel, sexual, renal, and fertility considerations are reviewed, and bladder/rectal or motion-management instructions are reinforced."],
+          ["Weeks 2 to 6", "Pelvic RT can cause frequency, urgency, nocturia, weaker stream, dysuria, loose stools, rectal urgency, and fatigue. Kidney/adrenal SBRT more often requires monitoring for nausea, flank discomfort, fatigue, and nearby bowel irritation."],
+          ["Months to years", "Late issues are site-specific and may include erectile dysfunction, urethral stricture, hematuria, rectal bleeding, bowel change, infertility, renal function change, or second-malignancy risk in selected historical or young-patient contexts."]
         ]
       },
       {
@@ -4342,21 +4361,21 @@
         ]
       },
       {
-        id: "breast", icon: "icons/breast.png", name: "Breast", subtitle: "Breast, chest wall, nodes", defaultDose: [40.05, 15],
-        purpose: "Breast radiation lowers local recurrence risk and may treat the breast, chest wall, or regional nodes.",
-        expectation: "Simulation maps the treatment area. Left-sided treatment may use deep inspiration breath hold to reduce heart dose.",
-        support: ["Gentle skin care and moisturizer per clinic protocol", "Supportive bra or soft clothing", "Fatigue pacing", "Shoulder range-of-motion encouragement when appropriate"],
-        position: "Usually supine on a breast board with one or both arms raised. Prone setup or breath hold may be used selectively.",
+        id: "cns", icon: "icons/neurologic.png", name: "Neurologic", subtitle: "Brain, spine, skull base", defaultDose: [60, 30],
+        purpose: "Radiation may be used after surgery, definitively, or for palliation to treat tumor while protecting nearby critical structures.",
+        expectation: "A custom mask or immobilization device is often used. Treatment is painless, brief, and planned with high precision.",
+        support: ["Steroids only when clinically indicated for edema", "Antiemetics if nausea develops", "Fatigue counseling and sleep/activity pacing", "Skin and scalp care when hair-bearing scalp receives dose"],
+        position: "Usually supine with a custom mask. SRS may use frameless stereotactic immobilization.",
         sites: [
-          { id: "whole-breast", name: "Whole breast", hint: "Lumpectomy setting", tags: ["hypofractionation", "boost"], dose: [40.05, 15] },
-          { id: "pbi", name: "Partial breast", hint: "Selected early-stage cases", tags: ["APBI", "short course"], dose: [30, 5] },
-          { id: "chest-wall", name: "Chest wall", hint: "Post-mastectomy", tags: ["PMRT", "bolus"], dose: [50, 25] },
-          { id: "regional-nodes", name: "Regional nodes", hint: "Axillary, SCV, IMN", tags: ["nodes", "DIBH"], dose: [50, 25] }
+          { id: "gbm", name: "Glioblastoma", hint: "Brain parenchyma", tags: ["brain", "mask", "IMRT"], dose: [60, 30] },
+          { id: "brain-mets", name: "Brain metastases", hint: "SRS or whole brain RT", tags: ["SRS", "WBRT", "mask"], dose: [20, 1] },
+          { id: "meningioma", name: "Meningioma/skull base", hint: "Cranial nerves and venous sinuses", tags: ["skull base", "protons", "IMRT"], dose: [54, 30] },
+          { id: "spine", name: "Spine tumor/metastasis", hint: "Cord and cauda equina", tags: ["spine", "SBRT", "palliation"], dose: [30, 10] }
         ],
         timeline: [
-          ["Week 1", "Most patients notice little initially beyond setup time and mild fatigue."],
-          ["Weeks 2 to 4", "Skin redness, tanning, itching, breast/chest wall tenderness, and fatigue may increase."],
-          ["After RT", "Skin reaction usually peaks shortly after treatment and then improves. Fibrosis, cosmetic change, edema, or rare lung/heart effects are discussed based on the plan."]
+          ["Week 1", "Most patients feel little during the treatment itself. Some notice anxiety from immobilization or mild fatigue."],
+          ["Weeks 2 to 4", "Fatigue, scalp irritation, localized hair loss, nausea, or headache can occur depending on the treated region."],
+          ["Months later", "Site-specific late effects are reviewed individually, including neurocognitive, endocrine, auditory, visual, or spinal cord risks when relevant."]
         ]
       },
       {
@@ -4375,24 +4394,6 @@
           ["Week 1", "Patients may feel well initially. Baseline bowel pattern, appetite, nausea, and pain are reviewed."],
           ["Weeks 2 to 5", "Fatigue, diarrhea, cramping, urinary irritation, nausea, appetite change, or skin irritation can develop depending on the field."],
           ["After RT", "Most acute symptoms improve over weeks. Late bowel, bladder, sexual, fertility, hepatic, or gastric risks are individualized."]
-        ]
-      },
-      {
-        id: "gu", icon: "icons/genitourinary.png", name: "Genitourinary", subtitle: "Prostate, bladder, kidney/adrenal, testis", defaultDose: [70, 28],
-        purpose: "GU radiation may treat prostate, bladder, testicular, kidney, adrenal, nodal, or metastatic disease while limiting dose to nearby bowel, urinary, renal, and sexual structures.",
-        expectation: "Simulation emphasizes reproducible anatomy. Pelvic treatment may require bladder and rectal preparation, while kidney or adrenal SBRT may require respiratory motion management.",
-        support: ["Bladder filling and bowel routine coaching", "Baseline urinary, bowel, sexual, and fertility assessment", "Alpha blocker discussion for prostate-related obstructive symptoms", "Hydration guidance and bowel/antidiarrheal support when appropriate", "ADT, chemotherapy, sperm banking, and fertility counseling when relevant"],
-        position: "Most GU treatments are supine. Pelvic cases use leg support and daily image guidance; kidney or adrenal SBRT may use arms-up setup and motion management.",
-        sites: [
-          { id: "prostate", name: "Prostate cancer", hint: "Definitive, postoperative/salvage, nodal, SBRT, or brachytherapy discussion", tags: ["IGRT", "ADT", "SBRT"], dose: [70, 28] },
-          { id: "bladder", name: "Bladder cancer", hint: "Bladder preservation after maximal TURBT with concurrent chemoradiation", tags: ["TMT", "chemoRT", "cystoscopy"], dose: [64, 32] },
-          { id: "testis", name: "Testicular seminoma", hint: "Selected seminoma nodal RT; routine stage I adjuvant RT is generally avoided", tags: ["PA nodes", "fertility", "late effects"], dose: [30, 15] },
-          { id: "kidney", name: "Kidney/adrenal lesion", hint: "SBRT for selected primary RCC, adrenal lesion, oligometastasis, or palliation", tags: ["SBRT", "motion", "renal dose"], dose: [40, 5] }
-        ],
-        timeline: [
-          ["Week 1", "Treatment is painless. Baseline urinary, bowel, sexual, renal, and fertility considerations are reviewed, and bladder/rectal or motion-management instructions are reinforced."],
-          ["Weeks 2 to 6", "Pelvic RT can cause frequency, urgency, nocturia, weaker stream, dysuria, loose stools, rectal urgency, and fatigue. Kidney/adrenal SBRT more often requires monitoring for nausea, flank discomfort, fatigue, and nearby bowel irritation."],
-          ["Months to years", "Late issues are site-specific and may include erectile dysfunction, urethral stricture, hematuria, rectal bleeding, bowel change, infertility, renal function change, or second-malignancy risk in selected historical or young-patient contexts."]
         ]
       },
       {
@@ -4497,6 +4498,7 @@
         ]
       }
     ];
+
 
     const srOnlyStyle = document.createElement("style");
     srOnlyStyle.innerHTML = `.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}`;
