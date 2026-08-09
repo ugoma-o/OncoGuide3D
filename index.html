@@ -433,6 +433,72 @@
       margin-top: 12px;
     }
 
+    .organ-reference-accordions {
+      display: grid;
+      gap: 9px;
+      margin-top: 14px;
+    }
+
+    .organ-reference-disclosure {
+      margin-top: 0;
+    }
+
+    .organ-reference-disclosure > summary span:first-child {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .organ-reference-disclosure > summary b {
+      color: var(--ink);
+      font-size: 0.94rem;
+      letter-spacing: -0.015em;
+    }
+
+    .organ-reference-disclosure > summary small {
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 650;
+      line-height: 1.3;
+    }
+
+    .organ-reference-content {
+      padding: 10px 3px 2px;
+    }
+
+    .organ-reference-links {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px 10px;
+    }
+
+    .organ-reference-links a {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      padding: 9px 11px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.56);
+      color: var(--primary-dark);
+      font-size: 0.80rem;
+      font-weight: 800;
+      line-height: 1.3;
+      text-decoration: none;
+    }
+
+    .organ-reference-links a:hover,
+    .organ-reference-links a:focus-visible {
+      background: rgba(255, 255, 255, 0.84);
+      border-color: rgba(47, 127, 136, 0.36);
+    }
+
+    @media (max-width: 700px) {
+      .organ-reference-links {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .home-clinical-note {
       margin-top: 18px;
       width: 100%;
@@ -3531,6 +3597,63 @@
         grid-template-columns: 1fr;
       }
     }
+
+
+    /* Pilot availability states: keep future modules visible without presenting
+       incomplete content as available during the study pilot. */
+    .system-card.pilot-unavailable,
+    .site-card.pilot-unavailable {
+      opacity: 0.58;
+      cursor: not-allowed;
+      filter: saturate(0.55);
+    }
+
+    .system-card.pilot-unavailable:hover,
+    .site-card.pilot-unavailable:hover {
+      transform: none;
+      border-color: var(--line);
+      background: rgba(255, 255, 255, 0.62);
+    }
+
+    .system-card.pilot-unavailable .icon-bubble {
+      opacity: 0.72;
+    }
+
+    .pilot-system-status {
+      display: block !important;
+      margin-top: 3px;
+      color: var(--muted) !important;
+      font-size: 0.60rem !important;
+      font-weight: 850 !important;
+      line-height: 1.1 !important;
+      white-space: nowrap;
+    }
+
+    .pilot-site-status {
+      display: inline-flex !important;
+      width: fit-content;
+      margin-top: 8px;
+      padding: 4px 7px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(241, 245, 247, 0.88);
+      color: var(--muted) !important;
+      font-size: 0.68rem !important;
+      font-weight: 850 !important;
+      line-height: 1.1 !important;
+    }
+
+    .organ-selector-panel.searching .pilot-system-status {
+      margin-top: 4px;
+      font-size: 0.66rem !important;
+    }
+
+    @media print {
+      .pilot-site-status,
+      .pilot-system-status {
+        display: none !important;
+      }
+    }
 </style>
 </head>
 <body>
@@ -3575,62 +3698,70 @@
       </section>
         <section class="about-references-card side-card" aria-label="Content sources and references">
           <h2>Content sources and references</h2>
-          <p>OncoVis3D content is synthesized for clinical education from public patient-education materials, disease-site treatment summaries, radiation oncology guidelines, clinician review, and institution-specific practice patterns. It is intended to support clinician-led discussion, not to function as a standalone guideline or treatment-planning system.</p>
+          <p>OncoVis3D content is synthesized for clinician-guided patient education from public education resources, society guidelines, consensus statements, pivotal trials, and clinician review. Expand an organ system below to view its main reference links. Regimen-specific evidence remains available directly in each treatment plan's <b>Source</b> disclosure.</p>
 
-          <details class="about-reference-disclosure">
-            <summary>View sources and reference links</summary>
+          <div class="organ-reference-accordions" aria-label="Reference links by organ system">
+            <details class="about-reference-disclosure organ-reference-disclosure">
+              <summary>
+                <span><b>General</b><small>Patient education, disease frameworks, and 3D visualization</small></span>
+              </summary>
+              <div class="organ-reference-content">
+                <div class="organ-reference-links">
+                  <a href="https://www.rtanswers.org/patient-education" target="_blank" rel="noopener noreferrer">ASTRO RTAnswers patient education</a>
+                  <a href="https://www.cancer.gov/about-cancer/treatment/types/radiation-therapy" target="_blank" rel="noopener noreferrer">NCI Radiation Therapy for Cancer</a>
+                  <a href="https://www.cancer.gov/publications/pdq/information-summaries/adult-treatment" target="_blank" rel="noopener noreferrer">NCI PDQ adult treatment summaries</a>
+                  <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines" target="_blank" rel="noopener noreferrer">ASTRO clinical practice guidelines</a>
+                  <a href="https://www.biodigital.com/product/the-biodigital-human" target="_blank" rel="noopener noreferrer">BioDigital Human platform</a>
+                  <a href="https://support.biodigital.com/hc/en-us/articles/33541326533399-What-is-the-BioDigital-library" target="_blank" rel="noopener noreferrer">BioDigital model library</a>
+                </div>
+              </div>
+            </details>
 
-            <div class="reference-grid">
-              <article class="reference-card">
-                <strong>Radiation therapy education</strong>
-                <p>General explanations of radiation therapy, treatment expectations, and common patient-facing treatment concepts.</p>
-                <a href="https://www.rtanswers.org/patient-education" target="_blank" rel="noopener noreferrer">ASTRO RTAnswers patient education</a>
-                <a href="https://www.cancer.gov/about-cancer/treatment/types/radiation-therapy" target="_blank" rel="noopener noreferrer">NCI Radiation Therapy for Cancer</a>
-              </article>
+            <details class="about-reference-disclosure organ-reference-disclosure">
+              <summary>
+                <span><b>Breast</b><small>Whole breast, partial breast, chest wall, and regional nodes</small></span>
+              </summary>
+              <div class="organ-reference-content">
+                <div class="organ-reference-links">
+                  <a href="https://www.astro.org/provider-resources/guidelines/whole-breast-irradiation-gl" target="_blank" rel="noopener noreferrer">ASTRO whole-breast irradiation guideline</a>
+                  <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/pbi-guideline-replacement" target="_blank" rel="noopener noreferrer">ASTRO partial-breast irradiation guideline</a>
+                  <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/postmastectomy-radiation-therapy" target="_blank" rel="noopener noreferrer">ASTRO/ASCO/SSO postmastectomy radiation guideline</a>
+                </div>
+              </div>
+            </details>
 
-              <article class="reference-card">
-                <strong>Disease-site frameworks</strong>
-                <p>Diagnosis, staging, treatment paradigms, and site-specific management concepts are cross-checked against public cancer-treatment summaries and clinician review.</p>
-                <a href="https://www.cancer.gov/publications/pdq/information-summaries/adult-treatment" target="_blank" rel="noopener noreferrer">NCI PDQ adult treatment summaries</a>
-                <a href="https://www.cancer.gov/publications/pdq/information-summaries/pediatric-treatment" target="_blank" rel="noopener noreferrer">NCI PDQ pediatric treatment summaries</a>
-              </article>
+            <details class="about-reference-disclosure organ-reference-disclosure">
+              <summary>
+                <span><b>Genitourinary</b><small>Current pilot content: prostate cancer</small></span>
+              </summary>
+              <div class="organ-reference-content">
+                <div class="organ-reference-links">
+                  <a href="https://www.astro.org/provider-resources/guidelines/clinically-localized-prostate-cancer" target="_blank" rel="noopener noreferrer">AUA/ASTRO clinically localized prostate cancer guideline</a>
+                  <a href="https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-hypofractionation-for-localized-prostate-cancer" target="_blank" rel="noopener noreferrer">ASTRO/ASCO/AUA prostate hypofractionation guideline</a>
+                  <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/salvage-therapy-guideline" target="_blank" rel="noopener noreferrer">AUA/ASTRO/SUO salvage therapy guideline</a>
+                  <a href="https://pubmed.ncbi.nlm.nih.gov/40707306/" target="_blank" rel="noopener noreferrer">HDR prostate brachytherapy boost consensus</a>
+                </div>
+              </div>
+            </details>
 
-              <article class="reference-card">
-                <strong>Radiation oncology guidelines</strong>
-                <p>Disease-site regimen modules use society guidelines, consensus statements, and pivotal trials. Regimen-specific evidence is also shown directly in each treatment-plan <b>Source</b> disclosure.</p>
-                <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines" target="_blank" rel="noopener noreferrer">ASTRO clinical practice guidelines</a>
-                <a href="https://www.astro.org/provider-resources/guidelines/clinically-localized-prostate-cancer" target="_blank" rel="noopener noreferrer">AUA/ASTRO localized prostate guideline</a>
-                <a href="https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-hypofractionation-for-localized-prostate-cancer" target="_blank" rel="noopener noreferrer">ASTRO/ASCO/AUA prostate hypofractionation guideline</a>
-                <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/salvage-therapy-guideline" target="_blank" rel="noopener noreferrer">AUA/ASTRO/SUO salvage therapy guideline</a>
-                <a href="https://pubmed.ncbi.nlm.nih.gov/40707306/" target="_blank" rel="noopener noreferrer">HDR prostate brachytherapy boost consensus</a>
-                <a href="https://www.astro.org/provider-resources/guidelines/whole-breast-irradiation-gl" target="_blank" rel="noopener noreferrer">ASTRO whole-breast irradiation guideline</a>
-                <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/pbi-guideline-replacement" target="_blank" rel="noopener noreferrer">ASTRO partial-breast irradiation guideline</a>
-                <a href="https://www.astro.org/provider-resources/guidelines/clinical-practice-guidelines/postmastectomy-radiation-therapy" target="_blank" rel="noopener noreferrer">ASTRO/ASCO/SSO postmastectomy guideline</a>
-                <a href="https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-sbrt-for-early-stage-nsclc" target="_blank" rel="noopener noreferrer">ASTRO early-stage NSCLC SBRT guideline</a>
-                <a href="https://ascopubs.org/doi/10.1200/JCO.21.02528" target="_blank" rel="noopener noreferrer">ASCO stage III NSCLC guideline</a>
-                <a href="https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-palliative-radiation-therapy-for-non-small-cell-lung-cancer" target="_blank" rel="noopener noreferrer">ASTRO palliative thoracic NSCLC guideline</a>
-                <a href="https://www.astro.org/provider-resources/guidelines/small-cell-lung-cancer-guideline" target="_blank" rel="noopener noreferrer">ASTRO small cell lung cancer guideline</a>
-                <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8085511/" target="_blank" rel="noopener noreferrer">Thymic epithelial tumor radiotherapy guideline</a>
-                <a href="https://pubmed.ncbi.nlm.nih.gov/23790512/" target="_blank" rel="noopener noreferrer">ILROG Hodgkin lymphoma field and dose guideline</a>
-              </article>
+            <details class="about-reference-disclosure organ-reference-disclosure">
+              <summary>
+                <span><b>Thoracic</b><small>Current pilot content: non-small cell and small cell lung cancer</small></span>
+              </summary>
+              <div class="organ-reference-content">
+                <div class="organ-reference-links">
+                  <a href="https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-sbrt-for-early-stage-nsclc" target="_blank" rel="noopener noreferrer">ASTRO early-stage NSCLC SBRT guideline</a>
+                  <a href="https://ascopubs.org/doi/10.1200/JCO.21.02528" target="_blank" rel="noopener noreferrer">ASCO stage III NSCLC guideline</a>
+                  <a href="https://www.astro.org/provider-resources/guidelines/astro-s-guideline-on-palliative-radiation-therapy-for-non-small-cell-lung-cancer" target="_blank" rel="noopener noreferrer">ASTRO palliative thoracic NSCLC guideline</a>
+                  <a href="https://www.astro.org/provider-resources/guidelines/small-cell-lung-cancer-guideline" target="_blank" rel="noopener noreferrer">ASTRO small cell lung cancer guideline</a>
+                </div>
+              </div>
+            </details>
+          </div>
 
-              <article class="reference-card">
-                <strong>3D anatomy and model visualization</strong>
-                <p>Interactive anatomy and disease visualization is provided through BioDigital Human embeds within the clinical workspace.</p>
-                <a href="https://www.biodigital.com/product/the-biodigital-human" target="_blank" rel="noopener noreferrer">BioDigital Human platform</a>
-                <a href="https://support.biodigital.com/hc/en-us/articles/33541326533399-What-is-the-BioDigital-library" target="_blank" rel="noopener noreferrer">BioDigital model library</a>
-              </article>
-
-              <article class="reference-card">
-                <strong>Clinical calibration</strong>
-                <p>Dose, fractionation, organ-at-risk counseling, setup instructions, supportive care, and toxicity expectations should be adapted to physician judgment, institutional protocols, treatment-plan review, and patient-specific factors.</p>
-              </article>
-            </div>
-
-            <div class="reference-note">
-              <b>Important:</b> References identify the source framework used to build and review the educational content. OncoVis3D does not reproduce complete guideline text and should be updated as guidelines, institutional standards, and treatment techniques evolve.
-            </div>
-          </details>
+          <div class="reference-note">
+            <b>Important:</b> References identify the source framework used to build and review the educational content. Final treatment selection remains individualized and should reflect current guidelines, physician judgment, institutional protocols, and patient-specific factors.
+          </div>
         </section>
         <section class="notice home-clinical-note" aria-label="Clinical use note">
           <b>Clinical use note:</b> OncoVis3D is for education, shared decision support, and clinical demonstration workflows. It does not replace physician judgment, consent documentation, contouring, treatment planning, quality assurance, or institution-specific patient instructions.
@@ -4499,6 +4630,22 @@
       }
     ];
 
+    // Pilot scope: breast is fully available; GU currently exposes prostate only;
+    // thoracic currently exposes NSCLC and SCLC only. Remaining modules stay visible
+    // as roadmap items but cannot be opened during the pilot.
+    const pilotAvailableSites = {
+      breast: new Set(["whole-breast", "pbi", "chest-wall", "regional-nodes"]),
+      gu: new Set(["prostate"]),
+      thoracic: new Set(["nsclc", "sclc"])
+    };
+
+    const isPilotSystemAvailable = (systemId) => Boolean(pilotAvailableSites[systemId]?.size);
+    const isPilotSiteAvailable = (systemId, siteId) => Boolean(pilotAvailableSites[systemId]?.has(siteId));
+    const firstPilotSiteId = (system) => {
+      if (!system || !isPilotSystemAvailable(system.id)) return null;
+      return system.sites.find(site => isPilotSiteAvailable(system.id, site.id))?.id || null;
+    };
+
 
     const srOnlyStyle = document.createElement("style");
     srOnlyStyle.innerHTML = `.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}`;
@@ -4579,7 +4726,11 @@
       return system?.sites.find(site => site.id === state.siteId) || null;
     };
     const embedKey = (systemId, siteId) => `${systemId}:${siteId}`;
-    const hasWorkspaceSelection = () => Boolean(activeSystem() && activeSite());
+    const hasWorkspaceSelection = () => {
+      const system = activeSystem();
+      const site = activeSite();
+      return Boolean(system && site && isPilotSiteAvailable(system.id, site.id));
+    };
 
     function setDoseForActiveSite() {
       const site = activeSite();
@@ -4678,19 +4829,12 @@
       if (first === "workspace") {
         state.page = "workspace";
 
-        if (second === "thoracic" && third === "mediastinum") {
-          state.systemId = "heme";
-          state.siteId = "mediastinal-lymphoma";
-          setDoseForActiveSite();
-          return true;
-        }
-
         const system = systems.find(item => item.id === second);
 
-        if (system) {
+        if (system && isPilotSystemAvailable(system.id)) {
           state.systemId = system.id;
-          const matchedSite = system.sites.find(site => site.id === third);
-          state.siteId = matchedSite ? matchedSite.id : system.sites[0].id;
+          const matchedSite = system.sites.find(site => site.id === third && isPilotSiteAvailable(system.id, site.id));
+          state.siteId = matchedSite ? matchedSite.id : firstPilotSiteId(system);
           setDoseForActiveSite();
         } else {
           state.systemId = null;
@@ -4700,21 +4844,18 @@
       }
 
       // Backward-compatible support for older links like #gu/prostate.
-      if (first === "thoracic" && second === "mediastinum") {
-        state.page = "workspace";
-        state.systemId = "heme";
-        state.siteId = "mediastinal-lymphoma";
-        setDoseForActiveSite();
-        return true;
-      }
-
       const legacySystem = systems.find(item => item.id === first);
       if (legacySystem) {
         state.page = "workspace";
-        state.systemId = legacySystem.id;
-        const matchedSite = legacySystem.sites.find(site => site.id === second);
-        state.siteId = matchedSite ? matchedSite.id : legacySystem.sites[0].id;
-        setDoseForActiveSite();
+        if (isPilotSystemAvailable(legacySystem.id)) {
+          state.systemId = legacySystem.id;
+          const matchedSite = legacySystem.sites.find(site => site.id === second && isPilotSiteAvailable(legacySystem.id, site.id));
+          state.siteId = matchedSite ? matchedSite.id : firstPilotSiteId(legacySystem);
+          setDoseForActiveSite();
+        } else {
+          state.systemId = null;
+          state.siteId = null;
+        }
         return true;
       }
 
@@ -4723,10 +4864,12 @@
 
     function selectSystem(systemId) {
       const system = systems.find(item => item.id === systemId);
-      if (!system) return;
+      if (!system || !isPilotSystemAvailable(system.id)) return;
+      const firstSiteId = firstPilotSiteId(system);
+      if (!firstSiteId) return;
       state.page = "workspace";
       state.systemId = system.id;
-      state.siteId = system.sites[0].id;
+      state.siteId = firstSiteId;
       treatmentPlanViewIndex = 0;
       setDoseForActiveSite();
       updateRouteHash();
@@ -4736,7 +4879,7 @@
     function selectSite(siteId) {
       const system = activeSystem();
       const site = system?.sites.find(item => item.id === siteId);
-      if (!site) return;
+      if (!site || !isPilotSiteAvailable(system.id, site.id)) return;
       state.page = "workspace";
       state.siteId = site.id;
       treatmentPlanViewIndex = 0;
@@ -4756,13 +4899,25 @@
       const organPanel = document.querySelector(".organ-selector-panel");
       if (organPanel) organPanel.classList.toggle("searching", Boolean(query));
 
-      $("systemGrid").innerHTML = filtered.map(system => `
-        <button class="system-card ${system.id === state.systemId ? "active" : ""}" type="button" data-system-id="${system.id}">
+      $("systemGrid").innerHTML = filtered.map(system => {
+        const available = isPilotSystemAvailable(system.id);
+        return `
+        <button
+          class="system-card ${system.id === state.systemId ? "active" : ""} ${available ? "" : "pilot-unavailable"}"
+          type="button"
+          data-system-id="${system.id}"
+          ${available ? "" : 'disabled aria-disabled="true" title="Not available during pilot"'}
+        >
           <span class="icon-bubble" aria-hidden="true"><img src="${system.icon}" alt="" class="system-icon-img" /></span>
-          <span class="system-copy"><strong>${system.name}</strong><span class="system-subtitle">${system.subtitle}</span></span>
+          <span class="system-copy">
+            <strong>${system.name}</strong>
+            <span class="system-subtitle">${system.subtitle}</span>
+            ${available ? "" : '<span class="pilot-system-status">Not available during pilot</span>'}
+          </span>
           <span class="system-arrow" aria-hidden="true">›</span>
         </button>
-      `).join("");
+      `;
+      }).join("");
 
       document.querySelectorAll("[data-system-id]").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -4795,12 +4950,21 @@
 
     function renderSites() {
       const system = activeSystem();
-      $("siteGrid").innerHTML = system.sites.map(site => `
-        <button class="site-card ${site.id === state.siteId ? "active" : ""}" type="button" data-site-id="${site.id}">
+      $("siteGrid").innerHTML = system.sites.map(site => {
+        const available = isPilotSiteAvailable(system.id, site.id);
+        return `
+        <button
+          class="site-card ${site.id === state.siteId ? "active" : ""} ${available ? "" : "pilot-unavailable"}"
+          type="button"
+          data-site-id="${site.id}"
+          ${available ? "" : 'disabled aria-disabled="true" title="Not available during pilot"'}
+        >
           <strong>${site.name}</strong>
           <span>${site.hint}</span>
+          ${available ? "" : '<span class="pilot-site-status">Not available during pilot</span>'}
         </button>
-      `).join("");
+      `;
+      }).join("");
 
       document.querySelectorAll("[data-site-id]").forEach(btn => {
         btn.addEventListener("click", () => {
