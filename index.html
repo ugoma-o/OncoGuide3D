@@ -3409,40 +3409,34 @@
       color: #7b541c !important;
     }
 
-    .regimen-source-disclosure {
+    .regimen-source-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 0;
+      background: transparent;
       color: var(--muted);
       font-size: 0.68rem;
-      line-height: 1.35;
-    }
-
-    .regimen-source-disclosure summary {
-      cursor: pointer;
-      color: var(--muted);
       font-weight: 750;
+      line-height: 1.35;
       opacity: 0.68;
-      list-style: none;
       text-decoration: underline;
       text-decoration-style: dotted;
       text-underline-offset: 3px;
+      white-space: nowrap;
+      cursor: pointer;
     }
 
-    .regimen-source-disclosure summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .regimen-source-disclosure[open] {
-      flex: 0 1 520px;
-      max-width: 100%;
-      margin-left: auto;
-      text-align: right;
-    }
-
-    .regimen-source-disclosure[open] .regimen-source-detail {
-      text-align: left;
+    .regimen-source-toggle:hover,
+    .regimen-source-toggle:focus-visible {
+      color: var(--primary-dark);
+      opacity: 1;
     }
 
     .regimen-source-detail {
-      margin-top: 7px;
+      width: min(520px, 100%);
+      margin: 7px 0 0 auto;
       padding: 9px 10px;
       border: 1px solid var(--line);
       border-radius: 12px;
@@ -3450,6 +3444,11 @@
       color: var(--muted);
       font-size: 0.70rem;
       line-height: 1.4;
+      text-align: left;
+    }
+
+    .regimen-source-detail[hidden] {
+      display: none !important;
     }
 
     .regimen-source-detail .basis-links {
@@ -3475,9 +3474,6 @@
         text-align: right;
       }
 
-      .regimen-source-disclosure[open] {
-        width: min(100%, 520px);
-      }
     }
 .session-timing-card {
       min-height: 100%;
@@ -3880,11 +3876,9 @@
 
                 <div class="regimen-quiet-meta">
                   <span class="regimen-quiet-status info" id="prostateRegimenStatus" aria-live="polite"></span>
-                  <details class="regimen-source-disclosure">
-                    <summary>Source</summary>
-                    <div class="breast-regimen-source prostate-regimen-source regimen-source-detail" id="prostateRegimenSource"></div>
-                  </details>
+                  <button class="regimen-source-toggle" type="button" aria-expanded="false" aria-controls="prostateRegimenSource">Source</button>
                 </div>
+                <div class="breast-regimen-source prostate-regimen-source regimen-source-detail" id="prostateRegimenSource" hidden></div>
                 <p class="prostate-regimen-disclaimer regimen-disclaimer-quiet">Educational decision support only. Final regimen selection remains individualized.</p>
               </div>
 
@@ -3971,11 +3965,9 @@
 
                 <div class="regimen-quiet-meta">
                   <span class="regimen-quiet-status info" id="breastRegimenStatus" aria-live="polite"></span>
-                  <details class="regimen-source-disclosure">
-                    <summary>Source</summary>
-                    <div class="breast-regimen-source regimen-source-detail" id="breastRegimenSource"></div>
-                  </details>
+                  <button class="regimen-source-toggle" type="button" aria-expanded="false" aria-controls="breastRegimenSource">Source</button>
                 </div>
+                <div class="breast-regimen-source regimen-source-detail" id="breastRegimenSource" hidden></div>
                 <p class="prostate-regimen-disclaimer regimen-disclaimer-quiet">Educational decision support only. Final regimen selection remains individualized.</p>
               </div>
 
@@ -4010,11 +4002,9 @@
 
                 <div class="regimen-quiet-meta">
                   <span class="regimen-quiet-status info" id="lungRegimenStatus" aria-live="polite"></span>
-                  <details class="regimen-source-disclosure">
-                    <summary>Source</summary>
-                    <div class="breast-regimen-source prostate-regimen-source regimen-source-detail" id="lungRegimenSource"></div>
-                  </details>
+                  <button class="regimen-source-toggle" type="button" aria-expanded="false" aria-controls="lungRegimenSource">Source</button>
                 </div>
+                <div class="breast-regimen-source prostate-regimen-source regimen-source-detail" id="lungRegimenSource" hidden></div>
                 <p class="prostate-regimen-disclaimer regimen-disclaimer-quiet">Educational decision support only. Final regimen selection remains individualized to tumor location, stage, organ-at-risk constraints, systemic therapy, and institutional protocol.</p>
               </div>
 
@@ -9396,6 +9386,18 @@
       updateLungRegimenPanel({ syncCategory: false });
     });
     if ($("lungRegimenPreset")) $("lungRegimenPreset").addEventListener("change", applyLungRegimenPreset);
+
+    document.querySelectorAll(".regimen-source-toggle").forEach(button => {
+      button.addEventListener("click", () => {
+        const panelId = button.getAttribute("aria-controls");
+        const panel = panelId ? $(panelId) : null;
+        if (!panel) return;
+        const willOpen = panel.hidden;
+        panel.hidden = !willOpen;
+        button.setAttribute("aria-expanded", String(willOpen));
+        requestAnimationFrame(syncWorkspaceColumnHeights);
+      });
+    });
     if ($("noteTemplateSelect")) $("noteTemplateSelect").addEventListener("change", e => { if (e.target.value) insertClinicianNoteTemplate(); });
     window.addEventListener("resize", () => {
       updateViewer();
